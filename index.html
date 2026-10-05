@@ -699,6 +699,15 @@
     @keyframes letterPetal { 0% { opacity: 0; transform: translate(0,-10px) rotate(0); } 12% { opacity: .95; } 100% { opacity: 0; transform: translate(var(--drift),470px) rotate(520deg); } }
     @media (prefers-reduced-motion: reduce) { .petal-layer { display:none; } }
 
+
+    /* Keep the invitation aligned with the viewport on phones. */
+    html { width: 100%; overflow-x: hidden; }
+    body { display: block; width: 100%; margin: 0; overflow-x: hidden; background-color: var(--bg-cream); }
+    .phone-container { width: 100%; margin-inline: auto; overflow-x: clip; }
+    @media (max-width: 600px) {
+      .phone-container { width: 100%; max-width: none; box-shadow: none; }
+      .music-btn { right: max(16px, env(safe-area-inset-right)); }
+    }
   </style>
   <noscript><style>.door-wrapper { display: none; } .countdown-container, .toggle-msg-btn, .music-btn, .share-btn { display: none; } .message-content { max-height: none; opacity: 1; } .envelope-card .message-content { position: relative; visibility: visible; transform: none; } .letter-close { display: none; }</style></noscript>
 </head>
