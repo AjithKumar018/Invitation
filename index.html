@@ -678,8 +678,29 @@
     .door-panel::before { content: "✧"; color: #d4af37; font-size: 45px; position: absolute; top: 18%; }
     .door-panel::after { content: ""; position: absolute; inset: 12px; border: 1px solid #d4af373d; border-radius: 110px 110px 0 0; }
 
+
+    /* Personal letter reveal inspired by the reference invitation. */
+    .envelope-card { margin: 0; padding: 44px 24px 48px; border-radius: 0; border: 0; background: radial-gradient(ellipse at 50% 30%,#813244 0%,#4a0e17 55%,#2a080d 100%); overflow: hidden; isolation: isolate; }
+    .envelope-card::before { margin: 0 auto 18px; position: relative; z-index: 2; }
+    .envelope-card::after { content: ""; position: absolute; inset: 12px; border: 1px solid #d4af3766; border-radius: 110px 110px 12px 12px; pointer-events: none; z-index: -1; }
+    .letter-heading { font: 1.35rem 'Cinzel',serif; color: #e8d39e; margin-bottom: 8px; }
+    .letter-caption { font-size: .76rem; color: #fff5e5c9; line-height: 1.6; margin: 0 0 24px; }
+    .letter-stage { position: relative; }
+    .envelope-card .toggle-msg-btn { width: 100%; min-height: 180px; padding: 25px; background: linear-gradient(135deg,#fffdf5,#f2e7ce); border: 4px double #d4af3780; border-radius: 14px; box-shadow: 0 16px 36px #14030666; color: var(--burgundy); flex-direction: column; gap: 6px; transition: opacity .35s ease, transform .55s ease, visibility .35s; }
+    .envelope-card .toggle-msg-btn svg { display: none; }
+    #msgBtnText { font: 3rem 'Great Vibes',cursive; letter-spacing: 0; text-transform: none; }
+    .letter-hint { font: .64rem 'Plus Jakarta Sans',sans-serif; text-transform: uppercase; letter-spacing: 2px; color: var(--gold-dark); }
+    .envelope-card .message-content { position: absolute; inset: 0; max-height: none; overflow: visible; opacity: 0; visibility: hidden; transform: translateY(14px) scale(.96); padding: 24px 18px; border: 4px double #d4af3780; border-radius: 14px; background: linear-gradient(135deg,#fffdf5,#f2e7ce); box-shadow: 0 16px 36px #14030666; transition: opacity .55s ease .12s, transform .65s ease .12s, visibility .55s; }
+    .envelope-card.letter-open .toggle-msg-btn { position: absolute; inset: 0; opacity: 0; transform: scale(.96); visibility: hidden; pointer-events: none; }
+    .envelope-card.letter-open .message-content { position: relative; opacity: 1; visibility: visible; transform: none; margin: 0; }
+    .letter-close { display: inline-block; margin-top: 16px; background: none; border: 0; border-bottom: 1px solid #a27b1e80; color: var(--gold-dark); font: .75rem 'Plus Jakarta Sans',sans-serif; padding: 6px; cursor: pointer; min-height: 36px; }
+    .petal-layer { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 3; }
+    .gold-petal { position: absolute; top: -18px; width: 7px; height: 12px; border-radius: 70% 10% 70% 10%; background: linear-gradient(135deg,#fff4b8,#d4af37); animation: letterPetal 2.8s ease-out both; }
+    @keyframes letterPetal { 0% { opacity: 0; transform: translate(0,-10px) rotate(0); } 12% { opacity: .95; } 100% { opacity: 0; transform: translate(var(--drift),470px) rotate(520deg); } }
+    @media (prefers-reduced-motion: reduce) { .petal-layer { display:none; } }
+
   </style>
-  <noscript><style>.door-wrapper { display: none; } .countdown-container, .toggle-msg-btn, .music-btn, .share-btn { display: none; } .message-content { max-height: none; opacity: 1; }</style></noscript>
+  <noscript><style>.door-wrapper { display: none; } .countdown-container, .toggle-msg-btn, .music-btn, .share-btn { display: none; } .message-content { max-height: none; opacity: 1; } .envelope-card .message-content { position: relative; visibility: visible; transform: none; } .letter-close { display: none; }</style></noscript>
 </head>
 <body>
 
@@ -768,23 +789,29 @@
     </section>
 
     <!-- ENVELOPE / MESSAGE CARD -->
-    <div class="envelope-card">
+    <div class="envelope-card" id="personalLetter">
+<h2 class="letter-heading">With Grateful Hearts</h2>
+<p class="letter-caption">A little note from our hearts to yours</p>
+<div class="petal-layer" id="petalLayer" aria-hidden="true"></div>
+<div class="letter-stage">
       <button class="toggle-msg-btn" aria-expanded="false" aria-controls="messageBox" onclick="toggleMessage()">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
           <polyline points="22,6 12,13 2,6"></polyline>
         </svg>
-        <span id="msgBtnText">Open Personal Message</span>
+        <span id="msgBtnText">Open</span><span class="letter-hint">Your personal invitation</span>
       </button>
 
-      <div class="message-content" id="messageBox">
+      <div class="message-content" id="messageBox" aria-hidden="true" tabindex="-1">
         <div class="section-tag" style="margin-top: 10px;">A Moment Made Complete By You</div>
         <h2 class="section-heading" style="font-size: 1.4rem;">With Grateful Hearts</h2>
         <p class="message-text">
           "Some moments become memories because of the people who share them. As we step into this beautiful new chapter, it would mean the world to have you beside us—blessing our beginning, sharing our joy, and making our celebration complete."
         </p>
         <div class="section-tag" style="font-size: 0.65rem;">WITH LOVE, AJITHKUMAR & RAMYA</div>
+<button type="button" class="letter-close" onclick="toggleMessage()">Close letter</button>
       </div>
+</div>
     </div>
 
     <!-- FAMILY SECTION -->
@@ -927,15 +954,31 @@
 
     // Toggle Envelope Message Card
     function toggleMessage() {
-      const msgBox = document.getElementById("messageBox");
-      const btnText = document.getElementById("msgBtnText");
-      document.querySelector(".toggle-msg-btn").setAttribute("aria-expanded", String(!msgBox.classList.contains("open")));
-      if (msgBox.classList.contains("open")) {
-        msgBox.classList.remove("open");
-        btnText.innerText = "Open Personal Message";
+      const letter = document.getElementById('personalLetter');
+      const message = document.getElementById('messageBox');
+      const button = letter.querySelector('.toggle-msg-btn');
+      const opened = letter.classList.toggle('letter-open');
+      message.classList.toggle('open', opened);
+      message.setAttribute('aria-hidden', String(!opened));
+      button.setAttribute('aria-expanded', String(opened));
+      button.tabIndex = opened ? -1 : 0;
+      const layer = document.getElementById('petalLayer');
+      layer.replaceChildren();
+      if (opened) {
+        message.focus({preventScroll: true});
+        if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          for (let i = 0; i < 24; i++) {
+            const petal = document.createElement('span');
+            petal.className = 'gold-petal';
+            petal.style.left = (5 + Math.random() * 90) + '%';
+            petal.style.animationDelay = (Math.random() * .6) + 's';
+            petal.style.setProperty('--drift', (Math.random() * 100 - 50) + 'px');
+            layer.appendChild(petal);
+          }
+          setTimeout(() => layer.replaceChildren(), 3600);
+        }
       } else {
-        msgBox.classList.add("open");
-        btnText.innerText = "Close Message";
+        button.focus({preventScroll: true});
       }
     }
 
