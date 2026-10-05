@@ -645,6 +645,39 @@
     @media (min-width: 431px) { .music-btn { right: calc(50% - 195px); } }
     @media (max-width: 350px) { .section { padding-left: 16px; padding-right: 16px; } .countdown-container { gap: 6px; } .timer-card { min-width: 56px; } }
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
+
+    /* Handcrafted floral ornaments and warm celebratory light. */
+    .phone-container { background-image: radial-gradient(#d4af3712 .8px, transparent .8px); background-size: 12px 12px; }
+    .hero-section { overflow: hidden; background: radial-gradient(ellipse at 50% 32%, #fffdf9 20%, #f4e8d6 100%); }
+    .hero-section::before, .hero-section::after { content: ""; position: absolute; width: 190px; height: 190px; border: 1px solid #d4af3740; border-radius: 50%; top: 72px; pointer-events: none; }
+    .hero-section::before { left: -145px; box-shadow: 0 0 0 13px #d4af3710, 0 0 0 27px #d4af370b; }
+    .hero-section::after { right: -145px; box-shadow: 0 0 0 13px #d4af3710, 0 0 0 27px #d4af370b; }
+    .floral-ornament { display: block; width: 154px; height: 44px; margin: 0 auto 16px; color: var(--gold-dark); }
+    .hero-kicker { color: var(--gold-dark); font-size: .62rem; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 15px; }
+    .hero-date { display: inline-block; margin-top: 18px; padding: 9px 20px; border-top: 1px solid var(--border-gold); border-bottom: 1px solid var(--border-gold); font-family: 'Cinzel', serif; color: var(--burgundy); font-size: .8rem; letter-spacing: 2px; }
+    .hero-section .quote-box { margin-bottom: 20px; }
+    .arch-frame { height: 290px; background: radial-gradient(circle at 50% 32%, #fff7d6 0, #e8d39e44 40%, #4a0e1712 100%); }
+    .arch-frame::before { content: ""; position: absolute; inset: 9px; border: 1px solid #d4af3780; border-radius: 140px 140px 0 0; pointer-events: none; }
+    .arch-frame .mandap-img { width: 88%; }
+    .envelope-card::before { content: "A & R"; display: grid; place-items: center; width: 46px; height: 46px; margin: -52px auto 20px; border-radius: 50%; background: linear-gradient(135deg,#7a2330,#4a0e17); border: 3px double #d4af37; box-shadow: 0 4px 12px #4a0e1733; color: #e8d39e; font: .76rem 'Cinzel',serif; }
+    .person-card { position: relative; background: linear-gradient(135deg,#fff,#fffaf0); }
+    .person-card::before, .person-card::after { content: "✧"; position: absolute; top: 12px; color: var(--gold-primary); font-size: 20px; }
+    .person-card::before { left: 14px; } .person-card::after { right: 14px; }
+    .event-card { border-top: 3px solid var(--gold-primary); }
+    .reception-section { position: relative; overflow: hidden; background: radial-gradient(ellipse at top,#641725 0%,#2a080d 55%,#120204 100%); }
+    .reception-section::before { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .6; background-image: radial-gradient(circle,#e8d39e 1px,transparent 1.8px),radial-gradient(circle,#d4af37 .6px,transparent 1.4px); background-size: 77px 89px,43px 61px; background-position: 12px 21px,32px 40px; }
+    .reception-section > * { position: relative; }
+    .section-divider { display: flex; align-items: center; justify-content: center; gap: 12px; margin: 18px auto; color: var(--gold-primary); font-size: 17px; max-width: 220px; }
+    .section-divider::before, .section-divider::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg,transparent,var(--gold-primary),transparent); }
+    .celebration-note { font: italic 1.1rem/1.7 'Playfair Display',serif; max-width: 290px; margin: 20px auto 0; color: #e8d39e; }
+    .sparkles { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+    .sparkles i { position: absolute; color: #b78e2b; opacity: .4; font-style: normal; animation: invitationTwinkle 4s ease-in-out infinite; }
+    .sparkles i:nth-child(1) { left: 9%; top: 12%; } .sparkles i:nth-child(2) { right: 10%; top: 26%; animation-delay: 1.2s; }
+    .sparkles i:nth-child(3) { left: 15%; top: 44%; animation-delay: 2s; } .sparkles i:nth-child(4) { right: 15%; top: 60%; animation-delay: .6s; }
+    @keyframes invitationTwinkle { 0%,100% { opacity: .2; transform: scale(.8); } 50% { opacity: .7; transform: scale(1.2); } }
+    .door-panel::before { content: "✧"; color: #d4af37; font-size: 45px; position: absolute; top: 18%; }
+    .door-panel::after { content: ""; position: absolute; inset: 12px; border: 1px solid #d4af373d; border-radius: 110px 110px 0 0; }
+
   </style>
   <noscript><style>.door-wrapper { display: none; } .countdown-container, .toggle-msg-btn, .music-btn, .share-btn { display: none; } .message-content { max-height: none; opacity: 1; }</style></noscript>
 </head>
@@ -692,6 +725,8 @@
 
     <!-- HERO SECTION -->
     <section class="section hero-section">
+<div class="sparkles" aria-hidden="true"><i>✦</i><i>✧</i><i>✦</i><i>✧</i></div>
+<svg class="floral-ornament" viewBox="0 0 160 44" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M9 30Q40 34 72 22M151 30Q120 34 88 22M32 31Q22 13 17 18Q18 30 32 31M47 29Q39 10 34 15Q34 27 47 29M61 25Q55 10 50 13Q49 23 61 25M128 31Q138 13 143 18Q142 30 128 31M113 29Q121 10 126 15Q126 27 113 29M99 25Q105 10 110 13Q111 23 99 25"/><path d="M80 8Q65 21 80 34Q95 21 80 8Z"/><path d="M68 21H92M80 13V29"/><circle cx="80" cy="21" r="3" fill="currentColor"/></svg><p class="hero-kicker">Together with our families</p>
       <div class="quote-box">
         "Two hearts found their way to each other, and from this moment on, every road leads home."
       </div>
@@ -699,6 +734,7 @@
       <h1 class="hero-title">Ajithkumar</h1>
       <div class="hero-subtitle">Weds</div>
       <h1 class="hero-title">Ramya</h1>
+<div class="hero-date">25 October 2026</div>
 
       <!-- Countdown -->
       <div class="countdown-container">
@@ -755,6 +791,7 @@
     <section class="section family-section">
       <div class="section-tag">With the Blessings of</div>
       <h2 class="section-heading">Our Families</h2>
+<div class="section-divider" aria-hidden="true">❦</div>
       <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;">
         With joyful hearts, we invite you to celebrate our wedding
       </p>
@@ -802,7 +839,7 @@
 
     <!-- RECEPTION SECTION (DARK THEME) -->
     <section class="section reception-section">
-      <div class="section-tag">The Reception</div>
+<svg class="floral-ornament" viewBox="0 0 160 44" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M9 30Q40 34 72 22M151 30Q120 34 88 22M32 31Q22 13 17 18Q18 30 32 31M47 29Q39 10 34 15Q34 27 47 29M61 25Q55 10 50 13Q49 23 61 25M128 31Q138 13 143 18Q142 30 128 31M113 29Q121 10 126 15Q126 27 113 29M99 25Q105 10 110 13Q111 23 99 25"/><path d="M80 8Q65 21 80 34Q95 21 80 8Z"/><path d="M68 21H92M80 13V29"/><circle cx="80" cy="21" r="3" fill="currentColor"/></svg>      <div class="section-tag">The Reception</div>
       <p style="font-size: 0.85rem; color: rgba(255,255,255,0.8); margin-bottom: 20px;">
         An evening of joy, dinner and dancing as we celebrate our new beginning.
       </p>
@@ -833,6 +870,7 @@
       </div>
     </section>
 
+<div class="section-divider" aria-hidden="true">✧ ❦ ✧</div>
     <!-- FOOTER SECTION -->
     <section class="section footer-section">
       <div class="section-tag">WITH GRATEFUL HEARTS</div>
