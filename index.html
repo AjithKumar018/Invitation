@@ -1095,6 +1095,23 @@
       layer.replaceChildren();
       if (opened) {
         message.focus({preventScroll: true});
+        if (letter._centerTimer) clearTimeout(letter._centerTimer);
+        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const centerMessage = () => {
+          if (!letter.classList.contains('letter-open')) return;
+          const viewport = window.visualViewport;
+          const visibleHeight = viewport ? viewport.height : innerHeight;
+          const visibleTop = viewport ? viewport.offsetTop : 0;
+          const rect = message.getBoundingClientRect();
+          const offset = rect.height <= visibleHeight - 32
+            ? (visibleHeight - rect.height) / 2 : 16;
+          window.scrollTo({
+            top: Math.max(0, scrollY + rect.top - visibleTop - offset),
+            behavior: reducedMotion ? 'instant' : 'smooth'
+          });
+        };
+        if (reducedMotion) requestAnimationFrame(centerMessage);
+        else letter._centerTimer = setTimeout(centerMessage, 850);
         if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
           for (let i = 0; i < 24; i++) {
             const petal = document.createElement('span');
@@ -1107,6 +1124,7 @@
           setTimeout(() => layer.replaceChildren(), 3600);
         }
       } else {
+        if (letter._centerTimer) clearTimeout(letter._centerTimer);
         button.focus({preventScroll: true});
       }
     }
