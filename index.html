@@ -1221,88 +1221,38 @@
       window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank', 'noopener,noreferrer');
     }
 
-    // Original gentle instrumental accompaniment, synthesized in the browser.
-    let musicContext, musicGain, musicTimer, musicStep = 0;
-    let musicEnabled = false;
+    // Uploaded background music with accessible mute/unmute control.
+    const backgroundMusic = new Audio('./nenjukkul_peidhidum.mp3');
+    backgroundMusic.loop = true;
+    backgroundMusic.preload = 'none';
+    backgroundMusic.volume = .5;
+    let musicTouched = false;
     function updateMusicButton() {
+      const audible = !backgroundMusic.paused && !backgroundMusic.muted;
       const button = document.getElementById('musicBtn');
-      const audible = musicEnabled && musicContext && musicContext.state === 'running';
-      button.classList.toggle('playing', Boolean(audible));
-      button.setAttribute('aria-pressed', String(Boolean(audible)));
-      button.setAttribute('aria-label', audible ? 'Mute background music' : 'Play background music');
-      button.title = audible ? 'Mute background music' : 'Play background music';
-    }
-    // Original Tamil-inspired romantic melody: pentatonic flute and soft plucked accompaniment.
-    function scheduleMusic() {
-      if (!musicContext || musicContext.state !== 'running' || !musicEnabled) return;
-      const melody = [0,2,4,7,9,7,4,2, 4,7,9,12,9,7,4,7,
-                      9,12,14,12,9,7,9,4, 7,4,2,0,2,4,2,0];
-      const step = musicStep % melody.length;
-      const frequency = 261.63 * Math.pow(2, melody[step] / 12);
-      const time = musicContext.currentTime + .025;
-      const tone = musicContext.createOscillator();
-      const overtone = musicContext.createOscillator();
-      const envelope = musicContext.createGain();
-      tone.type = 'sine'; overtone.type = 'sine';
-      tone.frequency.setValueAtTime(frequency*.985,time);
-      tone.frequency.exponentialRampToValueAtTime(frequency,time+.11);
-      overtone.frequency.value = frequency*2;
-      const harmonic = musicContext.createGain(); harmonic.gain.value=.055;
-      tone.connect(envelope); overtone.connect(harmonic); harmonic.connect(envelope);
-      envelope.connect(musicGain);
-      envelope.gain.setValueAtTime(0,time);
-      envelope.gain.linearRampToValueAtTime(.2,time+.12);
-      envelope.gain.setTargetAtTime(.08,time+.35,.3);
-      envelope.gain.exponentialRampToValueAtTime(.001,time+1.65);
-      tone.start(time); overtone.start(time); tone.stop(time+1.7); overtone.stop(time+1.7);
-      tone.onended=()=>{tone.disconnect();overtone.disconnect();harmonic.disconnect();envelope.disconnect();};
-      if (step % 4 === 0) {
-        const pluck=musicContext.createOscillator(), gain=musicContext.createGain();
-        pluck.type='triangle';
-        pluck.frequency.value = [130.815,196,130.815,146.83][Math.floor(step/8)];
-        pluck.connect(gain);gain.connect(musicGain);
-        gain.gain.setValueAtTime(.08,time);
-        gain.gain.exponentialRampToValueAtTime(.001,time+2.1);
-        pluck.start(time);pluck.stop(time+2.2);
-        pluck.onended=()=>{pluck.disconnect();gain.disconnect();};
-      }
-      musicStep++;
+      button.classList.toggle('playing', audible);
+      button.setAttribute('aria-pressed', String(audible));
+      button.setAttribute('aria-label', audible ? 'Mute background music' : 'Unmute background music');
+      button.title = audible ? 'Mute background music' : 'Unmute background music';
     }
     async function startMusic() {
-      try {
-        if (!musicContext) {
-          const AudioEngine = window.AudioContext || window.webkitAudioContext;
-          if (!AudioEngine) return;
-          musicContext = new AudioEngine();
-          musicGain = musicContext.createGain(); musicGain.gain.value = 0;
-          musicGain.connect(musicContext.destination);
-          musicContext.onstatechange = updateMusicButton;
-        }
-        await musicContext.resume();
-        if (musicContext.state !== 'running') return;
-        musicEnabled = true;
-        musicGain.gain.cancelScheduledValues(musicContext.currentTime);
-        musicGain.gain.setTargetAtTime(.32,musicContext.currentTime,.25);
-        if (!musicTimer) { scheduleMusic(); musicTimer = setInterval(scheduleMusic, 640); }
-        updateMusicButton();
-      } catch { updateMusicButton(); }
-    }
-    function toggleAudio() {
-      if (!musicEnabled || !musicContext || musicContext.state !== 'running') {
-        startMusic(); return;
-      }
-      musicEnabled = false;
-      clearInterval(musicTimer); musicTimer = null;
-      musicGain.gain.cancelScheduledValues(musicContext.currentTime);
-      musicGain.gain.setTargetAtTime(0,musicContext.currentTime,.08);
+      try { backgroundMusic.muted = false; await backgroundMusic.play(); }
+      catch { /* A guest tap is needed if autoplay is blocked. */ }
       updateMusicButton();
     }
-    // A guest tap unlocks audio; automatic door opening stays compatible with autoplay rules.
+    function toggleAudio() {
+      musicTouched = true;
+      if (backgroundMusic.paused) startMusic();
+      else { backgroundMusic.muted = !backgroundMusic.muted; updateMusicButton(); }
+    }
+    ['play','pause','volumechange','error'].forEach(event => backgroundMusic.addEventListener(event,updateMusicButton));
     document.getElementById('doorWrapper').addEventListener('click', () => {
-      if (!musicContext) startMusic();
+      if (!musicTouched) { musicTouched = true; startMusic(); }
     });
     document.getElementById('doorWrapper').addEventListener('keydown', event => {
-      if ((event.key === 'Enter' || event.key === ' ') && !musicContext) startMusic();
+      if ((event.key === 'Enter' || event.key === ' ') && !musicTouched) {
+        musicTouched = true; startMusic();
+      }
     });
     updateMusicButton();
   </script>
