@@ -867,7 +867,7 @@
     </div>
 
     <!-- Music Player Button -->
-    <button class="music-btn" id="musicBtn" onclick="toggleAudio()" title="Toggle Background Music">
+    <button class="music-btn" id="musicBtn" onclick="toggleAudio()" title="Play background music" aria-label="Play background music" aria-pressed="false">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A27B1E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M9 18V5l12-2v13"></path>
         <circle cx="6" cy="18" r="3"></circle>
@@ -1212,17 +1212,78 @@
       window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank', 'noopener,noreferrer');
     }
 
-    // Audio Player Toggle
-    let isPlaying = false;
-    function toggleAudio() {
-      const musicBtn = document.getElementById("musicBtn");
-      isPlaying = !isPlaying;
-      if (isPlaying) {
-        musicBtn.classList.add("playing");
-      } else {
-        musicBtn.classList.remove("playing");
-      }
+    // Original gentle instrumental accompaniment, synthesized in the browser.
+    let musicContext, musicGain, musicTimer, musicStep = 0;
+    let musicEnabled = false;
+    function updateMusicButton() {
+      const button = document.getElementById('musicBtn');
+      const audible = musicEnabled && musicContext && musicContext.state === 'running';
+      button.classList.toggle('playing', Boolean(audible));
+      button.setAttribute('aria-pressed', String(Boolean(audible)));
+      button.setAttribute('aria-label', audible ? 'Mute background music' : 'Play background music');
+      button.title = audible ? 'Mute background music' : 'Play background music';
     }
+    function scheduleMusic() {
+      if (!musicContext || musicContext.state !== 'running' || !musicEnabled) return;
+      const chords = [[261.63,329.63,392,523.25],[220,261.63,329.63,440],
+                      [174.61,220,261.63,349.23],[196,246.94,293.66,392]];
+      const chord = chords[Math.floor(musicStep / 8) % chords.length];
+      const pattern = [0,1,2,3,2,1,3,2];
+      const time = musicContext.currentTime + .025;
+      const tone = musicContext.createOscillator();
+      const overtone = musicContext.createOscillator();
+      const envelope = musicContext.createGain();
+      tone.type = 'sine'; overtone.type = 'sine';
+      tone.frequency.value = chord[pattern[musicStep % 8]];
+      overtone.frequency.value = tone.frequency.value * 2;
+      const harmonic = musicContext.createGain(); harmonic.gain.value = .12;
+      tone.connect(envelope); overtone.connect(harmonic); harmonic.connect(envelope);
+      envelope.connect(musicGain);
+      envelope.gain.setValueAtTime(0,time);
+      envelope.gain.linearRampToValueAtTime(.24,time+.04);
+      envelope.gain.exponentialRampToValueAtTime(.001,time+1.9);
+      tone.start(time); overtone.start(time);
+      tone.stop(time+2); overtone.stop(time+2);
+      tone.onended = () => { tone.disconnect(); overtone.disconnect(); harmonic.disconnect(); envelope.disconnect(); };
+      musicStep++;
+    }
+    async function startMusic() {
+      try {
+        if (!musicContext) {
+          const AudioEngine = window.AudioContext || window.webkitAudioContext;
+          if (!AudioEngine) return;
+          musicContext = new AudioEngine();
+          musicGain = musicContext.createGain(); musicGain.gain.value = 0;
+          musicGain.connect(musicContext.destination);
+          musicContext.onstatechange = updateMusicButton;
+        }
+        await musicContext.resume();
+        if (musicContext.state !== 'running') return;
+        musicEnabled = true;
+        musicGain.gain.cancelScheduledValues(musicContext.currentTime);
+        musicGain.gain.setTargetAtTime(.32,musicContext.currentTime,.25);
+        if (!musicTimer) { scheduleMusic(); musicTimer = setInterval(scheduleMusic, 520); }
+        updateMusicButton();
+      } catch { updateMusicButton(); }
+    }
+    function toggleAudio() {
+      if (!musicEnabled || !musicContext || musicContext.state !== 'running') {
+        startMusic(); return;
+      }
+      musicEnabled = false;
+      clearInterval(musicTimer); musicTimer = null;
+      musicGain.gain.cancelScheduledValues(musicContext.currentTime);
+      musicGain.gain.setTargetAtTime(0,musicContext.currentTime,.08);
+      updateMusicButton();
+    }
+    // A guest tap unlocks audio; automatic door opening stays compatible with autoplay rules.
+    document.getElementById('doorWrapper').addEventListener('click', () => {
+      if (!musicContext) startMusic();
+    });
+    document.getElementById('doorWrapper').addEventListener('keydown', event => {
+      if ((event.key === 'Enter' || event.key === ' ') && !musicContext) startMusic();
+    });
+    updateMusicButton();
   </script>
 </body>
 </html>
