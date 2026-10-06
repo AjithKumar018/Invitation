@@ -774,6 +774,45 @@
     }
     #personalLetter.letter-open .toggle-msg-btn { transform: translateY(-4px) scale(.99); }
     #personalLetter.letter-open .message-content { transform: translateY(0) scale(1); }
+
+    /* Ornate palace entrance with a central invitation seal. */
+    .door-wrapper { background: transparent; perspective: 1200px; }
+    .door {
+      background: repeating-linear-gradient(90deg,transparent 0 22px,#d8b65c09 23px 24px),
+        radial-gradient(ellipse at 50% 30%,#125640,#03291f 75%);
+      border: 3px double #d8b65c;
+      box-shadow: inset 0 0 0 8px #03291f,inset 0 0 0 10px #d8b65c55,inset 0 0 65px #001b16;
+      transition: transform 1.8s cubic-bezier(.22,1,.36,1) .25s;
+    }
+    .door-left { transform-origin: left center; }
+    .door-right { transform-origin: right center; }
+    .door-panel {
+      width: 78%; height: 78%; border: 3px double #d8b65c;
+      border-radius: 100px 100px 14px 14px;
+      background: radial-gradient(ellipse at top,#d8b65c12,transparent 55%);
+      box-shadow: inset 0 0 0 7px #03291f,inset 0 0 0 8px #d8b65c44,0 0 18px #0004;
+    }
+    .door-panel::before { content: "❦"; font-family: serif; font-size: 64px; top: 14%; color: #e8cd85; text-shadow: 0 2px 8px #001b16; }
+    .door-panel::after { inset: 18px; border-radius: 90px 90px 8px 8px; border: 1px solid #d8b65c66; }
+    .door-handle { width: 25px; height: 38px; top: 52%; border: 3px solid #e2bf66; border-radius: 50%; background: #03291f; box-shadow: 0 3px 12px #0008,inset 0 0 4px #d8b65c77; }
+    .door-left .door-handle { right: 9px; }
+    .door-right .door-handle { left: 9px; }
+    .invited-badge {
+      width: 180px; height: 180px; padding: 20px 12px;
+      border-radius: 50%; white-space: normal; display: flex;
+      flex-direction: column; justify-content: center; align-items: center; gap: 9px;
+      background: radial-gradient(circle at 35% 25%,#fff1bd,#dfbd64 55%,#b18b32);
+      border: 7px double #fff0b3; color: #073f32;
+      box-shadow: 0 0 0 5px #073f32,0 0 0 6px #d8b65c,0 16px 35px #0008;
+      letter-spacing: 1.2px; font-size: .85rem;
+    }
+    .seal-monogram { font: 1.75rem 'Great Vibes',cursive; letter-spacing: 2px; padding-bottom: 7px; border-bottom: 1px solid #073f3266; }
+    .seal-hint { font: .52rem 'Plus Jakarta Sans',sans-serif; letter-spacing: 1.5px; text-transform: uppercase; }
+    .entrance-caption { position: absolute; top: 6%; left: 0; width: 100%; text-align: center; color: #f3dfa4; font: .65rem 'Cinzel',serif; letter-spacing: 3px; pointer-events: none; }
+    .entrance-flourish { position: absolute; bottom: 6%; left: 0; width: 100%; text-align: center; color: #d8b65c; font: 2rem serif; pointer-events: none; }
+    .door-wrapper.open .door-left { transform: translateX(-100%) rotateY(-12deg); }
+    .door-wrapper.open .door-right { transform: translateX(100%) rotateY(12deg); }
+    .door-wrapper.open .entrance-caption, .door-wrapper.open .entrance-flourish { opacity: 0; transition: opacity .35s; }
   </style>
   <noscript><style>.door-wrapper { display: none; } .countdown-container, .toggle-msg-btn, .music-btn, .share-btn { display: none; } .message-content { max-height: none; opacity: 1; } .envelope-card .message-content { position: relative; visibility: visible; transform: none; } .letter-close { display: none; }</style></noscript>
 </head>
@@ -795,7 +834,9 @@
           <div class="door-handle"></div>
         </div>
       </div>
-      <div class="invited-badge" id="invitedBadge">You Are Invited</div>
+      <div class="entrance-caption" aria-hidden="true">A beautiful beginning awaits</div>
+      <div class="invited-badge" id="invitedBadge"><span class="seal-monogram">A &amp; R</span><span>You Are Invited</span><span class="seal-hint">Tap to enter</span></div>
+      <div class="entrance-flourish" aria-hidden="true">❦ ✧ ❦</div>
     </div>
 
     <!-- Music Player Button -->
