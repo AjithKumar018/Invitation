@@ -763,6 +763,17 @@
     .share-btn { color: #fff; }
     .footer-thanks { color: #8a661e; }
 
+
+    /* Soft crossfade and measured height animation for the personal letter. */
+    #personalLetter .toggle-msg-btn {
+      transition: opacity .45s ease, transform .65s cubic-bezier(.22,1,.36,1), visibility .45s;
+    }
+    #personalLetter .message-content {
+      transform: translateY(8px) scale(.99);
+      transition: opacity .65s ease .12s, transform .8s cubic-bezier(.22,1,.36,1) .12s, visibility .65s;
+    }
+    #personalLetter.letter-open .toggle-msg-btn { transform: translateY(-4px) scale(.99); }
+    #personalLetter.letter-open .message-content { transform: translateY(0) scale(1); }
   </style>
   <noscript><style>.door-wrapper { display: none; } .countdown-container, .toggle-msg-btn, .music-btn, .share-btn { display: none; } .message-content { max-height: none; opacity: 1; } .envelope-card .message-content { position: relative; visibility: visible; transform: none; } .letter-close { display: none; }</style></noscript>
 </head>
@@ -1064,11 +1075,22 @@
       const letter = document.getElementById('personalLetter');
       const message = document.getElementById('messageBox');
       const button = letter.querySelector('.toggle-msg-btn');
+      const stage = letter.querySelector('.letter-stage');
+      const startHeight = stage.getBoundingClientRect().height;
+      if (stage._heightAnimation) stage._heightAnimation.cancel();
       const opened = letter.classList.toggle('letter-open');
       message.classList.toggle('open', opened);
       message.setAttribute('aria-hidden', String(!opened));
       button.setAttribute('aria-expanded', String(opened));
       button.tabIndex = opened ? -1 : 0;
+      const endHeight = (opened ? message : button).getBoundingClientRect().height;
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && stage.animate) {
+        stage._heightAnimation = stage.animate(
+          [{height: startHeight + 'px'}, {height: endHeight + 'px'}],
+          {duration: 800, easing: 'cubic-bezier(.22,1,.36,1)'}
+        );
+        stage._heightAnimation.onfinish = () => { stage._heightAnimation = null; };
+      }
       const layer = document.getElementById('petalLayer');
       layer.replaceChildren();
       if (opened) {
