@@ -1231,28 +1231,40 @@
       button.setAttribute('aria-label', audible ? 'Mute background music' : 'Play background music');
       button.title = audible ? 'Mute background music' : 'Play background music';
     }
+    // Original Tamil-inspired romantic melody: pentatonic flute and soft plucked accompaniment.
     function scheduleMusic() {
       if (!musicContext || musicContext.state !== 'running' || !musicEnabled) return;
-      const chords = [[261.63,329.63,392,523.25],[220,261.63,329.63,440],
-                      [174.61,220,261.63,349.23],[196,246.94,293.66,392]];
-      const chord = chords[Math.floor(musicStep / 8) % chords.length];
-      const pattern = [0,1,2,3,2,1,3,2];
+      const melody = [0,2,4,7,9,7,4,2, 4,7,9,12,9,7,4,7,
+                      9,12,14,12,9,7,9,4, 7,4,2,0,2,4,2,0];
+      const step = musicStep % melody.length;
+      const frequency = 261.63 * Math.pow(2, melody[step] / 12);
       const time = musicContext.currentTime + .025;
       const tone = musicContext.createOscillator();
       const overtone = musicContext.createOscillator();
       const envelope = musicContext.createGain();
       tone.type = 'sine'; overtone.type = 'sine';
-      tone.frequency.value = chord[pattern[musicStep % 8]];
-      overtone.frequency.value = tone.frequency.value * 2;
-      const harmonic = musicContext.createGain(); harmonic.gain.value = .12;
+      tone.frequency.setValueAtTime(frequency*.985,time);
+      tone.frequency.exponentialRampToValueAtTime(frequency,time+.11);
+      overtone.frequency.value = frequency*2;
+      const harmonic = musicContext.createGain(); harmonic.gain.value=.055;
       tone.connect(envelope); overtone.connect(harmonic); harmonic.connect(envelope);
       envelope.connect(musicGain);
       envelope.gain.setValueAtTime(0,time);
-      envelope.gain.linearRampToValueAtTime(.24,time+.04);
-      envelope.gain.exponentialRampToValueAtTime(.001,time+1.9);
-      tone.start(time); overtone.start(time);
-      tone.stop(time+2); overtone.stop(time+2);
-      tone.onended = () => { tone.disconnect(); overtone.disconnect(); harmonic.disconnect(); envelope.disconnect(); };
+      envelope.gain.linearRampToValueAtTime(.2,time+.12);
+      envelope.gain.setTargetAtTime(.08,time+.35,.3);
+      envelope.gain.exponentialRampToValueAtTime(.001,time+1.65);
+      tone.start(time); overtone.start(time); tone.stop(time+1.7); overtone.stop(time+1.7);
+      tone.onended=()=>{tone.disconnect();overtone.disconnect();harmonic.disconnect();envelope.disconnect();};
+      if (step % 4 === 0) {
+        const pluck=musicContext.createOscillator(), gain=musicContext.createGain();
+        pluck.type='triangle';
+        pluck.frequency.value = [130.815,196,130.815,146.83][Math.floor(step/8)];
+        pluck.connect(gain);gain.connect(musicGain);
+        gain.gain.setValueAtTime(.08,time);
+        gain.gain.exponentialRampToValueAtTime(.001,time+2.1);
+        pluck.start(time);pluck.stop(time+2.2);
+        pluck.onended=()=>{pluck.disconnect();gain.disconnect();};
+      }
       musicStep++;
     }
     async function startMusic() {
@@ -1270,7 +1282,7 @@
         musicEnabled = true;
         musicGain.gain.cancelScheduledValues(musicContext.currentTime);
         musicGain.gain.setTargetAtTime(.32,musicContext.currentTime,.25);
-        if (!musicTimer) { scheduleMusic(); musicTimer = setInterval(scheduleMusic, 520); }
+        if (!musicTimer) { scheduleMusic(); musicTimer = setInterval(scheduleMusic, 640); }
         updateMusicButton();
       } catch { updateMusicButton(); }
     }
