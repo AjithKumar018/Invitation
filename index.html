@@ -1404,6 +1404,41 @@
     @keyframes doorWingRight { 0%,100% { transform:scaleX(1) rotate(0deg); } 50% { transform:scaleX(.22) rotate(4deg); } }
     .door-wrapper.open .db-wing { animation-play-state:paused; }
 
+  
+    /* Occasional champagne-gold shooting stars behind the reception details. */
+    #receptionCelebration > .reception-sky {
+      position:absolute; inset:0; z-index:0; pointer-events:none; overflow:hidden;
+      background:radial-gradient(circle at 12% 10%,#ffeab480 0 1px,transparent 1.5px),
+                 radial-gradient(circle at 83% 15%,#ffeab460 0 1px,transparent 1.5px),
+                 radial-gradient(circle at 40% 24%,#ffeab450 0 .7px,transparent 1.2px),
+                 radial-gradient(circle at 92% 39%,#ffeab465 0 1px,transparent 1.5px),
+                 radial-gradient(circle at 7% 58%,#ffeab470 0 .8px,transparent 1.4px),
+                 radial-gradient(circle at 72% 76%,#ffeab460 0 1px,transparent 1.5px),
+                 radial-gradient(circle at 25% 87%,#ffeab450 0 .8px,transparent 1.4px);
+    }
+    .shooting-star {
+      position:absolute; left:-115px; width:105px; height:1.5px; opacity:0;
+      background:linear-gradient(90deg,transparent,#d6b76380 65%,#fff0ba);
+      transform-origin:right center;
+      animation:receptionShootingStar 9s linear infinite;
+      animation-play-state:paused;
+    }
+    .shooting-star::after {
+      content:""; position:absolute; right:-1px; top:-1px; width:3.5px; height:3.5px;
+      border-radius:50%; background:#fff0ba; box-shadow:0 0 6px #f8d87c88;
+    }
+    .shooting-star-one { top:8%; animation-delay:.7s; }
+    .shooting-star-two { top:34%; animation-duration:12s; animation-delay:4s; }
+    .shooting-star-three { top:65%; animation-duration:14s; animation-delay:7s; }
+    .reception-sky.stars-active .shooting-star { animation-play-state:running; }
+    @keyframes receptionShootingStar {
+      0% { opacity:0; transform:translate3d(0,0,0) rotate(32deg); }
+      3% { opacity:.7; }
+      17% { opacity:.55; }
+      23%,100% { opacity:0; transform:translate3d(560px,350px,0) rotate(32deg); }
+    }
+    @media (prefers-reduced-motion:reduce) { .shooting-star { display:none; } }
+
   </style>
   <noscript><style>.scratch-cover,.scratch-instruction{display:none;}.door-wrapper { display: none; } .countdown-container, .toggle-msg-btn, .music-btn, .share-btn { display: none; } .message-content { max-height: none; opacity: 1; } .envelope-card .message-content { position: relative; visibility: visible; transform: none; } .letter-close { display: none; }</style></noscript>
 </head>
@@ -1648,6 +1683,7 @@
 
     <!-- RECEPTION SECTION (DARK THEME) -->
     <section class="section reception-section" id="receptionCelebration">
+<div class="reception-sky" aria-hidden="true"><span class="shooting-star shooting-star-one"></span><span class="shooting-star shooting-star-two"></span><span class="shooting-star shooting-star-three"></span></div>
 <div class="reception-lighting" aria-hidden="true"><span class="reception-beam reception-beam-left"></span><span class="reception-beam reception-beam-right"></span></div>
 <svg class="floral-ornament" viewBox="0 0 160 44" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M9 30Q40 34 72 22M151 30Q120 34 88 22M32 31Q22 13 17 18Q18 30 32 31M47 29Q39 10 34 15Q34 27 47 29M61 25Q55 10 50 13Q49 23 61 25M128 31Q138 13 143 18Q142 30 128 31M113 29Q121 10 126 15Q126 27 113 29M99 25Q105 10 110 13Q111 23 99 25"/><path d="M80 8Q65 21 80 34Q95 21 80 8Z"/><path d="M68 21H92M80 13V29"/><circle cx="80" cy="21" r="3" fill="currentColor"/></svg>      <div class="section-tag">The Reception</div>
       <p style="font-size: 0.85rem; color: rgba(255,255,255,0.8); margin-bottom: 20px;">
@@ -1859,6 +1895,21 @@
     } else { heartbeatVisible=true; resumeHeartbeat(); }
     document.addEventListener('visibilitychange',resumeHeartbeat);
     heartbeatMotion.addEventListener('change',resumeHeartbeat);
+
+
+    // Run decorative star trails only while the reception is on screen.
+    const receptionSky=document.querySelector('.reception-sky');
+    let receptionSkyVisible=false;
+    function syncReceptionStars(){
+      receptionSky.classList.toggle('stars-active',receptionSkyVisible&&!document.hidden);
+    }
+    if('IntersectionObserver' in window){
+      new IntersectionObserver(entries=>{
+        receptionSkyVisible=entries[0].isIntersecting;
+        syncReceptionStars();
+      }).observe(receptionSection);
+    } else { receptionSkyVisible=true;syncReceptionStars(); }
+    document.addEventListener('visibilitychange',syncReceptionStars);
 
     function openDoors() {
       const doorWrapper = document.getElementById("doorWrapper");
