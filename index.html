@@ -1205,6 +1205,81 @@
     }
     .door-wrapper.open .photo-wing { animation-play-state:paused; }
 
+  
+    /* Reference motion: unfold, withdraw the note, then expand it in front. */
+    #personalLetter .letter-stage { padding-top:60px; padding-bottom:0; perspective:1000px; }
+    #personalLetter .toggle-msg-btn {
+      position:relative; inset:auto; display:block; width:82%; max-width:280px;
+      aspect-ratio:3/2; padding:0; margin-inline:auto;
+      background:none; border:0; border-radius:4px; overflow:visible;
+      perspective:900px; transform:none; opacity:1; visibility:visible;
+      box-shadow:none; transition:none;
+    }
+    .mail-back { position:absolute; inset:0; border-radius:4px; background:#d2bc8b; box-shadow:0 16px 24px #001b1655; }
+    .mail-paper {
+      position:absolute; inset:9% 9% 7%; z-index:2;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      border:2px double #bfa05b; border-radius:3px;
+      background:linear-gradient(130deg,#fffaf0,#eee2ca);
+      color:#87631d; font:italic 1.2rem 'Playfair Display',serif;
+      transition:transform .9s cubic-bezier(.22,.7,.25,1) .65s,opacity .3s ease 1.7s;
+    }
+    .mail-paper small { margin-top:8px; font:.6rem 'Cinzel',serif; letter-spacing:1px; }
+    .mail-pocket {
+      position:absolute; inset:0; z-index:3;
+      clip-path:polygon(0 0,50% 56%,100% 0,100% 100%,0 100%);
+      border-radius:4px;
+      background:linear-gradient(34deg,#e0cca0 49.7%,transparent 50%) left/50% 100% no-repeat,
+                 linear-gradient(-34deg,#e8d7b2 49.7%,transparent 50%) right/50% 100% no-repeat,
+                 linear-gradient(180deg,#f5e7c9,#dfc894);
+      box-shadow:inset 0 -1px 0 #ac873e;
+    }
+    .mail-flap {
+      position:absolute; inset:0 0 auto; height:56%; z-index:4;
+      clip-path:polygon(0 0,100% 0,50% 100%);
+      background:linear-gradient(160deg,#fff5dc,#deca98);
+      transform-origin:50% 0; transform:rotateX(0deg);
+      transition:transform .7s cubic-bezier(.45,0,.3,1) .15s;
+    }
+    .mail-open-label {
+      position:absolute; left:50%; top:37%; transform:translateX(-50%); z-index:5;
+      color:#775719; font:italic 1.15rem 'Playfair Display',serif;
+      transition:opacity .2s ease;
+    }
+    #personalLetter.letter-opening .mail-open-label,
+    #personalLetter.letter-open .mail-open-label { opacity:0; }
+    #personalLetter.flap-unfolded .mail-flap { transform:rotateX(180deg); }
+    #personalLetter.flap-behind .mail-flap { z-index:1; }
+    #personalLetter.note-withdrawn .mail-paper { transform:translateY(-84%); }
+    #personalLetter.letter-open .mail-paper { opacity:0; }
+    #personalLetter .message-content {
+      position:absolute; inset:0; opacity:0; visibility:hidden; z-index:6;
+      transform:translateY(-40px) scale(.68); transform-origin:50% 65%;
+      transition:opacity .3s ease,transform 1s cubic-bezier(.22,.7,.25,1),visibility 0s;
+    }
+    #personalLetter.letter-open .message-content { position:relative; transform:none; opacity:1; visibility:visible; }
+    #personalLetter.letter-open .letter-stage { padding-bottom:55px; }
+    #personalLetter.letter-open .toggle-msg-btn {
+      position:absolute; inset:auto 0 0; margin-inline:auto;
+      opacity:1; visibility:visible; transform:none; pointer-events:none; z-index:1;
+      transition:none;
+    }
+    .calendar-options { margin-top:14px; text-align:center; }
+    .calendar-options summary {
+      list-style:none; cursor:pointer; border:1px solid #bd9b4d; border-radius:10px;
+      padding:12px; color:#073f32; font-size:.78rem; font-weight:700;
+      background:#fbf4e5; min-height:44px;
+    }
+    .calendar-options summary::-webkit-details-marker { display:none; }
+    .calendar-options summary::before { content:"＋ "; color:#96701e; }
+    .calendar-options[open] summary { border-radius:10px 10px 0 0; }
+    .calendar-options .calendar-links {
+      display:grid; gap:6px; padding:10px; background:#fffaf0;
+      border:1px solid #bd9b4d; border-top:0; border-radius:0 0 10px 10px;
+    }
+    .calendar-links a { color:#073f32; font-size:.78rem; padding:10px 4px; text-underline-offset:3px; }
+    .calendar-options summary:focus-visible { outline:3px solid #d4af37; outline-offset:3px; }
+
   </style>
   <noscript><style>.door-wrapper { display: none; } .countdown-container, .toggle-msg-btn, .music-btn, .share-btn { display: none; } .message-content { max-height: none; opacity: 1; } .envelope-card .message-content { position: relative; visibility: visible; transform: none; } .letter-close { display: none; }</style></noscript>
 </head>
@@ -1218,21 +1293,13 @@
     <div class="door-wrapper" id="doorWrapper" role="button" tabindex="0" aria-label="Open wedding invitation" onclick="openDoors()" onkeydown="if(event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openDoors(); }">
       <div class="door door-left">
         <div class="door-panel">
-          <span class="gate-butterfly photo-butterfly" aria-hidden="true">
-            <img class="photo-wing photo-wing-left" src="./assets/golden-butterfly.webp" alt="" width="1254" height="1254">
-            <img class="photo-wing photo-wing-right" src="./assets/golden-butterfly.webp" alt="" width="1254" height="1254">
-            <img class="photo-butterfly-body" src="./assets/golden-butterfly.webp" alt="" width="1254" height="1254">
-          </span>
+          
           <div class="door-handle"></div>
         </div>
       </div>
       <div class="door door-right">
         <div class="door-panel">
-          <span class="gate-butterfly photo-butterfly" aria-hidden="true">
-            <img class="photo-wing photo-wing-left" src="./assets/golden-butterfly.webp" alt="" width="1254" height="1254">
-            <img class="photo-wing photo-wing-right" src="./assets/golden-butterfly.webp" alt="" width="1254" height="1254">
-            <img class="photo-butterfly-body" src="./assets/golden-butterfly.webp" alt="" width="1254" height="1254">
-          </span>
+          
           <div class="door-handle"></div>
         </div>
       </div>
@@ -1318,9 +1385,11 @@
           <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
           <polyline points="22,6 12,13 2,6"></polyline>
         </svg>
-        <span class="envelope-flap" aria-hidden="true"><span class="flap-face flap-front"></span><span class="flap-face flap-back"></span></span>
-        <span class="envelope-pocket" aria-hidden="true"></span>
-        <span class="wax-seal" aria-hidden="true"><img src="./assets/seal.webp" alt="" width="240" height="240" loading="lazy"></span>
+        <span class="mail-back" aria-hidden="true"></span>
+        <span class="mail-paper" aria-hidden="true">With love<small>Ajithkumar &amp; Ramya</small></span>
+        <span class="mail-pocket" aria-hidden="true"></span>
+        <span class="mail-flap" aria-hidden="true"></span>
+        <span class="mail-open-label" aria-hidden="true">Open</span>
 
       </button>
 
@@ -1417,6 +1486,7 @@
           <a href="https://maps.app.goo.gl/J81WpKzTBZCGVPdu8" target="_blank" rel="noopener noreferrer" class="btn-directions">
             Get Directions
           </a>
+          <details class="calendar-options"><summary>Add to calendar</summary><div class="calendar-links"><a href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Ajithkumar%20%26%20Ramya%20%E2%80%94%20Wedding&amp;dates=20261025T043000/20261025T060000&amp;ctz=Asia%2FKolkata&amp;location=Arulmigu%20Sri%20Murugan%20Temple%2C%20Namakkal%2C%20Tamil%20Nadu%2C%20India&amp;details=Wedding%20ceremony%3A%2025%20October%202026%2C%204%3A30%20AM%E2%80%936%3A00%20AM%20(India%20time).%20Join%20us%20with%20your%20blessings.%20https%3A%2F%2Fajithkumar018.github.io%2FInvitation%2F" target="_blank" rel="noopener noreferrer">Google Calendar</a><a href="data:text/calendar;charset=utf-8,BEGIN%3AVCALENDAR%0D%0AVERSION%3A2.0%0D%0APRODID%3A-%2F%2FAjithkumar%20Ramya%2F%2FWedding%20Invitation%2F%2FEN%0D%0ACALSCALE%3AGREGORIAN%0D%0ABEGIN%3AVEVENT%0D%0AUID%3Aajith-ramya-wedding-20261025%40ajithkumar018.github.io%0D%0ADTSTAMP%3A20261009T103000Z%0D%0ADTSTART%3A20261024T230000Z%0D%0ADTEND%3A20261025T003000Z%0D%0ASUMMARY%3AAjithkumar%20%26%20Ramya%20%E2%80%94%20Wedding%0D%0ALOCATION%3AArulmigu%20Sri%20Murugan%20Temple%5C%2C%20Namakkal%5C%2C%20Tamil%20Nadu%5C%2C%20India%0D%0ADESCRIPTION%3AWedding%20ceremony%3A%2025%20October%202026%5C%2C%204%3A30%20AM%E2%80%936%3A00%20AM%20(India%0D%0A%20%20time).%20Join%20us%20with%20your%20blessings.%20Invitation%3A%20https%3A%2F%2Fajithkumar018.%0D%0A%20github.io%2FInvitation%2F%0D%0AURL%3Ahttps%3A%2F%2Fajithkumar018.github.io%2FInvitation%2F%0D%0ABEGIN%3AVALARM%0D%0ATRIGGER%3A-P1D%0D%0AACTION%3ADISPLAY%0D%0ADESCRIPTION%3AEvent%20reminder%0D%0AEND%3AVALARM%0D%0AEND%3AVEVENT%0D%0AEND%3AVCALENDAR%0D%0A" download="Ajithkumar-Ramya-Wedding.ics">iPhone / Outlook (.ics)</a></div></details>
         </div>
       </div>
     </section>
@@ -1451,6 +1521,7 @@
           <a href="https://maps.google.com/?q=Food+Village+Injambakkam+Chennai" target="_blank" rel="noopener noreferrer" class="btn-directions">
             Get Directions
           </a>
+          <details class="calendar-options"><summary>Add to calendar</summary><div class="calendar-links"><a href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Ajithkumar%20%26%20Ramya%20%E2%80%94%20Reception&amp;dates=20261101T180000/20261101T180000&amp;ctz=Asia%2FKolkata&amp;location=Food%20Village%2C%20Injambakkam%2C%20Chennai%2C%20Tamil%20Nadu%2C%20India&amp;details=Reception%3A%201%20November%202026%2C%206%3A00%20PM%20onwards%20(India%20time).%20End%20time%20is%20not%20specified.%20An%20evening%20of%20joy%2C%20dinner%20and%20celebration.%20https%3A%2F%2Fajithkumar018.github.io%2FInvitation%2F" target="_blank" rel="noopener noreferrer">Google Calendar</a><a href="data:text/calendar;charset=utf-8,BEGIN%3AVCALENDAR%0D%0AVERSION%3A2.0%0D%0APRODID%3A-%2F%2FAjithkumar%20Ramya%2F%2FWedding%20Invitation%2F%2FEN%0D%0ACALSCALE%3AGREGORIAN%0D%0ABEGIN%3AVEVENT%0D%0AUID%3Aajith-ramya-reception-20261101%40ajithkumar018.github.io%0D%0ADTSTAMP%3A20261009T103000Z%0D%0ADTSTART%3A20261101T123000Z%0D%0ASUMMARY%3AAjithkumar%20%26%20Ramya%20%E2%80%94%20Reception%0D%0ALOCATION%3AFood%20Village%5C%2C%20Injambakkam%5C%2C%20Chennai%5C%2C%20Tamil%20Nadu%5C%2C%20India%0D%0ADESCRIPTION%3AReception%3A%201%20November%202026%5C%2C%206%3A00%20PM%20onwards%20(India%20time).%20E%0D%0A%20nd%20time%20is%20not%20specified.%20An%20evening%20of%20joy%5C%2C%20dinner%20and%20celebration.%20I%0D%0A%20nvitation%3A%20https%3A%2F%2Fajithkumar018.github.io%2FInvitation%2F%0D%0AURL%3Ahttps%3A%2F%2Fajithkumar018.github.io%2FInvitation%2F%0D%0ABEGIN%3AVALARM%0D%0ATRIGGER%3A-P1D%0D%0AACTION%3ADISPLAY%0D%0ADESCRIPTION%3AEvent%20reminder%0D%0AEND%3AVALARM%0D%0AEND%3AVEVENT%0D%0AEND%3AVCALENDAR%0D%0A" download="Ajithkumar-Ramya-Reception.ics">iPhone / Outlook (.ics)</a></div></details>
         </div>
       </div>
     </section>
@@ -1679,7 +1750,7 @@
         message.focus({preventScroll:true});
       };
       if (letter.classList.contains('letter-open')) {
-        letter.classList.remove('letter-open','seal-released','flap-unfolded','flap-behind');
+        letter.classList.remove('letter-open','seal-released','flap-unfolded','flap-behind','note-withdrawn');
         message.classList.remove('open');
         message.setAttribute('aria-hidden','true');
         button.setAttribute('aria-expanded','false');
@@ -1695,7 +1766,8 @@
         letter.classList.add('letter-open');
         message.classList.add('open');
         message.setAttribute('aria-hidden','false');
-        const endHeight=message.getBoundingClientRect().height+parseFloat(getComputedStyle(stage).paddingTop||0);
+        const stageStyle=getComputedStyle(stage);
+        const endHeight=message.getBoundingClientRect().height+parseFloat(stageStyle.paddingTop||0)+parseFloat(stageStyle.paddingBottom||0);
         if (!reduced && stage.animate) {
           stage._heightAnimation=stage.animate([{height:startHeight+'px'},{height:endHeight+'px'}],{duration:1600,easing:'cubic-bezier(.22,.7,.25,1)'});
           stage._heightAnimation.onfinish=()=>{stage._heightAnimation=null;};
@@ -1707,12 +1779,13 @@
         },1650);
       };
       if (reduced) {
-        letter.classList.add('flap-unfolded','flap-behind');
+        letter.classList.add('flap-unfolded','flap-behind','note-withdrawn');
         revealLetter();
       } else {
-        setTimeout(()=>letter.classList.add('flap-unfolded'),350);
-        setTimeout(()=>letter.classList.add('flap-behind'),1000);
-        setTimeout(revealLetter,1450);
+        letter.classList.add('flap-unfolded');
+        setTimeout(()=>letter.classList.add('flap-behind'),550);
+        setTimeout(()=>letter.classList.add('note-withdrawn'),200);
+        setTimeout(revealLetter,1600);
       }
     }
 
