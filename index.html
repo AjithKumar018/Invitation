@@ -1472,23 +1472,25 @@
     .visitor-count-status { color:#707567; font-size:.72rem; line-height:1.5; }
 
   
-    .love-vote {position:relative;margin:28px auto 0;padding:22px 16px 16px;max-width:290px;border:1px solid rgba(194,153,78,.35);border-radius:24px;background:radial-gradient(ellipse at 50% 0%,rgba(244,208,160,.24),transparent 70%),linear-gradient(145deg,#fffaf3,#fff3f3);box-shadow:0 8px 28px rgba(115,46,42,.06);text-align:center;}
-    .love-vote::before {content:'A little love, a lasting blessing';display:block;margin-bottom:15px;color:#87664c;font:italic .82rem 'Playfair Display',serif;}
-    .love-vote-button {position:relative;display:inline-flex;align-items:center;justify-content:center;gap:11px;min-height:52px;padding:13px 28px;border:1px solid #e4bf76;border-radius:999px;background:linear-gradient(145deg,#dc445e 0%,#b41e3d 55%,#88162e 100%);color:#fff7ed;font:600 1rem 'Playfair Display',serif;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 5px 0 #75172c,0 10px 22px rgba(155,28,53,.2);transition:transform .25s,box-shadow .25s;}
-    .love-vote-button:hover:not(:disabled) {transform:translateY(-2px);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 7px 0 #75172c,0 14px 28px rgba(155,28,53,.26);}
-    .love-vote-button:active:not(:disabled) {transform:translateY(3px);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 2px 0 #75172c,0 5px 12px rgba(155,28,53,.18);}
-    .love-vote-button:focus-visible {outline:3px solid #ba8e3a;outline-offset:5px;}
-    .love-vote-button:disabled {cursor:default;}
-    .love-vote-button svg {width:23px;height:23px;fill:#fff1e8;stroke:#fff1e8;stroke-width:1.4;filter:drop-shadow(0 1px 2px rgba(95,12,29,.25));}
-    .love-vote-button:not(:disabled) svg {animation:love-heart-pulse 3.2s ease-in-out infinite;}
-    .love-vote-button[aria-pressed="true"] {background:linear-gradient(145deg,#b52b48,#88162e);box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 3px 0 #75172c,0 6px 16px rgba(155,28,53,.15);}
-    .love-vote-total {display:inline-flex;align-items:center;gap:7px;margin:18px 0 0;color:#87664c;font-size:.8rem;}
-    #loveVoteCount {color:#a92240;font-weight:700;font-size:1.1rem;font-variant-numeric:tabular-nums;}
-    .love-vote-status {min-height:1.5em;margin:7px 0 0;color:#87776b;font-size:.72rem;line-height:1.5;}
-    .love-burst-heart {position:absolute;left:50%;top:72px;z-index:2;pointer-events:none;color:var(--heart-color);font-size:var(--heart-size);animation:love-heart-burst 1.25s ease-out forwards;}
-    @keyframes love-heart-pulse {0%,74%,100%{transform:scale(1);}80%{transform:scale(1.13);}86%{transform:scale(1);}92%{transform:scale(1.08);}}
-    @keyframes love-heart-burst {0%{opacity:0;transform:translate(-50%,0) scale(.5);}15%{opacity:1;}100%{opacity:0;transform:translate(calc(-50% + var(--heart-x)),var(--heart-y)) rotate(var(--heart-turn)) scale(1.1);}}
-    @media(prefers-reduced-motion:reduce) {.love-vote-button:not(:disabled) svg,.love-burst-heart {animation:none;}.love-vote-button {transition:none;}.love-burst-heart {display:none;}}
+    .love-vote {position:relative;margin:28px auto 0;padding:26px 20px 22px;max-width:320px;border:1px solid #c3a25d;border-radius:12px;background:repeating-linear-gradient(35deg,rgba(129,103,66,.018) 0 1px,transparent 1px 4px),repeating-linear-gradient(125deg,rgba(129,103,66,.018) 0 1px,transparent 1px 5px),linear-gradient(145deg,#fffaf0,#f7efde);box-shadow:0 8px 24px rgba(115,82,42,.08);text-align:center;}
+    .love-vote::before {content:'';position:absolute;inset:5px;border:1px solid rgba(195,162,93,.4);border-radius:8px;pointer-events:none;}
+    .love-vote-button {position:relative;display:inline-flex;flex-direction:column;align-items:center;gap:10px;max-width:100%;padding:0 8px 6px;border:0;border-radius:8px;background:transparent;color:#78512d;font:500 1.6rem 'Playfair Display',serif;cursor:pointer;transition:transform .25s;}
+    .love-vote-button:hover:not(:disabled) {transform:translateY(-2px);}
+    .love-vote-button:active:not(:disabled) {transform:translateY(1px);}
+    .love-vote-button:focus-visible {outline:3px solid #b08b40;outline-offset:5px;}
+    .love-vote-button:disabled {cursor:default;opacity:1;}
+    .love-seal-face {position:relative;display:grid;place-items:center;width:188px;max-width:100%;aspect-ratio:1;background:url('./assets/ruby-love-wax-seal.webp') center/contain no-repeat;filter:drop-shadow(0 5px 5px rgba(89,18,29,.15));transition:filter .6s;}
+    .love-vote-button svg {width:66px;height:66px;fill:transparent;stroke:#f1b3a6;stroke-width:1.3;filter:drop-shadow(0 2px 1px rgba(77,6,15,.7));transition:fill .7s,stroke .7s,filter .7s,transform .7s;}
+    .love-vote-button[aria-pressed="true"] svg {fill:url(#loveWaxGold);stroke:#ffe3a0;filter:drop-shadow(0 2px 2px rgba(84,24,8,.65));transform:scale(1.04);}
+    .love-vote-button[aria-pressed="true"] .love-seal-face {filter:drop-shadow(0 4px 8px rgba(185,105,30,.25));}
+    #loveVoteLabel {text-shadow:0 1px 0 #fff9ed;}
+    .love-vote-total {margin:10px 0 0;color:#254b38;font:400 1rem 'Playfair Display',serif;}
+    .love-vote-total::before {content:'✧';display:block;color:#b79247;font-size:.8rem;margin-bottom:10px;}
+    #loveVoteCount {font-variant-numeric:tabular-nums;}
+    .love-vote-status {min-height:1.5em;margin:12px 0 0;color:#806b49;font:italic .78rem 'Playfair Display',serif;line-height:1.5;}
+    .love-burst-heart {position:absolute;left:50%;top:126px;z-index:2;pointer-events:none;color:var(--heart-color);font-size:var(--heart-size);animation:love-wax-burst 1.25s ease-out forwards;}
+    @keyframes love-wax-burst {0%{opacity:0;transform:translate(-50%,0) scale(.4);}15%{opacity:1;}100%{opacity:0;transform:translate(calc(-50% + var(--heart-x)),var(--heart-y)) rotate(var(--heart-turn)) scale(1.1);}}
+    @media(prefers-reduced-motion:reduce) {.love-vote-button,.love-vote-button svg,.love-seal-face {transition:none;}.love-burst-heart {display:none;animation:none;}}
 
   </style>
   <noscript><style>.scratch-cover,.scratch-instruction{display:none;}.door-wrapper { display: none; } .countdown-container, .toggle-msg-btn, .music-btn, .share-btn { display: none; } .message-content { max-height: none; opacity: 1; } .envelope-card .message-content { position: relative; visibility: visible; transform: none; } .letter-close { display: none; }</style></noscript>
@@ -1787,7 +1789,7 @@
 
       <div class="love-vote" id="loveVote">
         <button type="button" class="love-vote-button" id="loveVoteButton" aria-pressed="false">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21S3 15.4 3 8.7A5.1 5.1 0 0 1 12 5.4a5.1 5.1 0 0 1 9 3.3C21 15.4 12 21 12 21Z"/></svg>
+          <span class="love-seal-face"><svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="loveWaxGold" x1="0" y1="0" x2=".8" y2="1"><stop offset="0" stop-color="#fff0ba"/><stop offset=".42" stop-color="#e0b454"/><stop offset=".75" stop-color="#b7822b"/><stop offset="1" stop-color="#f3d48b"/></linearGradient></defs><path d="M12 21S3 15.4 3 8.7A5.1 5.1 0 0 1 12 5.4a5.1 5.1 0 0 1 9 3.3C21 15.4 12 21 12 21Z"/></svg></span>
           <span id="loveVoteLabel">Send love</span>
         </button>
         <p class="love-vote-total"><span id="loveVoteCount">—</span> hearts received</p>
@@ -2023,13 +2025,13 @@
       for (let i = 0; i < 9; i++) {
         const heart = document.createElement('span');
         heart.className = 'love-burst-heart';
-        heart.textContent = '♥';
+        heart.textContent = '✧';
         heart.setAttribute('aria-hidden', 'true');
         heart.style.setProperty('--heart-x', ((i - 4) * 25) + 'px');
         heart.style.setProperty('--heart-y', (-65 - (4 - Math.abs(i - 4)) * 13) + 'px');
         heart.style.setProperty('--heart-turn', ((i - 4) * 9) + 'deg');
         heart.style.setProperty('--heart-size', (12 + i % 3 * 3) + 'px');
-        heart.style.setProperty('--heart-color', i % 2 ? '#c49a47' : '#c42c49');
+        heart.style.setProperty('--heart-color', i % 2 ? '#d5ad5e' : '#a5792d');
         container.appendChild(heart);
         setTimeout(() => heart.remove(), 1400);
       }
