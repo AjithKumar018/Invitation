@@ -1370,8 +1370,26 @@
     }
     #personalLetter.letter-open .message-content { position:relative; opacity:1; visibility:visible; transform:none; }
 
+  
+    /* The gold coating is rubbed away to expose the actual letter beneath. */
+    #personalLetter .letter-stage.scratch-stage { padding:0; perspective:none; }
+    #personalLetter .scratch-stage .message-content {
+      position:relative; inset:auto; opacity:1; visibility:visible; transform:none;
+      transition:none; margin:0; z-index:1;
+    }
+    .scratch-cover {
+      position:absolute; inset:0; width:100%; height:100%; z-index:7;
+      border-radius:8px; cursor:crosshair; touch-action:none;
+      transition:opacity .5s ease,visibility 0s linear .5s;
+    }
+    .scratch-cover:focus-visible { outline:3px solid #fff1bf; outline-offset:5px; }
+    #personalLetter.scratch-revealed .scratch-cover { opacity:0; visibility:hidden; pointer-events:none; }
+    #personalLetter:not(.scratch-revealed) .letter-close { visibility:hidden; }
+    .scratch-instruction { color:#f4e4b8; font-size:.75rem; line-height:1.6; margin:18px auto 0; max-width:280px; }
+    #personalLetter.scratch-revealed .scratch-instruction { visibility:hidden; }
+
   </style>
-  <noscript><style>.door-wrapper { display: none; } .countdown-container, .toggle-msg-btn, .music-btn, .share-btn { display: none; } .message-content { max-height: none; opacity: 1; } .envelope-card .message-content { position: relative; visibility: visible; transform: none; } .letter-close { display: none; }</style></noscript>
+  <noscript><style>.scratch-cover,.scratch-instruction{display:none;}.door-wrapper { display: none; } .countdown-container, .toggle-msg-btn, .music-btn, .share-btn { display: none; } .message-content { max-height: none; opacity: 1; } .envelope-card .message-content { position: relative; visibility: visible; transform: none; } .letter-close { display: none; }</style></noscript>
 </head>
 <body>
 
@@ -1469,13 +1487,8 @@
 <h2 class="letter-heading">With Grateful Hearts</h2>
 <p class="letter-caption">A little note from our hearts to yours</p>
 <div class="petal-layer" id="petalLayer" aria-hidden="true"></div>
-<div class="letter-stage">
-      <button type="button" class="toggle-msg-btn fresh-envelope" aria-label="Open personal invitation" aria-expanded="false" aria-controls="messageBox" onclick="toggleMessage()">
-        <span class="fresh-envelope-lining" aria-hidden="true"></span>
-        <span class="fresh-envelope-front" aria-hidden="true"></span>
-        <span class="fresh-envelope-flap" aria-hidden="true"><span class="fresh-flap-outside"></span><span class="fresh-flap-inside"></span></span>
-        <span class="fresh-open-seal" aria-hidden="true">Open</span>
-      </button>
+<div class="letter-stage scratch-stage">
+
 
       <div class="message-content" id="messageBox" aria-hidden="true" tabindex="-1">
         <div class="section-tag" style="margin-top: 10px;">A Moment Made Complete By You</div>
@@ -1484,9 +1497,11 @@
           "Some moments become memories because of the people who share them. As we step into this beautiful new chapter, it would mean the world to have you beside us—blessing our beginning, sharing our joy, and making our celebration complete."
         </p>
         <div class="section-tag" style="font-size: 0.65rem;">WITH LOVE, AJITHKUMAR & RAMYA</div>
-<button type="button" class="letter-close" onclick="toggleMessage()">Close letter</button>
+<button type="button" class="letter-close" onclick="resetScratchBoard()">Cover message again</button>
       </div>
+      <canvas id="scratchCover" class="scratch-cover" role="button" tabindex="0" aria-label="Scratch this gold panel to reveal your personal invitation. Use a finger or mouse, or press Enter to reveal." aria-controls="messageBox" aria-expanded="false"></canvas>
 </div>
+<p class="scratch-instruction" id="scratchInstruction">Gently scratch the gold panel to uncover our note</p>
     </div>
 
     <!-- FAMILY SECTION -->
@@ -1815,55 +1830,141 @@
 
 
 
-    // New envelope interaction, followed by the centered personal letter.
-    function toggleMessage() {
-      const letter=document.getElementById('personalLetter');
-      const message=document.getElementById('messageBox');
-      const button=letter.querySelector('.toggle-msg-btn');
-      const stage=letter.querySelector('.letter-stage');
-      const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (letter.classList.contains('envelope-revealing')) return;
-      if (letter._centerTimer) clearTimeout(letter._centerTimer);
-      if (stage._heightAnimation) { stage._heightAnimation.cancel(); stage._heightAnimation=null; }
-      if (letter.classList.contains('letter-open')) {
-        letter.classList.remove('letter-open');
-        message.classList.remove('open');
-        message.setAttribute('aria-hidden','true');
-        button.setAttribute('aria-expanded','false');
-        button.tabIndex=0;
-        button.focus({preventScroll:true});
-        return;
+
+    // Scratch away a real canvas coating; tapping alone never opens the note.
+    const scratchCanvas=document.getElementById('scratchCover');
+    const scratchLetter=document.getElementById('personalLetter');
+    const scratchMessage=document.getElementById('messageBox');
+    const scratchContext=scratchCanvas.getContext('2d',{willReadFrequently:true});
+    let scratchPointer=null, scratchPrevious=null, scratchStarted=false, scratchComplete=false, scratchCheckTime=0;
+    function paintScratchCoating() {
+      if (!scratchContext) { revealScratchMessage(); return; }
+      const rect=scratchCanvas.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+      const ratio=Math.min(devicePixelRatio||1,2);
+      scratchCanvas.width=Math.round(rect.width*ratio);
+      scratchCanvas.height=Math.round(rect.height*ratio);
+      scratchContext.setTransform(ratio,0,0,ratio,0,0);
+      scratchContext.globalCompositeOperation='source-over';
+      const gold=scratchContext.createLinearGradient(0,0,rect.width,rect.height);
+      gold.addColorStop(0,'#f7e7b4'); gold.addColorStop(.3,'#d4b666');
+      gold.addColorStop(.6,'#eddaa0'); gold.addColorStop(1,'#b68b36');
+      scratchContext.fillStyle=gold;
+      scratchContext.fillRect(0,0,rect.width,rect.height);
+      scratchContext.strokeStyle='#fff0c0aa'; scratchContext.lineWidth=1;
+      for(let y=-rect.width;y<rect.height;y+=9) {
+        scratchContext.beginPath();scratchContext.moveTo(0,y);scratchContext.lineTo(rect.width,y+rect.width);scratchContext.stroke();
       }
-      letter.classList.add('envelope-revealing');
-      button.setAttribute('aria-expanded','true');
-      button.tabIndex=-1;
-      const reveal=()=>{
-        const startHeight=stage.getBoundingClientRect().height;
-        letter.classList.add('letter-open');
-        message.classList.add('open');
-        message.setAttribute('aria-hidden','false');
-        const endHeight=message.getBoundingClientRect().height+parseFloat(getComputedStyle(stage).paddingTop||0);
-        if (!reduced && stage.animate) {
-          stage._heightAnimation=stage.animate([{height:startHeight+'px'},{height:endHeight+'px'}],{duration:650,easing:'cubic-bezier(.22,1,.36,1)'});
-          stage._heightAnimation.onfinish=()=>{stage._heightAnimation=null;};
-        }
-        message.focus({preventScroll:true});
-        const center=()=>{
-          letter.classList.remove('envelope-revealing');
-          if (!letter.classList.contains('letter-open')) return;
-          const viewport=window.visualViewport;
-          const height=viewport?viewport.height:innerHeight;
-          const top=viewport?viewport.offsetTop:0;
-          const rect=message.getBoundingClientRect();
-          const offset=rect.height<=height-32?(height-rect.height)/2:16;
-          window.scrollTo({top:Math.max(0,scrollY+rect.top-top-offset),behavior:reduced?'instant':'smooth'});
-        };
-        if (reduced) requestAnimationFrame(center);
-        else letter._centerTimer=setTimeout(center,680);
-      };
-      if (reduced) reveal();
-      else setTimeout(reveal,850);
+      scratchContext.strokeStyle='#87631d';scratchContext.strokeRect(10,10,rect.width-20,rect.height-20);
+      scratchContext.strokeStyle='#fff4ce';scratchContext.strokeRect(14,14,rect.width-28,rect.height-28);
+      scratchContext.textAlign='center';scratchContext.textBaseline='middle';
+      scratchContext.fillStyle='#073f32';scratchContext.font='italic 28px "Playfair Display",serif';
+      scratchContext.fillText('A note for you',rect.width/2,rect.height/2-30);
+      scratchContext.font='600 16px "Cinzel",serif';
+      scratchContext.fillText('Scratch to reveal',rect.width/2,rect.height/2+8);
+      scratchContext.font='12px sans-serif';
+      scratchContext.fillText('With love, Ajithkumar & Ramya',rect.width/2,rect.height/2+42);
     }
+    function revealScratchMessage() {
+      if(scratchComplete) return;
+      scratchComplete=true;
+      scratchPointer=null;scratchPrevious=null;
+      scratchLetter.classList.add('scratch-revealed');
+      scratchMessage.setAttribute('aria-hidden','false');
+      scratchCanvas.setAttribute('aria-expanded','true');
+      scratchCanvas.tabIndex=-1;
+      scratchMessage.focus({preventScroll:true});
+      const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const center=()=>{
+        if(!scratchComplete)return;
+        const viewport=window.visualViewport;
+        const height=viewport?viewport.height:innerHeight;
+        const top=viewport?viewport.offsetTop:0;
+        const rect=scratchMessage.getBoundingClientRect();
+        const offset=rect.height<=height-32?(height-rect.height)/2:16;
+        window.scrollTo({top:Math.max(0,scrollY+rect.top-top-offset),behavior:reduced?'instant':'smooth'});
+      };
+      if(scratchLetter._centerTimer)clearTimeout(scratchLetter._centerTimer);
+      if(reduced)requestAnimationFrame(center);
+      else scratchLetter._centerTimer=setTimeout(center,520);
+    }
+    function resetScratchBoard() {
+      if(scratchLetter._centerTimer)clearTimeout(scratchLetter._centerTimer);
+      scratchComplete=false;scratchStarted=false;scratchPointer=null;scratchPrevious=null;scratchCheckTime=0;
+      scratchLetter.classList.remove('scratch-revealed');
+      scratchMessage.setAttribute('aria-hidden','true');
+      scratchCanvas.setAttribute('aria-expanded','false');scratchCanvas.tabIndex=0;
+      paintScratchCoating();
+      scratchCanvas.focus({preventScroll:true});
+    }
+    function checkScratchCoverage(force=false) {
+      if(scratchComplete||!scratchContext)return;
+      const now=performance.now();
+      if(!force&&now-scratchCheckTime<120)return;
+      scratchCheckTime=now;
+      const w=scratchCanvas.width,h=scratchCanvas.height;
+      const pixels=scratchContext.getImageData(0,0,w,h).data;
+      let erased=0,total=0;
+      // Sample a uniform grid so overlapping strokes are counted only once.
+      for(let y=0;y<28;y++)for(let x=0;x<20;x++){
+        const px=Math.floor((x+.5)*w/20),py=Math.floor((y+.5)*h/28);
+        if(pixels[(py*w+px)*4+3]<80)erased++;
+        total++;
+      }
+      if(erased/total>=.38)revealScratchMessage();
+    }
+    function scratchAt(event) {
+      if(scratchComplete||!scratchContext)return;
+      const rect=scratchCanvas.getBoundingClientRect();
+      const point={x:event.clientX-rect.left,y:event.clientY-rect.top};
+      scratchContext.globalCompositeOperation='destination-out';
+      scratchContext.lineWidth=48;scratchContext.lineCap='round';scratchContext.lineJoin='round';
+      scratchContext.beginPath();
+      if(scratchPrevious){scratchContext.moveTo(scratchPrevious.x,scratchPrevious.y);scratchContext.lineTo(point.x,point.y);scratchContext.stroke();}
+      else{scratchContext.arc(point.x,point.y,24,0,Math.PI*2);scratchContext.fill();}
+      scratchPrevious=point;scratchStarted=true;
+    }
+    scratchCanvas.addEventListener('pointerdown',event=>{
+      if(scratchComplete||scratchPointer!==null||(event.pointerType==='mouse'&&event.button!==0))return;
+      event.preventDefault();scratchPointer=event.pointerId;scratchCanvas.setPointerCapture(event.pointerId);
+      scratchPrevious=null;scratchAt(event);
+    });
+    scratchCanvas.addEventListener('pointermove',event=>{
+      if(event.pointerId!==scratchPointer)return;
+      event.preventDefault();
+      const samples=event.getCoalescedEvents?event.getCoalescedEvents():[];
+      (samples.length?samples:[event]).forEach(scratchAt);
+      checkScratchCoverage();
+    });
+    function finishScratch(event){
+      if(event.pointerId!==scratchPointer)return;
+      scratchPointer=null;scratchPrevious=null;checkScratchCoverage(true);
+    }
+    ['pointerup','pointercancel','lostpointercapture'].forEach(type=>scratchCanvas.addEventListener(type,finishScratch));
+    scratchCanvas.addEventListener('keydown',event=>{
+      if(event.key==='Enter'||event.key===' '){event.preventDefault();revealScratchMessage();}
+    });
+    // Assistive activation is allowed; ordinary pointer clicks do not reveal.
+    scratchCanvas.addEventListener('click',event=>{if(event.detail===0)revealScratchMessage();});
+    // Preserve the rubbed coating through mobile rotation and layout changes.
+    function resizeScratchBoard(){
+      if(scratchComplete||!scratchContext)return;
+      const rect=scratchCanvas.getBoundingClientRect(),ratio=Math.min(devicePixelRatio||1,2);
+      const w=Math.round(rect.width*ratio),h=Math.round(rect.height*ratio);
+      if(!w||!h||(w===scratchCanvas.width&&h===scratchCanvas.height))return;
+      if(!scratchStarted){paintScratchCoating();return;}
+      const copy=document.createElement('canvas');copy.width=scratchCanvas.width;copy.height=scratchCanvas.height;
+      copy.getContext('2d').drawImage(scratchCanvas,0,0);
+      scratchCanvas.width=w;scratchCanvas.height=h;
+      scratchContext.setTransform(1,0,0,1,0,0);scratchContext.globalCompositeOperation='source-over';
+      scratchContext.drawImage(copy,0,0,w,h);
+      scratchContext.setTransform(ratio,0,0,ratio,0,0);
+    }
+    paintScratchCoating();
+    if('ResizeObserver' in window)new ResizeObserver(resizeScratchBoard).observe(scratchMessage);
+    else window.addEventListener('resize',resizeScratchBoard);
+    if(document.fonts)document.fonts.ready.then(()=>{if(!scratchStarted&&!scratchComplete)paintScratchCoating();});
+
 
     function shareInvitation() {
       const status = document.getElementById('shareStatus');
