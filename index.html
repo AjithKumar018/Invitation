@@ -1680,7 +1680,7 @@
       </div>
       <canvas id="scratchCover" class="scratch-cover" role="button" tabindex="0" aria-label="Scratch this blush jasmine panel to reveal your personal invitation. Use a finger or mouse, or press Enter to reveal." aria-controls="messageBox" aria-expanded="false"></canvas>
 </div>
-<p class="scratch-instruction" id="scratchInstruction">Gently scratch the jasmine panel to uncover our note</p>
+<p class="scratch-instruction" id="scratchInstruction" lang="en" data-no-translate>Gently scratch the jasmine panel to uncover our note</p>
     </div>
 
     <!-- FAMILY SECTION -->
@@ -2347,8 +2347,8 @@
       scratchContext.textAlign='center';scratchContext.textBaseline='middle';
       scratchContext.fillStyle='#073f32';scratchContext.font=invitationLanguage==='ta'?'500 19px "Noto Sans Tamil",sans-serif':'italic 28px "Playfair Display",serif';
       scratchContext.fillText(invitationText('A note for you'),rect.width/2,rect.height/2,rect.width-32);
-      scratchContext.font=invitationLanguage==='ta'?'500 14px "Noto Sans Tamil",sans-serif':'500 15px "Cinzel",serif';
-      scratchContext.fillText(invitationText('Scratch to reveal'),rect.width/2,rect.height/2+36,rect.width-32);
+      scratchContext.font='500 15px "Cinzel",serif';
+      scratchContext.fillText('Scratch to reveal',rect.width/2,rect.height/2+36,rect.width-32);
       scratchContext.strokeStyle='#8e7746';scratchContext.lineWidth=1;
       scratchContext.beginPath();scratchContext.moveTo(rect.width/2-12,rect.height/2+64);scratchContext.lineTo(rect.width/2+12,rect.height/2+64);scratchContext.stroke();
       scratchContext.font='13px "Playfair Display",serif';
