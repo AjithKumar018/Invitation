@@ -1075,23 +1075,26 @@
       }, 5000);
     });
 
-    function entranceFireworks() {
+    function entranceFireworks(options = {}) {
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       const canvas = document.createElement('canvas');
       canvas.setAttribute('aria-hidden', 'true');
-      canvas.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:1100';
-      document.body.appendChild(canvas);
+      const target = options.target;
+      canvas.style.cssText = target
+        ? 'position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2'
+        : 'position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:1100';
+      (target || document.body).appendChild(canvas);
       const ctx = canvas.getContext('2d');
       if (!ctx) { canvas.remove(); return; }
-      const w = innerWidth, height = innerHeight, dpr = Math.min(devicePixelRatio || 1, 2);
+      const w = target ? target.clientWidth : innerWidth, height = target ? target.clientHeight : innerHeight, dpr = Math.min(devicePixelRatio || 1, 2);
       canvas.width = w * dpr; canvas.height = height * dpr; ctx.scale(dpr, dpr);
-      const colors = ['#fff5cc','#e8c75a','#f8faf1','#71d9aa','#f0a65d'];
+      const colors = options.colors || ['#fff5cc','#e8c75a','#f8faf1','#71d9aa','#f0a65d'];
       const particles = [];
       const start = performance.now();
       const bursts = [{t:0,x:.25,y:.32},{t:180,x:.75,y:.32},{t:430,x:.5,y:.23},{t:760,x:.2,y:.48},{t:920,x:.8,y:.48}];
       let previous = start;
       function frame(now) {
-        if (document.hidden || now - start > 3000) { canvas.remove(); return; }
+        if (document.hidden || (target && (target.getBoundingClientRect().bottom <= 0 || target.getBoundingClientRect().top >= innerHeight)) || now - start > 3000) { canvas.remove(); return; }
         const elapsed = now - start, dt = Math.min((now - previous) / 1000, .04);
         previous = now;
         for (const burst of bursts) {
@@ -1114,6 +1117,21 @@
         requestAnimationFrame(frame);
       }
       requestAnimationFrame(frame);
+    }
+
+    // Celebrate once when the reception scrolls into view.
+    const receptionSection = document.querySelector('.reception-section');
+    if (receptionSection && 'IntersectionObserver' in window) {
+      const receptionObserver = new IntersectionObserver(entries => {
+        if (entries.some(entry => entry.isIntersecting && entry.intersectionRatio >= .25)) {
+          entranceFireworks({
+            target: receptionSection,
+            colors: ['#ff5792','#ffd54a','#57e6ff','#ad83ff','#65f0a8','#ff914d']
+          });
+          receptionObserver.disconnect();
+        }
+      }, {threshold: .25});
+      receptionObserver.observe(receptionSection);
     }
 
     function openDoors() {
