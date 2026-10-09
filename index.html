@@ -1088,7 +1088,7 @@
       if (!ctx) { canvas.remove(); return; }
       const w = target ? target.clientWidth : innerWidth, height = target ? target.clientHeight : innerHeight, dpr = Math.min(devicePixelRatio || 1, 2);
       canvas.width = w * dpr; canvas.height = height * dpr; ctx.scale(dpr, dpr);
-      const colors = options.colors || ['#fff5cc','#e8c75a','#f8faf1','#71d9aa','#f0a65d'];
+      const colors = options.colors || ['#fff4c2','#f8dc87','#e8c75a','#d4af37','#c99a2e','#f5e4b0'];
       const particles = [];
       const start = performance.now();
       const bursts = [{t:0,x:.25,y:.32},{t:180,x:.75,y:.32},{t:430,x:.5,y:.23},{t:760,x:.2,y:.48},{t:920,x:.8,y:.48}];
