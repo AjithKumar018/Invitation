@@ -1522,23 +1522,19 @@
     .family-section .and-divider {position:relative;margin:13px auto;color:#aa8441;text-shadow:0 1px 0 #fff9ed;}
 
 
-    /* A hanging language tag stays within the invitation on wide screens. */
+    /* Keep the language toggle beside the music control. */
+    .music-btn {top:max(20px,env(safe-area-inset-top));}
     .language-button {
-      position:fixed; left:max(12px,calc(50% - 203px));
-      bottom:max(18px,calc(env(safe-area-inset-bottom) + 12px));
-      z-index:1200; min-width:94px; min-height:48px; padding:12px 18px;
+      position:fixed; top:max(20px,env(safe-area-inset-top));
+      right:calc(50% - 135px); left:auto; bottom:auto;
+      z-index:1200; min-width:94px; height:48px; padding:10px 16px;
       background:linear-gradient(135deg,#fff0b8,#d5ad5e);
-      color:#073f32; border:1px solid #fff0ba; border-radius:8px 8px 18px 18px;
+      color:#073f32; border:1px solid #fff0ba; border-radius:24px;
       box-shadow:0 5px 18px #001b1655; font:700 16px/1.4 'Noto Sans Tamil',sans-serif;
       cursor:pointer; touch-action:manipulation;
     }
-    .language-button::before {
-      content:''; position:absolute; left:calc(50% - 1px); top:-24px;
-      width:2px; height:24px; background:#d5ad5e;
-    }
-    .language-button::after {
-      content:''; position:absolute; left:calc(50% - 4px); top:5px;
-      width:6px; height:6px; border:1px solid #9e772e; border-radius:50%; background:#073f32;
+    @media (max-width:600px) {
+      .language-button {right:calc(max(16px,env(safe-area-inset-right)) + 60px);}
     }
     .language-status {position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;}
     html[lang="ta"] .phone-container,
@@ -1551,7 +1547,7 @@
     html[lang="ta"] .seal-monogram {font-family:'Great Vibes',cursive;}
     html[lang="ta"] .footer-thanks {font-size:2.1rem;}
     html[lang="ta"] .date-badge .month {font-size:.65rem;}
-    .footer-section {padding-bottom:max(100px,calc(env(safe-area-inset-bottom) + 90px));}
+    .footer-section {padding-bottom:max(40px,env(safe-area-inset-bottom));}
   </style>
   <noscript><style>.scratch-cover,.scratch-instruction{display:none;}.door-wrapper { display: none; } .countdown-container, .toggle-msg-btn, .music-btn, .share-btn { display: none; } .message-content { max-height: none; opacity: 1; } .envelope-card .message-content { position: relative; visibility: visible; transform: none; } .letter-close { display: none; }</style></noscript>
 </head>
