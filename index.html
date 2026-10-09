@@ -974,11 +974,26 @@
     .journey-stop { position: relative; padding-left: 55px; margin-bottom: 24px; }
     .journey-stop:last-child { margin-bottom: 0; }
     .journey-marker { position: absolute; left: 0; top: 18px; display: grid; place-items: center; width: 40px; height: 40px; border: 3px double #e5cc86; border-radius: 50%; background: #073f32; color: #f4dda2; font: 1.3rem serif; box-shadow: 0 3px 8px #073f3222; }
-    .journey-card { padding: 20px 16px; border: 1px solid #dbc68c; border-radius: 14px; background: #fffdf6; box-shadow: 0 6px 16px #073f320a; }
-    .journey-card time { color: #87631d; font-size: .65rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
-    .journey-card h3 { font: 600 1.05rem/1.5 'Cinzel',serif; color: #073f32; margin: 8px 0; }
-    .journey-card p { color: #526453; font-size: .78rem; line-height: 1.65; margin: 3px 0; }
-    .journey-card a { display: inline-block; color: #073f32; font-size: .75rem; font-weight: 700; padding: 12px 0 4px; text-underline-offset: 4px; }
+    /* Emerald keepsake cards for the two journey milestones. */
+    .journey-card {position:relative;isolation:isolate;overflow:hidden;padding:20px 18px 18px;border:1px solid #c3a15e;border-radius:18px;background:radial-gradient(ellipse at 100% 0%,#346f5238,transparent 65%),linear-gradient(145deg,#104f3d,#052e26);box-shadow:0 9px 22px #073f3220;}
+    .journey-card::before {content:"";position:absolute;inset:6px;border:1px solid #d4b57430;border-radius:12px;pointer-events:none;z-index:-1;}
+    .journey-card::after {content:"❦";position:absolute;right:12px;top:74px;font:4.5rem 'Playfair Display',serif;color:#d6b76312;pointer-events:none;z-index:-1;transform:rotate(-18deg);}
+    .journey-card-header {display:flex;align-items:center;gap:13px;margin-bottom:17px;}
+    .journey-card time {display:flex;flex-direction:column;align-items:center;justify-content:center;flex:0 0 54px;min-height:72px;padding:8px 5px;border:1px solid #e5ca86;border-radius:9px;background:linear-gradient(145deg,#fff5d9,#dfc17c);color:#164535;text-align:center;text-transform:uppercase;box-shadow:0 3px 8px #001b1c24;}
+    .journey-date-day {font:600 1.65rem/1.05 'Cinzel',serif;letter-spacing:-1px;}
+    .journey-date-month {font:700 .6rem/1.5 'Poppins',sans-serif;letter-spacing:1px;margin-top:3px;}
+    .journey-date-year {font:500 .54rem/1.4 'Poppins',sans-serif;letter-spacing:1px;}
+    .journey-card h3 {min-width:0;flex:1;font:500 1.12rem/1.4 'Cinzel',serif;color:#fff1cd;margin:0;}
+    .journey-city {display:block;margin-top:6px;font:500 .63rem/1.5 'Poppins',sans-serif;letter-spacing:1.8px;text-transform:uppercase;color:#d7bf83;}
+    .journey-card p {position:relative;color:#e3ecdf;font-size:.76rem;line-height:1.7;margin:5px 0;overflow-wrap:anywhere;}
+    .journey-card .journey-time {display:flex;align-items:center;gap:7px;color:#f1d797;font-size:.73rem;}
+    .journey-time svg {flex-shrink:0;width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.5;}
+    .journey-card .journey-venue {padding-bottom:14px;margin-bottom:14px;border-bottom:1px solid #d8bb762e;}
+    .journey-card a {display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:44px;padding:10px 8px;border:1px solid #e3c584;border-radius:999px;background:linear-gradient(145deg,#f3dfaa,#dbbd73);color:#0a3a2e;font-size:.68rem;font-weight:600;text-decoration:none;text-align:center;line-height:1.5;box-shadow:inset 0 1px 0 #fff4d780,0 3px 8px #001b1c20;transition:transform .2s,box-shadow .2s;}
+    .journey-card a:hover {transform:translateY(-1px);box-shadow:inset 0 1px 0 #fff4d780,0 5px 12px #001b1c35;}
+    .journey-card a:focus-visible {outline:2px solid #fff0bf;outline-offset:4px;}
+    .journey-card a span {font-size:1rem;line-height:1;}
+    @media(max-width:350px) {.journey-stop {padding-left:48px;}.journey-card {padding:17px 13px 15px;}.journey-card-header {gap:10px;}.journey-card h3 {font-size:1rem;}.journey-city {letter-spacing:1px;}.journey-card time {flex-basis:48px;}.journey-card a {font-size:.63rem;gap:6px;}}
     .journey-footnote { margin-top: 26px; font: italic 1rem 'Playfair Display',serif; color: #87631d; }
     #weddingCeremony, #receptionCelebration { scroll-margin-top: 16px; }
   
@@ -1688,20 +1703,24 @@
         <li class="journey-stop">
           <span class="journey-marker" aria-hidden="true">♡</span>
           <div class="journey-card">
-            <time datetime="2026-10-25">25 October 2026</time>
-            <h3>Wedding · Namakkal</h3>
-            <p>4:30 AM – 6:00 AM</p>
-            <p>Arulmigu Sri Murugan Temple</p>
+            <div class="journey-card-header">
+              <time datetime="2026-10-25" aria-label="25 October 2026"><span class="journey-date-day">25</span><span class="journey-date-month">October</span><span class="journey-date-year">2026</span></time>
+              <h3>Wedding<span class="journey-city">Namakkal</span></h3>
+            </div>
+            <p class="journey-time"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.5"/><path d="M10 5.5V10l3 2"/></svg>4:30 AM – 6:00 AM</p>
+            <p class="journey-venue">Arulmigu Sri Murugan Temple</p>
             <a href="#weddingCeremony">Explore the wedding <span aria-hidden="true">→</span></a>
           </div>
         </li>
         <li class="journey-stop">
           <span class="journey-marker" aria-hidden="true">✧</span>
           <div class="journey-card">
-            <time datetime="2026-11-01">1 November 2026</time>
-            <h3>Reception · Chennai</h3>
-            <p>6:00 PM onwards</p>
-            <p>Food Village, Injambakkam</p>
+            <div class="journey-card-header">
+              <time datetime="2026-11-01" aria-label="1 November 2026"><span class="journey-date-day">01</span><span class="journey-date-month">November</span><span class="journey-date-year">2026</span></time>
+              <h3>Reception<span class="journey-city">Chennai</span></h3>
+            </div>
+            <p class="journey-time"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.5"/><path d="M10 5.5V10l3 2"/></svg>6:00 PM onwards</p>
+            <p class="journey-venue">Food Village, Injambakkam</p>
             <a href="#receptionCelebration">Explore the reception <span aria-hidden="true">→</span></a>
           </div>
         </li>
