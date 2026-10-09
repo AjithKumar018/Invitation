@@ -1280,6 +1280,30 @@
     .calendar-links a { color:#073f32; font-size:.78rem; padding:10px 4px; text-underline-offset:3px; }
     .calendar-options summary:focus-visible { outline:3px solid #d4af37; outline-offset:3px; }
 
+  
+    /* A direct button reveal for the personal message. */
+    #personalLetter .letter-stage { padding:0; perspective:none; }
+    #personalLetter .toggle-msg-btn {
+      position:relative; inset:auto; display:inline-flex; align-items:center; justify-content:center;
+      width:auto; min-width:150px; max-width:none; min-height:48px; aspect-ratio:auto;
+      margin:0 auto; padding:12px 30px; border:1px solid #e6cd86; border-radius:28px;
+      background:linear-gradient(135deg,#f2dda1,#c6a04b); color:#073f32;
+      font:600 1rem 'Cinzel',serif; letter-spacing:1px;
+      box-shadow:0 6px 18px #001b1644; transform:none;
+      opacity:1; visibility:visible; transition:box-shadow .2s ease;
+    }
+    #personalLetter .toggle-msg-btn:hover { box-shadow:0 8px 22px #001b1666; }
+    #personalLetter .message-content {
+      position:absolute; inset:0; opacity:0; visibility:hidden;
+      transform:translateY(12px); transform-origin:center;
+      transition:opacity .4s ease,transform .5s ease,visibility 0s;
+    }
+    #personalLetter.letter-open .letter-stage { padding:0; }
+    #personalLetter.letter-open .toggle-msg-btn { display:none; }
+    #personalLetter.letter-open .message-content {
+      position:relative; opacity:1; visibility:visible; transform:none; margin:0;
+    }
+
   </style>
   <noscript><style>.door-wrapper { display: none; } .countdown-container, .toggle-msg-btn, .music-btn, .share-btn { display: none; } .message-content { max-height: none; opacity: 1; } .envelope-card .message-content { position: relative; visibility: visible; transform: none; } .letter-close { display: none; }</style></noscript>
 </head>
@@ -1380,18 +1404,7 @@
 <p class="letter-caption">A little note from our hearts to yours</p>
 <div class="petal-layer" id="petalLayer" aria-hidden="true"></div>
 <div class="letter-stage">
-      <button class="toggle-msg-btn" aria-label="Open personal invitation" aria-expanded="false" aria-controls="messageBox" onclick="toggleMessage()">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-          <polyline points="22,6 12,13 2,6"></polyline>
-        </svg>
-        <span class="mail-back" aria-hidden="true"></span>
-        <span class="mail-paper" aria-hidden="true">With love<small>Ajithkumar &amp; Ramya</small></span>
-        <span class="mail-pocket" aria-hidden="true"></span>
-        <span class="mail-flap" aria-hidden="true"></span>
-        <span class="mail-open-label" aria-hidden="true">Open</span>
-
-      </button>
+      <button type="button" class="toggle-msg-btn" aria-label="Open personal invitation" aria-expanded="false" aria-controls="messageBox" onclick="toggleMessage()">Open</button>
 
       <div class="message-content" id="messageBox" aria-hidden="true" tabindex="-1">
         <div class="section-tag" style="margin-top: 10px;">A Moment Made Complete By You</div>
@@ -1729,64 +1742,40 @@
     updateCountdown();
 
 
-    // Keep the envelope still while the seal releases and the two-sided flap unfolds.
+
+    // Reveal the message directly from the Open button.
     function toggleMessage() {
-      const letter = document.getElementById('personalLetter');
-      if (letter.classList.contains('letter-opening')) return;
-      const message = document.getElementById('messageBox');
-      const button = letter.querySelector('.toggle-msg-btn');
-      const stage = letter.querySelector('.letter-stage');
-      const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const letter=document.getElementById('personalLetter');
+      const message=document.getElementById('messageBox');
+      const button=letter.querySelector('.toggle-msg-btn');
+      const stage=letter.querySelector('.letter-stage');
+      const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (letter._centerTimer) clearTimeout(letter._centerTimer);
       if (stage._heightAnimation) { stage._heightAnimation.cancel(); stage._heightAnimation=null; }
-      const centerMessage = () => {
+      const startHeight=stage.getBoundingClientRect().height;
+      const opened=letter.classList.toggle('letter-open');
+      message.classList.toggle('open',opened);
+      message.setAttribute('aria-hidden',String(!opened));
+      button.setAttribute('aria-expanded',String(opened));
+      button.tabIndex=opened?-1:0;
+      const endHeight=(opened?message:button).getBoundingClientRect().height;
+      if (!reduced && stage.animate) {
+        stage._heightAnimation=stage.animate([{height:startHeight+'px'},{height:endHeight+'px'}],{duration:500,easing:'cubic-bezier(.22,1,.36,1)'});
+        stage._heightAnimation.onfinish=()=>{stage._heightAnimation=null;};
+      }
+      if (!opened) { button.focus({preventScroll:true}); return; }
+      message.focus({preventScroll:true});
+      const center=()=>{
         if (!letter.classList.contains('letter-open')) return;
-        const viewport = window.visualViewport;
-        const visibleHeight = viewport ? viewport.height : innerHeight;
-        const visibleTop = viewport ? viewport.offsetTop : 0;
-        const rect = message.getBoundingClientRect();
-        const offset = rect.height <= visibleHeight - 32 ? (visibleHeight-rect.height)/2 : 16;
-        window.scrollTo({top:Math.max(0,scrollY+rect.top-visibleTop-offset),behavior:reduced?'instant':'smooth'});
-        message.focus({preventScroll:true});
+        const viewport=window.visualViewport;
+        const height=viewport?viewport.height:innerHeight;
+        const top=viewport?viewport.offsetTop:0;
+        const rect=message.getBoundingClientRect();
+        const offset=rect.height<=height-32?(height-rect.height)/2:16;
+        window.scrollTo({top:Math.max(0,scrollY+rect.top-top-offset),behavior:reduced?'instant':'smooth'});
       };
-      if (letter.classList.contains('letter-open')) {
-        letter.classList.remove('letter-open','seal-released','flap-unfolded','flap-behind','note-withdrawn');
-        message.classList.remove('open');
-        message.setAttribute('aria-hidden','true');
-        button.setAttribute('aria-expanded','false');
-        button.tabIndex=0;
-        button.focus({preventScroll:true});
-        return;
-      }
-      button.setAttribute('aria-expanded','true');
-      button.tabIndex=-1;
-      letter.classList.add('letter-opening','seal-released');
-      const revealLetter = () => {
-        const startHeight=stage.getBoundingClientRect().height;
-        letter.classList.add('letter-open');
-        message.classList.add('open');
-        message.setAttribute('aria-hidden','false');
-        const stageStyle=getComputedStyle(stage);
-        const endHeight=message.getBoundingClientRect().height+parseFloat(stageStyle.paddingTop||0)+parseFloat(stageStyle.paddingBottom||0);
-        if (!reduced && stage.animate) {
-          stage._heightAnimation=stage.animate([{height:startHeight+'px'},{height:endHeight+'px'}],{duration:1600,easing:'cubic-bezier(.22,.7,.25,1)'});
-          stage._heightAnimation.onfinish=()=>{stage._heightAnimation=null;};
-        }
-        if (reduced) { letter.classList.remove('letter-opening'); requestAnimationFrame(centerMessage); }
-        else letter._centerTimer=setTimeout(()=>{
-          letter.classList.remove('letter-opening');
-          centerMessage();
-        },1650);
-      };
-      if (reduced) {
-        letter.classList.add('flap-unfolded','flap-behind','note-withdrawn');
-        revealLetter();
-      } else {
-        letter.classList.add('flap-unfolded');
-        setTimeout(()=>letter.classList.add('flap-behind'),550);
-        setTimeout(()=>letter.classList.add('note-withdrawn'),200);
-        setTimeout(revealLetter,1600);
-      }
+      if (reduced) requestAnimationFrame(center);
+      else letter._centerTimer=setTimeout(center,520);
     }
 
     function shareInvitation() {
