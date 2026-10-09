@@ -1040,8 +1040,6 @@
       color: #b58b34;
     }
     .journey-heartbeat path { fill: none; stroke: currentColor; stroke-width: 1.8; vector-effect: non-scaling-stroke; stroke-linejoin: round; stroke-linecap: round; }
-    .journey-heartbeat .heartbeat-glint { stroke: #f6dea0; stroke-width: 2.4; stroke-dasharray: 18 320; animation: heartbeatThread 5s linear infinite; }
-    @keyframes heartbeatThread { to { stroke-dashoffset: -338; } }
 
     /* Sparse ivory jasmine petals drift down the edges, above the decoration. */
     .jasmine-shower {
@@ -1069,6 +1067,29 @@
     @media (max-width:600px) { .jasmine-shower { width:100%; } }
     @media (prefers-reduced-motion:reduce) { .jasmine-shower { display:none; } }
 
+  
+    /* Fluttering golden butterflies on the entrance panels. */
+    .door-panel::before { display:none; }
+    .gate-butterfly { position:absolute; top:14%; filter:drop-shadow(0 3px 4px #001b1655); }
+    .butterfly-wing { transform-box:view-box; transform-origin:50px 40px; animation:butterflyFlap 1.6s ease-in-out infinite; }
+    .door-right .butterfly-wing { animation-delay:-.6s; }
+    @keyframes butterflyFlap { 0%,100% { transform:scaleX(1); } 50% { transform:scaleX(.22); } }
+
+    /* Matching paper edges fully enclose the insert until the flap unfolds. */
+    #personalLetter .envelope-pocket {
+      clip-path:polygon(0 0,50% 70%,100% 0,100% 100%,0 100%);
+      background:linear-gradient(145deg,#fff6e1,#e9d9b6);
+      filter:none; border:1px solid #c7a151;
+    }
+    #personalLetter .envelope-pocket::after {
+      inset:0; clip-path:none; border:0;
+      background:linear-gradient(34deg,transparent 49.6%,#c7a15166 49.9%,transparent 50.3%) left/50% 100% no-repeat,
+                 linear-gradient(-34deg,transparent 49.6%,#c7a15166 49.9%,transparent 50.3%) right/50% 100% no-repeat;
+    }
+    .tamil-welcome { position:relative; margin:0 auto 18px; color:#f7e8b9; font-size:clamp(.95rem,4vw,1.1rem); line-height:1.8; }
+    .tamil-welcome small { display:block; font-size:.76rem; color:#ead8a4; }
+    .journey-heartbeat path { stroke:#b58b34; stroke-width:2; }
+
   </style>
   <noscript><style>.door-wrapper { display: none; } .countdown-container, .toggle-msg-btn, .music-btn, .share-btn { display: none; } .message-content { max-height: none; opacity: 1; } .envelope-card .message-content { position: relative; visibility: visible; transform: none; } .letter-close { display: none; }</style></noscript>
 </head>
@@ -1082,11 +1103,13 @@
     <div class="door-wrapper" id="doorWrapper" role="button" tabindex="0" aria-label="Open wedding invitation" onclick="openDoors()" onkeydown="if(event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openDoors(); }">
       <div class="door door-left">
         <div class="door-panel">
+          <span class="gate-butterfly" aria-hidden="true"><svg viewBox="0 0 100 80" width="70" height="56" fill="none"><g class="butterfly-wing butterfly-wing-left"><path d="M49 38C32 0 2 4 8 29C10 40 24 43 43 43C17 37 14 65 29 68C43 71 48 50 49 38Z" fill="#d4af37" stroke="#f9e5a9"/><path d="M46 38Q25 14 15 20M44 46Q27 48 28 60" stroke="#80621f" stroke-width="1.2"/></g><g class="butterfly-wing butterfly-wing-right"><path d="M51 38C68 0 98 4 92 29C90 40 76 43 57 43C83 37 86 65 71 68C57 71 52 50 51 38Z" fill="#d4af37" stroke="#f9e5a9"/><path d="M54 38Q75 14 85 20M56 46Q73 48 72 60" stroke="#80621f" stroke-width="1.2"/></g><path d="M50 27V57M50 29Q43 14 40 19M50 29Q57 14 60 19" stroke="#fff0bf" stroke-width="2.5" stroke-linecap="round"/></svg></span>
           <div class="door-handle"></div>
         </div>
       </div>
       <div class="door door-right">
         <div class="door-panel">
+          <span class="gate-butterfly" aria-hidden="true"><svg viewBox="0 0 100 80" width="70" height="56" fill="none"><g class="butterfly-wing butterfly-wing-left"><path d="M49 38C32 0 2 4 8 29C10 40 24 43 43 43C17 37 14 65 29 68C43 71 48 50 49 38Z" fill="#d4af37" stroke="#f9e5a9"/><path d="M46 38Q25 14 15 20M44 46Q27 48 28 60" stroke="#80621f" stroke-width="1.2"/></g><g class="butterfly-wing butterfly-wing-right"><path d="M51 38C68 0 98 4 92 29C90 40 76 43 57 43C83 37 86 65 71 68C57 71 52 50 51 38Z" fill="#d4af37" stroke="#f9e5a9"/><path d="M54 38Q75 14 85 20M56 46Q73 48 72 60" stroke="#80621f" stroke-width="1.2"/></g><path d="M50 27V57M50 29Q43 14 40 19M50 29Q57 14 60 19" stroke="#fff0bf" stroke-width="2.5" stroke-linecap="round"/></svg></span>
           <div class="door-handle"></div>
         </div>
       </div>
@@ -1120,6 +1143,7 @@
     <section class="section hero-section">
 <div class="sparkles" aria-hidden="true"><i>✦</i><i>✧</i><i>✦</i><i>✧</i></div>
 <svg class="floral-ornament" viewBox="0 0 160 44" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M9 30Q40 34 72 22M151 30Q120 34 88 22M32 31Q22 13 17 18Q18 30 32 31M47 29Q39 10 34 15Q34 27 47 29M61 25Q55 10 50 13Q49 23 61 25M128 31Q138 13 143 18Q142 30 128 31M113 29Q121 10 126 15Q126 27 113 29M99 25Q105 10 110 13Q111 23 99 25"/><path d="M80 8Q65 21 80 34Q95 21 80 8Z"/><path d="M68 21H92M80 13V29"/><circle cx="80" cy="21" r="3" fill="currentColor"/></svg><p class="hero-kicker">Together with our families</p>
+<p class="tamil-welcome" lang="ta">அன்புடன் வரவேற்கிறோம்<small>உங்கள் வருகை எங்கள் மகிழ்ச்சி!</small></p>
       <div class="quote-box">
         "Two hearts found their way to each other, and from this moment on, every road leads home."
       </div>
@@ -1219,8 +1243,7 @@
       <p class="journey-intro">From sacred vows in Namakkal to an evening of celebration in Chennai.</p>
       <div class="journey-track" style="position:relative">
       <svg class="journey-heartbeat" viewBox="0 0 40 300" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M20 0 V56 L16 64 L24 72 L4 82 L36 94 L20 106 V180 L16 188 L24 196 L4 206 L36 218 L20 230 V300"/>
-        <path class="heartbeat-glint" d="M20 0 V56 L16 64 L24 72 L4 82 L36 94 L20 106 V180 L16 188 L24 196 L4 206 L36 218 L20 230 V300"/>
+        <path id="heartbeatWave" d="M20 0V110L23 120L20 128L25 135L4 141L34 148L20 157Q12 170 20 183V300"/>
       </svg>
       <ol class="journey-timeline">
         <li class="journey-stop">
@@ -1355,7 +1378,9 @@
 
     function entranceFireworks(options = {}) {
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (options.target && options.target._fireworksCanvas) options.target._fireworksCanvas.remove();
       const canvas = document.createElement('canvas');
+      if (options.target) options.target._fireworksCanvas = canvas;
       canvas.setAttribute('aria-hidden', 'true');
       const target = options.target;
       canvas.style.cssText = target
@@ -1372,7 +1397,7 @@
       const bursts = [{t:0,x:.25,y:.32},{t:180,x:.75,y:.32},{t:430,x:.5,y:.23},{t:760,x:.2,y:.48},{t:920,x:.8,y:.48}];
       let previous = start;
       function frame(now) {
-        if (document.hidden || (target && (target.getBoundingClientRect().bottom <= 0 || target.getBoundingClientRect().top >= innerHeight)) || now - start > 3000) { canvas.remove(); return; }
+        if (!canvas.isConnected || document.hidden || (target && (target.getBoundingClientRect().bottom <= 0 || target.getBoundingClientRect().top >= innerHeight)) || now - start > 3000) { canvas.remove(); return; }
         const elapsed = now - start, dt = Math.min((now - previous) / 1000, .04);
         previous = now;
         for (const burst of bursts) {
@@ -1399,8 +1424,9 @@
 
     // Celebrate once when the reception scrolls into view.
     const receptionSection = document.querySelector('.reception-section');
+    let receptionObserver;
     if (receptionSection && 'IntersectionObserver' in window) {
-      const receptionObserver = new IntersectionObserver(entries => {
+      receptionObserver = new IntersectionObserver(entries => {
         if (entries.some(entry => entry.isIntersecting && entry.intersectionRatio >= .25)) {
           entranceFireworks({
             target: receptionSection,
@@ -1411,6 +1437,62 @@
       }, {threshold: .25});
       receptionObserver.observe(receptionSection);
     }
+
+
+    // Replay after the reception link's smooth scroll reaches its destination.
+    let receptionReplayFrame;
+    document.querySelector('a[href="#receptionCelebration"]').addEventListener('click', () => {
+      if (receptionObserver) receptionObserver.disconnect();
+      cancelAnimationFrame(receptionReplayFrame);
+      const started = performance.now();
+      let previousTop = Infinity;
+      let settledFrames = 0;
+      const awaitReception = now => {
+        const rect = receptionSection.getBoundingClientRect();
+        settledFrames = Math.abs(rect.top - previousTop) < .5 ? settledFrames + 1 : 0;
+        previousTop = rect.top;
+        const visible = rect.top < innerHeight * .75 && rect.bottom > 0;
+        if (visible && (settledFrames >= 5 || now - started > 2200)) {
+          entranceFireworks({target:receptionSection});
+          return;
+        }
+        if (now - started < 3500) receptionReplayFrame = requestAnimationFrame(awaitReception);
+      };
+      receptionReplayFrame = requestAnimationFrame(awaitReception);
+    });
+
+    // Move the ECG waveform itself; the gold stroke stays evenly coloured.
+    const heartbeatPath = document.getElementById('heartbeatWave');
+    const heartbeatSection = document.querySelector('.journey-section');
+    const heartbeatMotion = matchMedia('(prefers-reduced-motion: reduce)');
+    let heartbeatVisible = false, heartbeatFrame;
+    function animateHeartbeat(now) {
+      if (!heartbeatVisible || document.hidden || heartbeatMotion.matches) {
+        heartbeatFrame = null;
+        return;
+      }
+      const center = (now % 4400) / 4400 * 420 - 60;
+      const bump = (y,offset,width,amplitude) => amplitude * Math.exp(-Math.pow((y-center-offset)/width,2));
+      let trace = '';
+      for (let y=0;y<=300;y+=2) {
+        const x = 20 + bump(y,-30,6,3) + bump(y,-9,3,5) + bump(y,0,3,-17) + bump(y,8,4,12) + bump(y,32,10,-5);
+        trace += (y ? 'L' : 'M') + x.toFixed(2) + ' ' + y;
+      }
+      heartbeatPath.setAttribute('d',trace);
+      heartbeatFrame = requestAnimationFrame(animateHeartbeat);
+    }
+    function resumeHeartbeat() {
+      if (heartbeatVisible && !document.hidden && !heartbeatMotion.matches && !heartbeatFrame)
+        heartbeatFrame = requestAnimationFrame(animateHeartbeat);
+    }
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(entries => {
+        heartbeatVisible = entries[0].isIntersecting;
+        resumeHeartbeat();
+      }).observe(heartbeatSection);
+    } else { heartbeatVisible=true; resumeHeartbeat(); }
+    document.addEventListener('visibilitychange',resumeHeartbeat);
+    heartbeatMotion.addEventListener('change',resumeHeartbeat);
 
     function openDoors() {
       const doorWrapper = document.getElementById("doorWrapper");
