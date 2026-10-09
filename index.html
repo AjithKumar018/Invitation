@@ -1879,7 +1879,7 @@
         heartbeatFrame = null;
         return;
       }
-      const center = (now % 4400) / 4400 * 300;
+      const center = (now % 6200) / 6200 * 300;
       heartbeatPath.setAttribute('d', makeHeartbeatTrace(center));
       heartbeatFrame = requestAnimationFrame(animateHeartbeat);
     }
