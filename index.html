@@ -924,6 +924,44 @@
       color: #fff0bc; font: italic 500 1.15rem 'Playfair Display',serif;
       text-shadow: 0 1px 1px #6b491d;
     }
+
+    /* Realistic stationery artwork and softly lit floral setting. */
+    #personalLetter {
+      background-image: linear-gradient(180deg,#03291f18,#03291f30),url('./assets/backdrop.webp');
+      background-size: cover; background-position: center;
+      padding: 76px 24px 92px;
+    }
+    #personalLetter::after { display: none; }
+    #personalLetter::before { width: 60px; height: 60px; box-shadow: 0 5px 18px #001b1680; }
+    #personalLetter .letter-heading { font-family: 'Playfair Display',serif; font-size: clamp(1.5rem,6vw,1.9rem); }
+    #personalLetter .letter-caption { font-family: 'Playfair Display',serif; font-size: .95rem; }
+    #personalLetter .letter-stage { margin-top: 32px; }
+    #personalLetter .toggle-msg-btn {
+      aspect-ratio: 3/2; min-height: 0; padding: 0;
+      border: 0; border-radius: 3px;
+      background: #f5ecd8 url('./assets/envelope.webp') center/100% 100% no-repeat;
+      box-shadow: 0 20px 30px #001b1677,0 3px 7px #001b1655;
+    }
+    .envelope-pocket { background: none; }
+    .envelope-flap {
+      height: 71%; border: 0;
+      background: url('./assets/envelope.webp') center top/100% 140.845% no-repeat;
+      clip-path: polygon(0 0,100% 0,50% 100%);
+      filter: drop-shadow(0 3px 3px #70532922);
+    }
+    .wax-seal {
+      top: calc(70% - 38px); width: 76px; height: 76px;
+      background: none; border: 0; border-radius: 0; box-shadow: none;
+      filter: drop-shadow(0 4px 3px #70532966);
+    }
+    .wax-seal img { display: block; width: 100%; height: 100%; object-fit: contain; }
+    #personalLetter .message-content {
+      background: linear-gradient(135deg,#fffaf0f7,#efe4cef7);
+      box-shadow: 0 18px 36px #001b1677; border: 3px double #c4a257;
+      border-radius: 8px;
+    }
+    .person-card, .event-card { box-shadow: 0 8px 22px #073f3214; }
+    @media (max-width: 350px) { #personalLetter { padding-inline: 18px; } .wax-seal { width: 66px; height: 66px; top: calc(70% - 33px); } }
   </style>
   <noscript><style>.door-wrapper { display: none; } .countdown-container, .toggle-msg-btn, .music-btn, .share-btn { display: none; } .message-content { max-height: none; opacity: 1; } .envelope-card .message-content { position: relative; visibility: visible; transform: none; } .letter-close { display: none; }</style></noscript>
 </head>
@@ -1028,7 +1066,7 @@
         </svg>
         <span class="envelope-flap" aria-hidden="true"></span>
         <span class="envelope-pocket" aria-hidden="true"></span>
-        <span class="wax-seal" aria-hidden="true">Open</span>
+        <span class="wax-seal" aria-hidden="true"><img src="./assets/seal.webp" alt="" width="240" height="240" loading="lazy"></span>
 
       </button>
 
