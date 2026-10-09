@@ -1999,6 +1999,7 @@
       loveVoteButton.disabled = loveVoted || loveVotePending;
       loveVoteButton.setAttribute('aria-pressed', String(loveVoted));
       loveVoteLabel.textContent = loveVoted ? 'Love sent' : loveVotePending ? 'Sending…' : 'Send love';
+      if (loveVoted) loveVoteStatus.textContent = 'Thank you for your love and blessings!';
     }
     async function refreshLoveCount() {
       const request = ++loveCountRequest;
@@ -2016,7 +2017,7 @@
         else throw new Error('Count unavailable');
       } catch {
         if (request !== loveCountRequest) return;
-        loveVoteStatus.textContent = loveVoted ? 'Love sent! The total is temporarily unavailable.' : 'The total is temporarily unavailable. You can still send love.';
+        loveVoteStatus.textContent = loveVoted ? 'Thank you for your love and blessings!' : 'The total is temporarily unavailable. You can still send love.';
       }
     }
     function celebrateLoveVote() {
