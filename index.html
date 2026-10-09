@@ -1507,6 +1507,19 @@
     @keyframes love-wax-burst {0%{opacity:0;transform:translate(-50%,0) scale(.4);}15%{opacity:1;}100%{opacity:0;transform:translate(calc(-50% + var(--heart-x)),var(--heart-y)) rotate(var(--heart-turn)) scale(1.1);}}
     @media(prefers-reduced-motion:reduce) {.love-vote-button,.love-vote-button svg,.love-seal-face {transition:none;}.love-burst-heart {display:none;animation:none;}}
 
+    /* Ivory and rose keepsake portraits, framed in antique gold. */
+    .family-section .person-card {isolation:isolate;overflow:hidden;padding:28px 18px 27px;margin:20px 0;border:1px solid #cbb170;border-radius:22px;background:radial-gradient(ellipse at 50% 40%,#fffef8 0%,#f8edda 100%);box-shadow:0 10px 25px rgba(112,72,32,.08),inset 0 1px 0 #fffdf6;}
+    .family-section .bride-card {background:radial-gradient(ellipse at 50% 40%,#fffdfa 0%,#f8e8e3 100%);border-color:#ccac7a;}
+    .family-section .person-card::before {content:"";position:absolute;inset:7px;border:1px solid #c9ac6659;border-radius:16px;pointer-events:none;z-index:-1;}
+    .family-section .person-card::after {content:"❦";position:absolute;top:auto;bottom:9px;left:50%;right:auto;transform:translateX(-50%);color:#b48d48;font-size:1rem;line-height:1;pointer-events:none;}
+    .family-section .person-title {display:inline-block;padding:5px 16px;border:1px solid #c5a96970;border-radius:999px;background:#fff8e9;color:#8c682f;font-size:.63rem;font-weight:600;letter-spacing:2px;}
+    .family-section .bride-card .person-title {background:#fff4ef;color:#9b684a;border-color:#c69e7270;}
+    .family-section .name-crown.king-crown {width:108px;height:72px;margin:12px auto 0;filter:drop-shadow(0 3px 3px #9f742535);}
+    .family-section .name-crown.queen-crown {width:108px;height:72px;margin:12px auto 0;filter:drop-shadow(0 3px 3px #a7783d30);}
+    .family-section .person-card .person-name {font:600 1.55rem/1.5 'Cinzel',serif;color:#6d2637;letter-spacing:.5px;margin:3px 0 13px;text-shadow:0 1px 0 #fffdfa;overflow-wrap:anywhere;}
+    .family-section .bride-card .person-name {color:#883b4b;}
+    .family-section .and-divider {position:relative;margin:13px auto;color:#aa8441;text-shadow:0 1px 0 #fff9ed;}
+
   </style>
   <noscript><style>.scratch-cover,.scratch-instruction{display:none;}.door-wrapper { display: none; } .countdown-container, .toggle-msg-btn, .music-btn, .share-btn { display: none; } .message-content { max-height: none; opacity: 1; } .envelope-card .message-content { position: relative; visibility: visible; transform: none; } .letter-close { display: none; }</style></noscript>
 </head>
@@ -1644,10 +1657,10 @@
         With joyful hearts, we invite you to celebrate our wedding
       </p>
 
-      <div class="person-card">
+      <div class="person-card groom-card">
         <div class="person-title">The Groom</div>
         <svg class="name-crown king-crown filigree-crown" viewBox="0 0 120 80" aria-hidden="true" focusable="false" fill="none">
-<defs><linearGradient id="kingGold" x1="20" y1="12" x2="92" y2="72" gradientUnits="userSpaceOnUse"><stop stop-color="#fff0b0"/><stop offset=".32" stop-color="#b98c2e"/><stop offset=".63" stop-color="#efd486"/><stop offset="1" stop-color="#947023"/></linearGradient><radialGradient id="kingEmerald" cx=".3" cy=".25" r=".8"><stop stop-color="#43876a"/><stop offset=".45" stop-color="#0b6246"/><stop offset="1" stop-color="#043627"/></radialGradient></defs>
+<defs><linearGradient id="kingGold" x1="20" y1="12" x2="92" y2="72" gradientUnits="userSpaceOnUse"><stop stop-color="#fff0b0"/><stop offset=".32" stop-color="#b98c2e"/><stop offset=".63" stop-color="#efd486"/><stop offset="1" stop-color="#947023"/></linearGradient><radialGradient id="kingEmerald" cx=".3" cy=".25" r=".8"><stop stop-color="#f09da8"/><stop offset=".45" stop-color="#a82645"/><stop offset="1" stop-color="#5d1029"/></radialGradient></defs>
 <path d="M23 56Q18 43 21 30Q28 33 31 43M97 56Q102 43 99 30Q92 33 89 43" stroke="url(#kingGold)" stroke-width="2.8"/>
 <path d="M26 57C13 43 33 32 37 44C41 54 23 53 29 45M39 55C31 40 45 28 51 37C58 47 38 49 41 40M94 57C107 43 87 32 83 44C79 54 97 53 91 45M81 55C89 40 75 28 69 37C62 47 82 49 79 40" stroke="url(#kingGold)" stroke-width="2.2" stroke-linecap="round"/>
 <path d="M60 11Q47 20 47 32Q43 24 39 24Q40 42 52 47M60 11Q73 20 73 32Q77 24 81 24Q80 42 68 47M60 13V24" stroke="url(#kingGold)" stroke-width="2.2"/>
@@ -1666,7 +1679,7 @@
 
       <div class="and-divider">&</div>
 
-      <div class="person-card">
+      <div class="person-card bride-card">
         <div class="person-title">The Bride</div>
         <svg class="name-crown queen-crown" viewBox="0 0 120 80" aria-hidden="true" focusable="false" fill="none">
 <defs><linearGradient id="queenGold" x1="20" y1="22" x2="100" y2="68" gradientUnits="userSpaceOnUse"><stop stop-color="#fff0b4"/><stop offset=".4" stop-color="#cba03c"/><stop offset=".7" stop-color="#efd58c"/><stop offset="1" stop-color="#9a701e"/></linearGradient></defs>
@@ -1684,7 +1697,7 @@
 <ellipse cx="47" cy="49" rx="2" ry="2.7" fill="#0e654a" stroke="#e3c46e" stroke-width=".8"/><ellipse cx="73" cy="49" rx="2" ry="2.7" fill="#0e654a" stroke="#e3c46e" stroke-width=".8"/>
 <circle cx="28" cy="44" r="2" fill="#fff7e0" stroke="#bc974a" stroke-width=".6"/><circle cx="92" cy="44" r="2" fill="#fff7e0" stroke="#bc974a" stroke-width=".6"/>
 <circle cx="30" cy="62.0" r=".9" fill="#fff8e8" stroke="#c3a15e" stroke-width=".35"/><circle cx="36" cy="61.0" r=".9" fill="#fff8e8" stroke="#c3a15e" stroke-width=".35"/><circle cx="48" cy="59.5" r=".9" fill="#fff8e8" stroke="#c3a15e" stroke-width=".35"/><circle cx="54" cy="59.1" r=".9" fill="#fff8e8" stroke="#c3a15e" stroke-width=".35"/><circle cx="66" cy="59.1" r=".9" fill="#fff8e8" stroke="#c3a15e" stroke-width=".35"/><circle cx="72" cy="59.5" r=".9" fill="#fff8e8" stroke="#c3a15e" stroke-width=".35"/><circle cx="84" cy="61.0" r=".9" fill="#fff8e8" stroke="#c3a15e" stroke-width=".35"/><circle cx="90" cy="62.0" r=".9" fill="#fff8e8" stroke="#c3a15e" stroke-width=".35"/>
-<path d="M59 39L58 43L60 46" stroke="#8cbea2" stroke-width=".7"/>
+<path d="M59 39L58 43L60 46" stroke="#f1afb6" stroke-width=".7"/>
 </g></svg>
         <div class="person-name">Ramya</div>
       </div>
