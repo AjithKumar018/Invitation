@@ -1465,6 +1465,12 @@
     .name-crown.queen-crown { width:98px; height:65px; margin-top:2px; }
   
 
+  
+    .visitor-counter { margin:24px auto 0; display:flex; flex-direction:column; align-items:center; gap:8px; }
+    .visitor-counter-caption { color:#6a725e; font:italic .9rem 'Playfair Display',serif; }
+    .visitor-counter img { height:24px; width:auto; max-width:100%; border-radius:4px; }
+    .visitor-count-status { color:#707567; font-size:.72rem; line-height:1.5; }
+
   </style>
   <noscript><style>.scratch-cover,.scratch-instruction{display:none;}.door-wrapper { display: none; } .countdown-container, .toggle-msg-btn, .music-btn, .share-btn { display: none; } .message-content { max-height: none; opacity: 1; } .envelope-card .message-content { position: relative; visibility: visible; transform: none; } .letter-close { display: none; }</style></noscript>
 </head>
@@ -1759,6 +1765,11 @@
       <div style="font-weight: 700; font-size: 0.95rem; color: var(--burgundy); margin-top: 15px;">
         With love, Ajithkumar & Ramya
       </div>
+      <div class="visitor-counter" id="visitorCounter" title="Total invitation openings since the counter was added">
+        <span class="visitor-counter-caption">Thank you for visiting</span>
+        <img id="visitorCountBadge" alt="Invitation visitor count" height="24" referrerpolicy="no-referrer" hidden>
+        <span class="visitor-count-status" id="visitorCountStatus" role="status" aria-live="polite">Visitor count loads when the invitation opens</span>
+      </div>
       <button type="button" class="btn-directions share-btn" onclick="shareInvitation()">Share on WhatsApp</button>
       <p class="share-status" id="shareStatus" role="status" aria-live="polite"></p>
     </section>
@@ -1942,9 +1953,28 @@
     } else { receptionSkyVisible=true;syncReceptionStars(); }
     document.addEventListener('visibilitychange',syncReceptionStars);
 
+
+    // One shared counter request per entrance, independent of later interactions.
+    let visitorCountStarted=false;
+    function countInvitationVisit(){
+      if(visitorCountStarted)return;
+      visitorCountStarted=true;
+      const container=document.getElementById('visitorCounter');
+      if(location.hostname!=='ajithkumar018.github.io'||!location.pathname.startsWith('/Invitation/')){
+        container.hidden=true;container.style.display='none';return;
+      }
+      const badge=document.getElementById('visitorCountBadge');
+      const status=document.getElementById('visitorCountStatus');
+      status.textContent='Loading visitor count…';
+      badge.onload=()=>{badge.hidden=false;status.textContent='';};
+      badge.onerror=()=>{badge.hidden=true;status.textContent='Visitor count temporarily unavailable';};
+      badge.src='https://hits.sh/ajithkumar018.github.io/Invitation/entrances.svg?label=Visitors&color=d4af37&labelColor=073f32&style=flat';
+    }
+
     function openDoors() {
       const doorWrapper = document.getElementById("doorWrapper");
       if (doorWrapper.classList.contains("open")) return;
+      countInvitationVisit();
       entranceFireworks();
       document.getElementById("jasmineShower").classList.add("active");
       doorWrapper.classList.add("open");
