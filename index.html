@@ -1182,6 +1182,29 @@
     }
     @media (prefers-reduced-motion:reduce) { .reception-lighting { display:none; } }
 
+  
+    /* Reference butterfly: wings hinge independently while the body stays still. */
+    .photo-butterfly { width:clamp(64px,18vw,88px); aspect-ratio:1; perspective:500px; }
+    .photo-butterfly img { position:absolute; inset:0; display:block; width:100%; height:100%; object-fit:contain; }
+    .photo-wing { transform-origin:50% 47%; animation-duration:1.8s; animation-timing-function:cubic-bezier(.45,0,.55,1); animation-iteration-count:infinite; }
+    .photo-wing-left { animation-name:goldenWingLeft; }
+    .photo-wing-right { animation-name:goldenWingRight; }
+    .photo-wing-left { clip-path:polygon(0 0,35% 0,35% 25%,46% 40%,47% 55%,46% 100%,0 100%); }
+    .photo-wing-right { clip-path:polygon(100% 0,65% 0,65% 25%,54% 40%,53% 55%,54% 100%,100% 100%); }
+    .photo-butterfly-body { clip-path:polygon(35% 0,65% 0,65% 25%,54% 40%,53% 55%,54% 100%,46% 100%,47% 55%,46% 40%,35% 25%); z-index:2; }
+    .door-right .photo-wing { animation-delay:-.65s; }
+    @keyframes goldenWingLeft {
+      0%,100% { transform:rotateY(0deg); }
+      42% { transform:rotateY(-74deg); }
+      58% { transform:rotateY(-70deg); }
+    }
+    @keyframes goldenWingRight {
+      0%,100% { transform:rotateY(0deg); }
+      42% { transform:rotateY(74deg); }
+      58% { transform:rotateY(70deg); }
+    }
+    .door-wrapper.open .photo-wing { animation-play-state:paused; }
+
   </style>
   <noscript><style>.door-wrapper { display: none; } .countdown-container, .toggle-msg-btn, .music-btn, .share-btn { display: none; } .message-content { max-height: none; opacity: 1; } .envelope-card .message-content { position: relative; visibility: visible; transform: none; } .letter-close { display: none; }</style></noscript>
 </head>
@@ -1195,13 +1218,21 @@
     <div class="door-wrapper" id="doorWrapper" role="button" tabindex="0" aria-label="Open wedding invitation" onclick="openDoors()" onkeydown="if(event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openDoors(); }">
       <div class="door door-left">
         <div class="door-panel">
-          <span class="gate-butterfly" aria-hidden="true"><svg viewBox="0 0 100 80" width="70" height="56" fill="none"><g class="butterfly-wing butterfly-wing-left"><path d="M49 38C32 0 2 4 8 29C10 40 24 43 43 43C17 37 14 65 29 68C43 71 48 50 49 38Z" fill="#d4af37" stroke="#f9e5a9"/><path d="M46 38Q25 14 15 20M44 46Q27 48 28 60" stroke="#80621f" stroke-width="1.2"/></g><g class="butterfly-wing butterfly-wing-right"><path d="M51 38C68 0 98 4 92 29C90 40 76 43 57 43C83 37 86 65 71 68C57 71 52 50 51 38Z" fill="#d4af37" stroke="#f9e5a9"/><path d="M54 38Q75 14 85 20M56 46Q73 48 72 60" stroke="#80621f" stroke-width="1.2"/></g><path d="M50 27V57M50 29Q43 14 40 19M50 29Q57 14 60 19" stroke="#fff0bf" stroke-width="2.5" stroke-linecap="round"/></svg></span>
+          <span class="gate-butterfly photo-butterfly" aria-hidden="true">
+            <img class="photo-wing photo-wing-left" src="./assets/golden-butterfly.webp" alt="" width="1254" height="1254">
+            <img class="photo-wing photo-wing-right" src="./assets/golden-butterfly.webp" alt="" width="1254" height="1254">
+            <img class="photo-butterfly-body" src="./assets/golden-butterfly.webp" alt="" width="1254" height="1254">
+          </span>
           <div class="door-handle"></div>
         </div>
       </div>
       <div class="door door-right">
         <div class="door-panel">
-          <span class="gate-butterfly" aria-hidden="true"><svg viewBox="0 0 100 80" width="70" height="56" fill="none"><g class="butterfly-wing butterfly-wing-left"><path d="M49 38C32 0 2 4 8 29C10 40 24 43 43 43C17 37 14 65 29 68C43 71 48 50 49 38Z" fill="#d4af37" stroke="#f9e5a9"/><path d="M46 38Q25 14 15 20M44 46Q27 48 28 60" stroke="#80621f" stroke-width="1.2"/></g><g class="butterfly-wing butterfly-wing-right"><path d="M51 38C68 0 98 4 92 29C90 40 76 43 57 43C83 37 86 65 71 68C57 71 52 50 51 38Z" fill="#d4af37" stroke="#f9e5a9"/><path d="M54 38Q75 14 85 20M56 46Q73 48 72 60" stroke="#80621f" stroke-width="1.2"/></g><path d="M50 27V57M50 29Q43 14 40 19M50 29Q57 14 60 19" stroke="#fff0bf" stroke-width="2.5" stroke-linecap="round"/></svg></span>
+          <span class="gate-butterfly photo-butterfly" aria-hidden="true">
+            <img class="photo-wing photo-wing-left" src="./assets/golden-butterfly.webp" alt="" width="1254" height="1254">
+            <img class="photo-wing photo-wing-right" src="./assets/golden-butterfly.webp" alt="" width="1254" height="1254">
+            <img class="photo-butterfly-body" src="./assets/golden-butterfly.webp" alt="" width="1254" height="1254">
+          </span>
           <div class="door-handle"></div>
         </div>
       </div>
