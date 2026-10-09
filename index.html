@@ -1463,6 +1463,23 @@
   
     .name-crown.king-crown { width:96px; height:64px; margin-top:2px; }
     .name-crown.queen-crown { width:98px; height:65px; margin-top:2px; }
+  
+    /* A few small glints sparkle on the coating, then fade with it. */
+    .scratch-glitters { position:absolute; inset:0; z-index:8; pointer-events:none; overflow:hidden; border-radius:8px; transition:opacity .4s ease,visibility 0s linear .4s; }
+    .scratch-glitters i { position:absolute; width:6px; height:6px; color:#c3a25a; opacity:.25; animation:scratchGlitter 4.2s ease-in-out infinite; }
+    .scratch-glitters i::before,.scratch-glitters i::after { content:""; position:absolute; background:currentColor; border-radius:50%; }
+    .scratch-glitters i::before { width:1px; height:6px; left:2.5px; }
+    .scratch-glitters i::after { width:6px; height:1px; top:2.5px; }
+    .scratch-glitters i:nth-child(1) { left:16%; top:17%; }
+    .scratch-glitters i:nth-child(2) { left:76%; top:12%; animation-delay:-1.2s; }
+    .scratch-glitters i:nth-child(3) { left:89%; top:37%; animation-delay:-2.7s; }
+    .scratch-glitters i:nth-child(4) { left:9%; top:64%; animation-delay:-.8s; }
+    .scratch-glitters i:nth-child(5) { left:71%; top:80%; animation-delay:-3.4s; }
+    .scratch-glitters i:nth-child(6) { left:33%; top:91%; animation-delay:-2s; }
+    .scratch-glitters i:nth-child(7) { left:47%; top:23%; animation-delay:-1.7s; }
+    @keyframes scratchGlitter { 0%,70%,100% { opacity:.12; transform:scale(.65); } 35% { opacity:.8; transform:scale(1.15); } }
+    #personalLetter.scratch-revealed .scratch-glitters { opacity:0; visibility:hidden; }
+
   </style>
   <noscript><style>.scratch-cover,.scratch-instruction{display:none;}.door-wrapper { display: none; } .countdown-container, .toggle-msg-btn, .music-btn, .share-btn { display: none; } .message-content { max-height: none; opacity: 1; } .envelope-card .message-content { position: relative; visibility: visible; transform: none; } .letter-close { display: none; }</style></noscript>
 </head>
@@ -1586,6 +1603,7 @@
         <div class="section-tag" style="font-size: 0.65rem;">WITH LOVE, AJITHKUMAR & RAMYA</div>
 <button type="button" class="letter-close" onclick="resetScratchBoard()">Cover message again</button>
       </div>
+      <div class="scratch-glitters" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
       <canvas id="scratchCover" class="scratch-cover" role="button" tabindex="0" aria-label="Scratch this ivory panel to reveal your personal invitation. Use a finger or mouse, or press Enter to reveal." aria-controls="messageBox" aria-expanded="false"></canvas>
 </div>
 <p class="scratch-instruction" id="scratchInstruction">Gently scratch the patterned panel to uncover our note</p>
