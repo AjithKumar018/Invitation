@@ -1455,6 +1455,11 @@
     @keyframes naturalWingRight { 0%,100% { transform:rotateY(0deg); } 50% { transform:rotateY(58deg); } }
     .door-wrapper.open .natural-wing { animation-play-state:paused; }
 
+  
+    /* Royal crowns sit above the names in the family cards. */
+    .name-crown { display:block; width:78px; height:52px; margin:4px auto -3px; filter:drop-shadow(0 2px 2px #8a6b1c22); }
+    .queen-crown { width:82px; }
+    .person-card .person-name { margin-top:2px; }
   </style>
   <noscript><style>.scratch-cover,.scratch-instruction{display:none;}.door-wrapper { display: none; } .countdown-container, .toggle-msg-btn, .music-btn, .share-btn { display: none; } .message-content { max-height: none; opacity: 1; } .envelope-card .message-content { position: relative; visibility: visible; transform: none; } .letter-close { display: none; }</style></noscript>
 </head>
@@ -1594,6 +1599,18 @@
 
       <div class="person-card">
         <div class="person-title">The Groom</div>
+        <svg class="name-crown king-crown" viewBox="0 0 120 80" aria-hidden="true" focusable="false" fill="none">
+<defs><linearGradient id="kingGold" x1="15" y1="15" x2="95" y2="74" gradientUnits="userSpaceOnUse"><stop stop-color="#fff1b8"/><stop offset=".3" stop-color="#d4ad49"/><stop offset=".6" stop-color="#f3db8d"/><stop offset="1" stop-color="#9b721e"/></linearGradient></defs>
+<path d="M60 12V23M56 16H64" stroke="#b18a2d" stroke-width="2.5" stroke-linecap="round"/>
+<circle cx="60" cy="25" r="4" fill="url(#kingGold)" stroke="#a47b27"/>
+<path d="M31 57Q30 27 56 29M89 57Q90 27 64 29M60 29V56" stroke="url(#kingGold)" stroke-width="5"/>
+<path d="M23 40L32 59H88L97 40L77 51L60 34L43 51L23 40Z" fill="url(#kingGold)" stroke="#ab812b" stroke-width="1.3" stroke-linejoin="round"/>
+<circle cx="23" cy="39" r="3" fill="#ead081" stroke="#ac8127"/><circle cx="97" cy="39" r="3" fill="#ead081" stroke="#ac8127"/>
+<path d="M31 59H89L87 69H33L31 59Z" fill="url(#kingGold)" stroke="#a57b28"/>
+<path d="M34 62H86M35 67H85" stroke="#fff0b5" stroke-width="1"/>
+<path d="M60 57L64 63L60 68L56 63Z" fill="#0b5e46" stroke="#f8e7ad" stroke-width="1"/>
+<circle cx="43" cy="63" r="2" fill="#fdf5d8"/><circle cx="77" cy="63" r="2" fill="#fdf5d8"/>
+</svg>
         <div class="person-name">Ajithkumar</div>
       </div>
 
@@ -1601,6 +1618,17 @@
 
       <div class="person-card">
         <div class="person-title">The Bride</div>
+        <svg class="name-crown queen-crown" viewBox="0 0 120 80" aria-hidden="true" focusable="false" fill="none">
+<defs><linearGradient id="queenGold" x1="20" y1="22" x2="100" y2="68" gradientUnits="userSpaceOnUse"><stop stop-color="#fff0b4"/><stop offset=".4" stop-color="#cba03c"/><stop offset=".7" stop-color="#efd58c"/><stop offset="1" stop-color="#9a701e"/></linearGradient></defs>
+<path d="M23 59Q30 45 35 39Q41 50 45 55Q53 35 60 25Q67 35 75 55Q79 50 85 39Q90 45 97 59" stroke="url(#queenGold)" stroke-width="3" stroke-linecap="round"/>
+<path d="M30 58Q24 45 32 47Q40 48 40 58M48 57Q40 40 49 42Q56 44 55 56M65 56Q64 44 71 42Q80 40 72 57M80 58Q80 48 88 47Q96 45 90 58" stroke="url(#queenGold)" stroke-width="2"/>
+<path d="M60 31Q47 43 60 54Q73 43 60 31Z" fill="#efe0a655" stroke="url(#queenGold)" stroke-width="1.8"/>
+<path d="M60 38L63 43L60 48L57 43Z" fill="#0b5e46" stroke="#d8b95f"/>
+<circle cx="60" cy="23" r="3" fill="#fff5d6" stroke="#c6a14e"/><circle cx="35" cy="37" r="2.5" fill="#fff5d6" stroke="#c6a14e"/><circle cx="85" cy="37" r="2.5" fill="#fff5d6" stroke="#c6a14e"/>
+<path d="M24 60Q60 54 96 60L94 66Q60 61 26 66Z" fill="url(#queenGold)" stroke="#b28a31"/>
+<path d="M28 62Q60 57 92 62" stroke="#fff1c5" stroke-width="1"/>
+<circle cx="42" cy="60" r="1.6" fill="#fff5df"/><circle cx="60" cy="59" r="1.6" fill="#fff5df"/><circle cx="78" cy="60" r="1.6" fill="#fff5df"/>
+</svg>
         <div class="person-name">Ramya</div>
       </div>
     </section>
