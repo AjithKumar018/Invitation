@@ -1548,6 +1548,15 @@
     html[lang="ta"] .footer-thanks {font-size:2.1rem;}
     html[lang="ta"] .date-badge .month {font-size:.65rem;}
     .footer-section {padding-bottom:max(40px,env(safe-area-inset-bottom));}
+
+    /* Flying butterflies leave the moving panels and continue above the page. */
+    .door-butterfly.natural-door-butterfly.flying-door-butterfly {
+      position:fixed; margin:0; z-index:1100; pointer-events:none;
+      will-change:transform,opacity;
+    }
+    .flying-door-butterfly .natural-wing {
+      animation-duration:.48s; animation-delay:0s; animation-play-state:running;
+    }
   </style>
   <noscript><style>.scratch-cover,.scratch-instruction{display:none;}.door-wrapper { display: none; } .countdown-container, .toggle-msg-btn, .music-btn, .share-btn { display: none; } .message-content { max-height: none; opacity: 1; } .envelope-card .message-content { position: relative; visibility: visible; transform: none; } .letter-close { display: none; }</style></noscript>
 </head>
@@ -2272,9 +2281,40 @@
       badge.src='https://hits.sh/ajithkumar018.github.io/Invitation/entrances.svg?label=Visitors&color=d4af37&labelColor=073f32&style=flat';
     }
 
+
+    function launchDoorButterflies(doorWrapper) {
+      if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+      doorWrapper.querySelectorAll('.natural-door-butterfly').forEach((butterfly,index)=>{
+        const rect=butterfly.getBoundingClientRect();
+        const flyer=butterfly.cloneNode(true);
+        flyer.classList.add('flying-door-butterfly');
+        flyer.style.left=rect.left+'px';flyer.style.top=rect.top+'px';
+        flyer.style.width=rect.width+'px';flyer.style.height=rect.height+'px';
+        flyer.setAttribute('aria-hidden','true');
+        document.body.appendChild(flyer);
+        if(typeof flyer.animate!=='function'){flyer.remove();return;}
+        butterfly.style.visibility='hidden';
+        const direction=butterfly.closest('.door-left')?-1:1;
+        const drift=direction*Math.min(innerWidth*.42,280);
+        const rise=Math.max(rect.top+rect.height+100,innerHeight*.6);
+        const duration=2600+index*220;
+        const flight=flyer.animate([
+          {offset:0,transform:'translate3d(0,0,0) rotate(0deg) scale(1)',opacity:1},
+          {offset:.18,transform:`translate3d(${drift*.12}px,-42px,0) rotate(${direction*10}deg) scale(1.05)`,opacity:1},
+          {offset:.46,transform:`translate3d(${drift*.48}px,${-rise*.4}px,0) rotate(${direction*17}deg) scale(.94)`,opacity:1},
+          {offset:.76,transform:`translate3d(${drift*.8}px,${-rise*.75}px,0) rotate(${direction*8}deg) scale(.7)`,opacity:.85},
+          {offset:1,transform:`translate3d(${drift}px,${-rise}px,0) rotate(${direction*14}deg) scale(.45)`,opacity:0}
+        ],{duration,easing:'cubic-bezier(.25,.1,.25,1)',fill:'forwards'});
+        const cleanup=()=>flyer.remove();
+        flight.finished.then(cleanup,cleanup);
+        setTimeout(cleanup,duration+1000);
+      });
+    }
+
     function openDoors() {
       const doorWrapper = document.getElementById("doorWrapper");
       if (doorWrapper.classList.contains("open")) return;
+      launchDoorButterflies(doorWrapper);
       countInvitationVisit();
       entranceFireworks();
       document.getElementById("jasmineShower").classList.add("active");
