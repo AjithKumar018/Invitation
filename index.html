@@ -962,6 +962,25 @@
     }
     .person-card, .event-card { box-shadow: 0 8px 22px #073f3214; }
     @media (max-width: 350px) { #personalLetter { padding-inline: 18px; } .wax-seal { width: 66px; height: 66px; top: calc(70% - 33px); } }
+
+    /* Compact envelope and a gold thread connecting both celebrations. */
+    #personalLetter .toggle-msg-btn { width: 82%; max-width: 280px; margin-inline: auto; }
+    .wax-seal { width: 62px; height: 62px; top: calc(70% - 31px); }
+    @media (max-width: 350px) { .wax-seal { width: 54px; height: 54px; top: calc(70% - 27px); } }
+    .journey-section { background: linear-gradient(160deg,#fffaf0,#efe5cf); border-block: 1px solid #d8b65c66; }
+    .journey-intro { max-width: 310px; margin: 0 auto 28px; font: italic .95rem/1.7 'Playfair Display',serif; color: #526453; }
+    .journey-timeline { list-style: none; text-align: left; position: relative; padding: 0; margin: 0; }
+    .journey-timeline::before { content: ""; position: absolute; left: 19px; top: 22px; bottom: 28px; width: 2px; background: linear-gradient(#b58b34,#e5cc86,#b58b34); }
+    .journey-stop { position: relative; padding-left: 55px; margin-bottom: 24px; }
+    .journey-stop:last-child { margin-bottom: 0; }
+    .journey-marker { position: absolute; left: 0; top: 18px; display: grid; place-items: center; width: 40px; height: 40px; border: 3px double #e5cc86; border-radius: 50%; background: #073f32; color: #f4dda2; font: 1.3rem serif; box-shadow: 0 3px 8px #073f3222; }
+    .journey-card { padding: 20px 16px; border: 1px solid #dbc68c; border-radius: 14px; background: #fffdf6; box-shadow: 0 6px 16px #073f320a; }
+    .journey-card time { color: #87631d; font-size: .65rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+    .journey-card h3 { font: 600 1.05rem/1.5 'Cinzel',serif; color: #073f32; margin: 8px 0; }
+    .journey-card p { color: #526453; font-size: .78rem; line-height: 1.65; margin: 3px 0; }
+    .journey-card a { display: inline-block; color: #073f32; font-size: .75rem; font-weight: 700; padding: 12px 0 4px; text-underline-offset: 4px; }
+    .journey-footnote { margin-top: 26px; font: italic 1rem 'Playfair Display',serif; color: #87631d; }
+    #weddingCeremony, #receptionCelebration { scroll-margin-top: 16px; }
   </style>
   <noscript><style>.door-wrapper { display: none; } .countdown-container, .toggle-msg-btn, .music-btn, .share-btn { display: none; } .message-content { max-height: none; opacity: 1; } .envelope-card .message-content { position: relative; visibility: visible; transform: none; } .letter-close { display: none; }</style></noscript>
 </head>
@@ -1104,8 +1123,38 @@
       </div>
     </section>
 
+    <!-- WEDDING JOURNEY -->
+    <section class="section journey-section" aria-labelledby="journeyTitle">
+      <div class="section-tag">Two cities, one beautiful beginning</div>
+      <h2 class="section-heading" id="journeyTitle">Our Wedding Journey</h2>
+      <p class="journey-intro">From sacred vows in Namakkal to an evening of celebration in Chennai.</p>
+      <ol class="journey-timeline">
+        <li class="journey-stop">
+          <span class="journey-marker" aria-hidden="true">♡</span>
+          <div class="journey-card">
+            <time datetime="2026-10-25">25 October 2026</time>
+            <h3>Wedding · Namakkal</h3>
+            <p>4:30 AM – 6:00 AM</p>
+            <p>Arulmigu Sri Murugan Temple</p>
+            <a href="#weddingCeremony">Explore the wedding <span aria-hidden="true">→</span></a>
+          </div>
+        </li>
+        <li class="journey-stop">
+          <span class="journey-marker" aria-hidden="true">✧</span>
+          <div class="journey-card">
+            <time datetime="2026-11-01">1 November 2026</time>
+            <h3>Reception · Chennai</h3>
+            <p>6:00 PM onwards</p>
+            <p>Food Village, Injambakkam</p>
+            <a href="#receptionCelebration">Explore the reception <span aria-hidden="true">→</span></a>
+          </div>
+        </li>
+      </ol>
+      <p class="journey-footnote">Your blessings travel with us.</p>
+    </section>
+
     <!-- WEDDING EVENTS SECTION -->
-    <section class="section">
+    <section class="section" id="weddingCeremony">
       <div class="section-tag">Join Us In</div>
       <h2 class="section-heading" style="font-size: 1.9rem;">Namakkal</h2>
 
@@ -1133,7 +1182,7 @@
     </section>
 
     <!-- RECEPTION SECTION (DARK THEME) -->
-    <section class="section reception-section">
+    <section class="section reception-section" id="receptionCelebration">
 <svg class="floral-ornament" viewBox="0 0 160 44" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M9 30Q40 34 72 22M151 30Q120 34 88 22M32 31Q22 13 17 18Q18 30 32 31M47 29Q39 10 34 15Q34 27 47 29M61 25Q55 10 50 13Q49 23 61 25M128 31Q138 13 143 18Q142 30 128 31M113 29Q121 10 126 15Q126 27 113 29M99 25Q105 10 110 13Q111 23 99 25"/><path d="M80 8Q65 21 80 34Q95 21 80 8Z"/><path d="M68 21H92M80 13V29"/><circle cx="80" cy="21" r="3" fill="currentColor"/></svg>      <div class="section-tag">The Reception</div>
       <p style="font-size: 0.85rem; color: rgba(255,255,255,0.8); margin-bottom: 20px;">
         An evening of joy, dinner and dancing as we celebrate our new beginning.
