@@ -849,6 +849,55 @@
       text-transform: none;
     }
 
+
+    /* Folded ivory envelope with a gold wax seal. */
+    #personalLetter .letter-stage { perspective: 1100px; }
+    #personalLetter .toggle-msg-btn {
+      position: relative; min-height: 230px; border: 1px solid #c9af70;
+      border-radius: 12px; overflow: visible; justify-content: flex-end;
+      padding: 145px 12px 20px; gap: 4px;
+      background: linear-gradient(135deg,#fff9e7,#ead9b2);
+      box-shadow: 0 18px 35px #001c1680;
+      transition: opacity .35s ease .85s, visibility 0s linear 1.2s;
+      transform: none;
+    }
+    .envelope-flap {
+      position: absolute; inset: 0 0 auto; height: 140px;
+      background: linear-gradient(160deg,#fffdf2,#ead8ad);
+      clip-path: polygon(0 0,100% 0,50% 100%);
+      transform-origin: center top; backface-visibility: hidden;
+      transition: transform .8s cubic-bezier(.3,0,.2,1);
+      z-index: 4; pointer-events: none;
+    }
+    .envelope-pocket {
+      position: absolute; inset: 0; border-radius: 12px;
+      background: linear-gradient(32deg,#efe0bd 49.7%,transparent 50%) left/50% 100% no-repeat,
+                  linear-gradient(-32deg,#f5e8cd 49.7%,transparent 50%) right/50% 100% no-repeat;
+      pointer-events: none; z-index: 1;
+    }
+    .wax-seal {
+      position: absolute; left: 50%; top: 96px; transform: translateX(-50%);
+      display: grid; place-items: center; width: 62px; height: 62px;
+      border-radius: 46% 54% 48% 52%; border: 4px double #f7e3a1;
+      background: radial-gradient(circle at 30% 25%,#f3d98b,#cba448 65%,#9a7327);
+      box-shadow: 0 4px 9px #72502155,inset 0 0 0 3px #a7803244;
+      color: #073f32; font: italic 600 1rem 'Playfair Display',serif;
+      z-index: 5; pointer-events: none;
+      transition: opacity .25s ease, transform .4s ease;
+    }
+    #personalLetter #msgBtnText, #personalLetter .letter-hint { position: relative; z-index: 2; }
+    #personalLetter #msgBtnText { font-size: 2.4rem; }
+    #personalLetter.letter-open .toggle-msg-btn {
+      position: absolute; inset: 0; opacity: 0; visibility: hidden;
+      transform: none; pointer-events: none; z-index: 3;
+    }
+    #personalLetter.letter-open .envelope-flap { transform: rotateX(175deg); }
+    #personalLetter.letter-open .wax-seal { opacity: 0; transform: translateX(-50%) translateY(-12px) scale(.85); }
+    #personalLetter .message-content {
+      transform: translateY(22px) scale(.98);
+      transition: opacity .6s ease .5s, transform .85s cubic-bezier(.22,1,.36,1) .5s, visibility 0s linear .5s;
+    }
+    #personalLetter.letter-open .message-content { transform: translateY(0) scale(1); }
   </style>
   <noscript><style>.door-wrapper { display: none; } .countdown-container, .toggle-msg-btn, .music-btn, .share-btn { display: none; } .message-content { max-height: none; opacity: 1; } .envelope-card .message-content { position: relative; visibility: visible; transform: none; } .letter-close { display: none; }</style></noscript>
 </head>
@@ -951,6 +1000,9 @@
           <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
           <polyline points="22,6 12,13 2,6"></polyline>
         </svg>
+        <span class="envelope-flap" aria-hidden="true"></span>
+        <span class="envelope-pocket" aria-hidden="true"></span>
+        <span class="wax-seal" aria-hidden="true">A &amp; R</span>
         <span id="msgBtnText">Open</span><span class="letter-hint">Your personal invitation</span>
       </button>
 
@@ -1182,7 +1234,7 @@
       if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && stage.animate) {
         stage._heightAnimation = stage.animate(
           [{height: startHeight + 'px'}, {height: endHeight + 'px'}],
-          {duration: 800, easing: 'cubic-bezier(.22,1,.36,1)'}
+          {duration: 1200, easing: 'cubic-bezier(.22,1,.36,1)'}
         );
         stage._heightAnimation.onfinish = () => { stage._heightAnimation = null; };
       }
@@ -1206,7 +1258,7 @@
           });
         };
         if (reducedMotion) requestAnimationFrame(centerMessage);
-        else letter._centerTimer = setTimeout(centerMessage, 850);
+        else letter._centerTimer = setTimeout(centerMessage, 1400);
         if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
           for (let i = 0; i < 24; i++) {
             const petal = document.createElement('span');
