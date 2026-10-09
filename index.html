@@ -1464,21 +1464,6 @@
     .name-crown.king-crown { width:96px; height:64px; margin-top:2px; }
     .name-crown.queen-crown { width:98px; height:65px; margin-top:2px; }
   
-    /* A few small glints sparkle on the coating, then fade with it. */
-    .scratch-glitters { position:absolute; inset:0; z-index:8; pointer-events:none; overflow:hidden; border-radius:8px; transition:opacity .4s ease,visibility 0s linear .4s; }
-    .scratch-glitters i { position:absolute; width:6px; height:6px; color:#c3a25a; opacity:.25; animation:scratchGlitter 4.2s ease-in-out infinite; }
-    .scratch-glitters i::before,.scratch-glitters i::after { content:""; position:absolute; background:currentColor; border-radius:50%; }
-    .scratch-glitters i::before { width:1px; height:6px; left:2.5px; }
-    .scratch-glitters i::after { width:6px; height:1px; top:2.5px; }
-    .scratch-glitters i:nth-child(1) { left:16%; top:17%; }
-    .scratch-glitters i:nth-child(2) { left:76%; top:12%; animation-delay:-1.2s; }
-    .scratch-glitters i:nth-child(3) { left:89%; top:37%; animation-delay:-2.7s; }
-    .scratch-glitters i:nth-child(4) { left:9%; top:64%; animation-delay:-.8s; }
-    .scratch-glitters i:nth-child(5) { left:71%; top:80%; animation-delay:-3.4s; }
-    .scratch-glitters i:nth-child(6) { left:33%; top:91%; animation-delay:-2s; }
-    .scratch-glitters i:nth-child(7) { left:47%; top:23%; animation-delay:-1.7s; }
-    @keyframes scratchGlitter { 0%,70%,100% { opacity:.12; transform:scale(.65); } 35% { opacity:.8; transform:scale(1.15); } }
-    #personalLetter.scratch-revealed .scratch-glitters { opacity:0; visibility:hidden; }
 
   </style>
   <noscript><style>.scratch-cover,.scratch-instruction{display:none;}.door-wrapper { display: none; } .countdown-container, .toggle-msg-btn, .music-btn, .share-btn { display: none; } .message-content { max-height: none; opacity: 1; } .envelope-card .message-content { position: relative; visibility: visible; transform: none; } .letter-close { display: none; }</style></noscript>
@@ -1603,10 +1588,9 @@
         <div class="section-tag" style="font-size: 0.65rem;">WITH LOVE, AJITHKUMAR & RAMYA</div>
 <button type="button" class="letter-close" onclick="resetScratchBoard()">Cover message again</button>
       </div>
-      <div class="scratch-glitters" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-      <canvas id="scratchCover" class="scratch-cover" role="button" tabindex="0" aria-label="Scratch this ivory panel to reveal your personal invitation. Use a finger or mouse, or press Enter to reveal." aria-controls="messageBox" aria-expanded="false"></canvas>
+      <canvas id="scratchCover" class="scratch-cover" role="button" tabindex="0" aria-label="Scratch this blush jasmine panel to reveal your personal invitation. Use a finger or mouse, or press Enter to reveal." aria-controls="messageBox" aria-expanded="false"></canvas>
 </div>
-<p class="scratch-instruction" id="scratchInstruction">Gently scratch the patterned panel to uncover our note</p>
+<p class="scratch-instruction" id="scratchInstruction">Gently scratch the jasmine panel to uncover our note</p>
     </div>
 
     <!-- FAMILY SECTION -->
@@ -1999,6 +1983,8 @@
     const scratchLetter=document.getElementById('personalLetter');
     const scratchMessage=document.getElementById('messageBox');
     const scratchContext=scratchCanvas.getContext('2d',{willReadFrequently:true});
+    const blushScratchArtwork=new Image();
+    blushScratchArtwork.decoding='async';
     let scratchPointer=null, scratchPrevious=null, scratchStarted=false, scratchComplete=false, scratchCheckTime=0;
     function paintScratchCoating() {
       if (!scratchContext) { revealScratchMessage(); return; }
@@ -2009,38 +1995,25 @@
       scratchCanvas.height=Math.round(rect.height*ratio);
       scratchContext.setTransform(ratio,0,0,ratio,0,0);
       scratchContext.globalCompositeOperation='source-over';
-      // Matte ivory with a quiet botanical emboss instead of metallic shading.
-      scratchContext.fillStyle='#f6f3e9';
+      // Blush Jasmine: real floral paper artwork, with crisp canvas typography.
+      scratchContext.fillStyle='#fae8df';
       scratchContext.fillRect(0,0,rect.width,rect.height);
-      function drawLeafTile(x,y,color) {
-        scratchContext.strokeStyle=color;scratchContext.lineWidth=.8;
-        scratchContext.beginPath();
-        scratchContext.moveTo(x-9,y+9);scratchContext.quadraticCurveTo(x,y,x+9,y-9);
-        scratchContext.moveTo(x-3,y+3);scratchContext.quadraticCurveTo(x-14,y-9,x-3,y-8);
-        scratchContext.quadraticCurveTo(x+2,y-4,x-3,y+3);
-        scratchContext.moveTo(x+3,y-3);scratchContext.quadraticCurveTo(x+15,y+5,x+7,y+7);
-        scratchContext.quadraticCurveTo(x+2,y+7,x+3,y-3);
-        scratchContext.stroke();
+      if(blushScratchArtwork.complete&&blushScratchArtwork.naturalWidth) {
+        scratchContext.drawImage(blushScratchArtwork,0,0,rect.width,rect.height);
       }
-      for(let row=0,y=30;y<rect.height;y+=58,row++) {
-        for(let x=24+(row%2)*29;x<rect.width;x+=58) {
-          drawLeafTile(x+1,y+1,'#ffffffdd');
-          drawLeafTile(x,y,'#42675220');
-        }
-      }
-      // Keep the title area clear of the repeated leaf motif.
-      scratchContext.fillStyle='#f6f3e9';
-      scratchContext.fillRect(24,rect.height/2-78,rect.width-48,142);
-      scratchContext.strokeStyle='#b79c63';scratchContext.lineWidth=1;
-      scratchContext.strokeRect(11,11,rect.width-22,rect.height-22);
-      scratchContext.strokeStyle='#ffffff';scratchContext.strokeRect(14,14,rect.width-28,rect.height-28);
+      scratchContext.strokeStyle='#b99d68';scratchContext.lineWidth=1;
+      scratchContext.strokeRect(9,9,rect.width-18,rect.height-18);
       scratchContext.textAlign='center';scratchContext.textBaseline='middle';
       scratchContext.fillStyle='#073f32';scratchContext.font='italic 28px "Playfair Display",serif';
-      scratchContext.fillText('A note for you',rect.width/2,rect.height/2-30);
-      scratchContext.font='600 16px "Cinzel",serif';
-      scratchContext.fillText('Scratch to reveal',rect.width/2,rect.height/2+8);
-      scratchContext.font='12px sans-serif';
-      scratchContext.fillText('With love, Ajithkumar & Ramya',rect.width/2,rect.height/2+42);
+      scratchContext.fillText('A note for you',rect.width/2,rect.height*.34);
+      scratchContext.font='500 15px "Cinzel",serif';
+      scratchContext.fillText('Scratch to reveal',rect.width/2,rect.height*.44);
+      scratchContext.strokeStyle='#8e7746';scratchContext.lineWidth=1;
+      scratchContext.beginPath();scratchContext.moveTo(rect.width/2-12,rect.height*.51);scratchContext.lineTo(rect.width/2+12,rect.height*.51);scratchContext.stroke();
+      scratchContext.font='13px "Playfair Display",serif';
+      scratchContext.fillStyle='#073f32';
+      scratchContext.fillText('With love,',rect.width/2,rect.height*.67);
+      scratchContext.fillText('Ajithkumar & Ramya',rect.width/2,rect.height*.72);
     }
     function revealScratchMessage() {
       if(scratchComplete) return;
@@ -2137,6 +2110,8 @@
       scratchContext.drawImage(copy,0,0,w,h);
       scratchContext.setTransform(ratio,0,0,ratio,0,0);
     }
+    blushScratchArtwork.onload=()=>{if(!scratchStarted&&!scratchComplete)paintScratchCoating();};
+    blushScratchArtwork.src='./assets/blush-jasmine-scratch.webp';
     paintScratchCoating();
     if('ResizeObserver' in window)new ResizeObserver(resizeScratchBoard).observe(scratchMessage);
     else window.addEventListener('resize',resizeScratchBoard);
