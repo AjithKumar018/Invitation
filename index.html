@@ -1472,15 +1472,23 @@
     .visitor-count-status { color:#707567; font-size:.72rem; line-height:1.5; }
 
   
-    .love-vote {margin:26px auto 0;text-align:center;}
-    .love-vote-button {display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:12px 24px;border:1px solid #c6283f;border-radius:999px;background:#fff0f2;color:#b71c34;font:600 .95rem 'Playfair Display',serif;cursor:pointer;box-shadow:0 4px 16px rgba(183,28,52,.12);transition:transform .2s,box-shadow .2s;}
-    .love-vote-button:hover:not(:disabled) {transform:translateY(-2px);box-shadow:0 6px 20px rgba(183,28,52,.2);}
-    .love-vote-button:focus-visible {outline:3px solid #c6283f;outline-offset:4px;}
+    .love-vote {position:relative;margin:28px auto 0;padding:22px 16px 16px;max-width:290px;border:1px solid rgba(194,153,78,.35);border-radius:24px;background:radial-gradient(ellipse at 50% 0%,rgba(244,208,160,.24),transparent 70%),linear-gradient(145deg,#fffaf3,#fff3f3);box-shadow:0 8px 28px rgba(115,46,42,.06);text-align:center;}
+    .love-vote::before {content:'A little love, a lasting blessing';display:block;margin-bottom:15px;color:#87664c;font:italic .82rem 'Playfair Display',serif;}
+    .love-vote-button {position:relative;display:inline-flex;align-items:center;justify-content:center;gap:11px;min-height:52px;padding:13px 28px;border:1px solid #e4bf76;border-radius:999px;background:linear-gradient(145deg,#dc445e 0%,#b41e3d 55%,#88162e 100%);color:#fff7ed;font:600 1rem 'Playfair Display',serif;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 5px 0 #75172c,0 10px 22px rgba(155,28,53,.2);transition:transform .25s,box-shadow .25s;}
+    .love-vote-button:hover:not(:disabled) {transform:translateY(-2px);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 7px 0 #75172c,0 14px 28px rgba(155,28,53,.26);}
+    .love-vote-button:active:not(:disabled) {transform:translateY(3px);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 2px 0 #75172c,0 5px 12px rgba(155,28,53,.18);}
+    .love-vote-button:focus-visible {outline:3px solid #ba8e3a;outline-offset:5px;}
     .love-vote-button:disabled {cursor:default;}
-    .love-vote-button svg {width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.6;}
-    .love-vote-button[aria-pressed="true"] svg {fill:currentColor;}
-    .love-vote-total {margin:10px 0 0;color:#36594a;font-size:.85rem;}
-    .love-vote-status {min-height:1.5em;margin:5px 0 0;color:#707567;font-size:.72rem;}
+    .love-vote-button svg {width:23px;height:23px;fill:#fff1e8;stroke:#fff1e8;stroke-width:1.4;filter:drop-shadow(0 1px 2px rgba(95,12,29,.25));}
+    .love-vote-button:not(:disabled) svg {animation:love-heart-pulse 3.2s ease-in-out infinite;}
+    .love-vote-button[aria-pressed="true"] {background:linear-gradient(145deg,#b52b48,#88162e);box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 3px 0 #75172c,0 6px 16px rgba(155,28,53,.15);}
+    .love-vote-total {display:inline-flex;align-items:center;gap:7px;margin:18px 0 0;color:#87664c;font-size:.8rem;}
+    #loveVoteCount {color:#a92240;font-weight:700;font-size:1.1rem;font-variant-numeric:tabular-nums;}
+    .love-vote-status {min-height:1.5em;margin:7px 0 0;color:#87776b;font-size:.72rem;line-height:1.5;}
+    .love-burst-heart {position:absolute;left:50%;top:72px;z-index:2;pointer-events:none;color:var(--heart-color);font-size:var(--heart-size);animation:love-heart-burst 1.25s ease-out forwards;}
+    @keyframes love-heart-pulse {0%,74%,100%{transform:scale(1);}80%{transform:scale(1.13);}86%{transform:scale(1);}92%{transform:scale(1.08);}}
+    @keyframes love-heart-burst {0%{opacity:0;transform:translate(-50%,0) scale(.5);}15%{opacity:1;}100%{opacity:0;transform:translate(calc(-50% + var(--heart-x)),var(--heart-y)) rotate(var(--heart-turn)) scale(1.1);}}
+    @media(prefers-reduced-motion:reduce) {.love-vote-button:not(:disabled) svg,.love-burst-heart {animation:none;}.love-vote-button {transition:none;}.love-burst-heart {display:none;}}
 
   </style>
   <noscript><style>.scratch-cover,.scratch-instruction{display:none;}.door-wrapper { display: none; } .countdown-container, .toggle-msg-btn, .music-btn, .share-btn { display: none; } .message-content { max-height: none; opacity: 1; } .envelope-card .message-content { position: relative; visibility: visible; transform: none; } .letter-close { display: none; }</style></noscript>
@@ -2009,6 +2017,23 @@
         loveVoteStatus.textContent = loveVoted ? 'Love sent! The total is temporarily unavailable.' : 'The total is temporarily unavailable. You can still send love.';
       }
     }
+    function celebrateLoveVote() {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const container = document.getElementById('loveVote');
+      for (let i = 0; i < 9; i++) {
+        const heart = document.createElement('span');
+        heart.className = 'love-burst-heart';
+        heart.textContent = '♥';
+        heart.setAttribute('aria-hidden', 'true');
+        heart.style.setProperty('--heart-x', ((i - 4) * 25) + 'px');
+        heart.style.setProperty('--heart-y', (-65 - (4 - Math.abs(i - 4)) * 13) + 'px');
+        heart.style.setProperty('--heart-turn', ((i - 4) * 9) + 'deg');
+        heart.style.setProperty('--heart-size', (12 + i % 3 * 3) + 'px');
+        heart.style.setProperty('--heart-color', i % 2 ? '#c49a47' : '#c42c49');
+        container.appendChild(heart);
+        setTimeout(() => heart.remove(), 1400);
+      }
+    }
     loveVoteButton.addEventListener('click', () => {
       if (loveVoted || loveVotePending) return;
       try { if (localStorage.getItem(loveVoteKey) === '1') {loveVoted=true;updateLoveVoteButton();return;} } catch {}
@@ -2021,6 +2046,7 @@
         try { localStorage.setItem(loveVoteKey, '1'); } catch {}
         updateLoveVoteButton();
         loveVoteStatus.textContent = 'Thank you for your love and blessings!';
+        celebrateLoveVote();
         refreshLoveCount();
       };
       vote.onerror = () => {
