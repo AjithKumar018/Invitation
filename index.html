@@ -1388,6 +1388,22 @@
     .scratch-instruction { color:#f4e4b8; font-size:.75rem; line-height:1.6; margin:18px auto 0; max-width:280px; }
     #personalLetter.scratch-revealed .scratch-instruction { visibility:hidden; }
 
+  
+    /* A fresh pair of ornamental butterflies on each entrance panel. */
+    .door-butterfly { position:absolute; left:50%; width:64px; height:52px; margin-left:-32px; pointer-events:none; filter:drop-shadow(0 3px 5px #001b1666); }
+    .door-butterfly svg { display:block; width:100%; height:100%; overflow:visible; }
+    .door-butterfly-upper { top:15%; }
+    .door-butterfly-lower { bottom:12%; width:48px; height:39px; margin-left:-24px; transform:rotate(-12deg); }
+    .door-right .door-butterfly-lower { transform:rotate(12deg); }
+    .db-wing { transform-box:view-box; transform-origin:50px 40px; animation-duration:1.8s; animation-timing-function:ease-in-out; animation-iteration-count:infinite; }
+    .db-wing-left { animation-name:doorWingLeft; }
+    .db-wing-right { animation-name:doorWingRight; }
+    .door-butterfly-lower .db-wing { animation-duration:1.55s; animation-delay:-.7s; }
+    .door-right .door-butterfly-upper .db-wing { animation-delay:-.4s; }
+    @keyframes doorWingLeft { 0%,100% { transform:scaleX(1) rotate(0deg); } 50% { transform:scaleX(.22) rotate(-4deg); } }
+    @keyframes doorWingRight { 0%,100% { transform:scaleX(1) rotate(0deg); } 50% { transform:scaleX(.22) rotate(4deg); } }
+    .door-wrapper.open .db-wing { animation-play-state:paused; }
+
   </style>
   <noscript><style>.scratch-cover,.scratch-instruction{display:none;}.door-wrapper { display: none; } .countdown-container, .toggle-msg-btn, .music-btn, .share-btn { display: none; } .message-content { max-height: none; opacity: 1; } .envelope-card .message-content { position: relative; visibility: visible; transform: none; } .letter-close { display: none; }</style></noscript>
 </head>
@@ -1401,12 +1417,88 @@
     <div class="door-wrapper" id="doorWrapper" role="button" tabindex="0" aria-label="Open wedding invitation" onclick="openDoors()" onkeydown="if(event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openDoors(); }">
       <div class="door door-left">
         <div class="door-panel">
+<span class="door-butterfly door-butterfly-upper" aria-hidden="true">
+<svg viewBox="0 0 100 80" width="64" height="52" fill="none">
+<defs><linearGradient id="doorButterflyGold1a" x1="18" y1="12" x2="72" y2="67" gradientUnits="userSpaceOnUse"><stop stop-color="#fff0ba"/><stop offset=".5" stop-color="#d5af51"/><stop offset="1" stop-color="#987022"/></linearGradient></defs>
+<g class="db-wing db-wing-left">
+<path d="M48 39C38 16 19 4 10 12C0 21 8 41 30 44C8 42 11 63 24 68C38 74 47 55 48 39Z" fill="url(#doorButterflyGold1a)" stroke="#f8e1a0" stroke-width="1"/>
+<path d="M45 38Q24 16 14 20M44 42Q23 30 12 31M44 48Q28 45 21 59" stroke="#775b25" stroke-width="1.1" opacity=".65"/>
+<path d="M22 16Q31 16 38 27M19 58Q22 63 28 63" stroke="#fff5d6" stroke-width="2" stroke-linecap="round"/>
+<circle cx="16" cy="28" r="2" fill="#073f32" opacity=".5"/><circle cx="23" cy="52" r="2" fill="#073f32" opacity=".5"/>
+</g>
+<g class="db-wing db-wing-right">
+<path d="M52 39C62 16 81 4 90 12C100 21 92 41 70 44C92 42 89 63 76 68C62 74 53 55 52 39Z" fill="url(#doorButterflyGold1a)" stroke="#f8e1a0" stroke-width="1"/>
+<path d="M55 38Q76 16 86 20M56 42Q77 30 88 31M56 48Q72 45 79 59" stroke="#775b25" stroke-width="1.1" opacity=".65"/>
+<path d="M78 16Q69 16 62 27M81 58Q78 63 72 63" stroke="#fff5d6" stroke-width="2" stroke-linecap="round"/>
+<circle cx="84" cy="28" r="2" fill="#073f32" opacity=".5"/><circle cx="77" cy="52" r="2" fill="#073f32" opacity=".5"/>
+</g>
+<path d="M50 29Q45 15 41 20M50 29Q55 15 59 20" stroke="#e9cd84" stroke-width="1.3" stroke-linecap="round"/>
+<ellipse cx="50" cy="43" rx="3" ry="16" fill="#a37a2d" stroke="#ffe7a8"/>
+<circle cx="50" cy="28" r="3.5" fill="#f5dfa4"/>
+</svg></span>
+<span class="door-butterfly door-butterfly-lower" aria-hidden="true">
+<svg viewBox="0 0 100 80" width="64" height="52" fill="none">
+<defs><linearGradient id="doorButterflyGold1b" x1="18" y1="12" x2="72" y2="67" gradientUnits="userSpaceOnUse"><stop stop-color="#fff0ba"/><stop offset=".5" stop-color="#d5af51"/><stop offset="1" stop-color="#987022"/></linearGradient></defs>
+<g class="db-wing db-wing-left">
+<path d="M48 39C38 16 19 4 10 12C0 21 8 41 30 44C8 42 11 63 24 68C38 74 47 55 48 39Z" fill="url(#doorButterflyGold1b)" stroke="#f8e1a0" stroke-width="1"/>
+<path d="M45 38Q24 16 14 20M44 42Q23 30 12 31M44 48Q28 45 21 59" stroke="#775b25" stroke-width="1.1" opacity=".65"/>
+<path d="M22 16Q31 16 38 27M19 58Q22 63 28 63" stroke="#fff5d6" stroke-width="2" stroke-linecap="round"/>
+<circle cx="16" cy="28" r="2" fill="#073f32" opacity=".5"/><circle cx="23" cy="52" r="2" fill="#073f32" opacity=".5"/>
+</g>
+<g class="db-wing db-wing-right">
+<path d="M52 39C62 16 81 4 90 12C100 21 92 41 70 44C92 42 89 63 76 68C62 74 53 55 52 39Z" fill="url(#doorButterflyGold1b)" stroke="#f8e1a0" stroke-width="1"/>
+<path d="M55 38Q76 16 86 20M56 42Q77 30 88 31M56 48Q72 45 79 59" stroke="#775b25" stroke-width="1.1" opacity=".65"/>
+<path d="M78 16Q69 16 62 27M81 58Q78 63 72 63" stroke="#fff5d6" stroke-width="2" stroke-linecap="round"/>
+<circle cx="84" cy="28" r="2" fill="#073f32" opacity=".5"/><circle cx="77" cy="52" r="2" fill="#073f32" opacity=".5"/>
+</g>
+<path d="M50 29Q45 15 41 20M50 29Q55 15 59 20" stroke="#e9cd84" stroke-width="1.3" stroke-linecap="round"/>
+<ellipse cx="50" cy="43" rx="3" ry="16" fill="#a37a2d" stroke="#ffe7a8"/>
+<circle cx="50" cy="28" r="3.5" fill="#f5dfa4"/>
+</svg></span>
           
           <div class="door-handle"></div>
         </div>
       </div>
       <div class="door door-right">
         <div class="door-panel">
+<span class="door-butterfly door-butterfly-upper" aria-hidden="true">
+<svg viewBox="0 0 100 80" width="64" height="52" fill="none">
+<defs><linearGradient id="doorButterflyGold2a" x1="18" y1="12" x2="72" y2="67" gradientUnits="userSpaceOnUse"><stop stop-color="#fff0ba"/><stop offset=".5" stop-color="#d5af51"/><stop offset="1" stop-color="#987022"/></linearGradient></defs>
+<g class="db-wing db-wing-left">
+<path d="M48 39C38 16 19 4 10 12C0 21 8 41 30 44C8 42 11 63 24 68C38 74 47 55 48 39Z" fill="url(#doorButterflyGold2a)" stroke="#f8e1a0" stroke-width="1"/>
+<path d="M45 38Q24 16 14 20M44 42Q23 30 12 31M44 48Q28 45 21 59" stroke="#775b25" stroke-width="1.1" opacity=".65"/>
+<path d="M22 16Q31 16 38 27M19 58Q22 63 28 63" stroke="#fff5d6" stroke-width="2" stroke-linecap="round"/>
+<circle cx="16" cy="28" r="2" fill="#073f32" opacity=".5"/><circle cx="23" cy="52" r="2" fill="#073f32" opacity=".5"/>
+</g>
+<g class="db-wing db-wing-right">
+<path d="M52 39C62 16 81 4 90 12C100 21 92 41 70 44C92 42 89 63 76 68C62 74 53 55 52 39Z" fill="url(#doorButterflyGold2a)" stroke="#f8e1a0" stroke-width="1"/>
+<path d="M55 38Q76 16 86 20M56 42Q77 30 88 31M56 48Q72 45 79 59" stroke="#775b25" stroke-width="1.1" opacity=".65"/>
+<path d="M78 16Q69 16 62 27M81 58Q78 63 72 63" stroke="#fff5d6" stroke-width="2" stroke-linecap="round"/>
+<circle cx="84" cy="28" r="2" fill="#073f32" opacity=".5"/><circle cx="77" cy="52" r="2" fill="#073f32" opacity=".5"/>
+</g>
+<path d="M50 29Q45 15 41 20M50 29Q55 15 59 20" stroke="#e9cd84" stroke-width="1.3" stroke-linecap="round"/>
+<ellipse cx="50" cy="43" rx="3" ry="16" fill="#a37a2d" stroke="#ffe7a8"/>
+<circle cx="50" cy="28" r="3.5" fill="#f5dfa4"/>
+</svg></span>
+<span class="door-butterfly door-butterfly-lower" aria-hidden="true">
+<svg viewBox="0 0 100 80" width="64" height="52" fill="none">
+<defs><linearGradient id="doorButterflyGold2b" x1="18" y1="12" x2="72" y2="67" gradientUnits="userSpaceOnUse"><stop stop-color="#fff0ba"/><stop offset=".5" stop-color="#d5af51"/><stop offset="1" stop-color="#987022"/></linearGradient></defs>
+<g class="db-wing db-wing-left">
+<path d="M48 39C38 16 19 4 10 12C0 21 8 41 30 44C8 42 11 63 24 68C38 74 47 55 48 39Z" fill="url(#doorButterflyGold2b)" stroke="#f8e1a0" stroke-width="1"/>
+<path d="M45 38Q24 16 14 20M44 42Q23 30 12 31M44 48Q28 45 21 59" stroke="#775b25" stroke-width="1.1" opacity=".65"/>
+<path d="M22 16Q31 16 38 27M19 58Q22 63 28 63" stroke="#fff5d6" stroke-width="2" stroke-linecap="round"/>
+<circle cx="16" cy="28" r="2" fill="#073f32" opacity=".5"/><circle cx="23" cy="52" r="2" fill="#073f32" opacity=".5"/>
+</g>
+<g class="db-wing db-wing-right">
+<path d="M52 39C62 16 81 4 90 12C100 21 92 41 70 44C92 42 89 63 76 68C62 74 53 55 52 39Z" fill="url(#doorButterflyGold2b)" stroke="#f8e1a0" stroke-width="1"/>
+<path d="M55 38Q76 16 86 20M56 42Q77 30 88 31M56 48Q72 45 79 59" stroke="#775b25" stroke-width="1.1" opacity=".65"/>
+<path d="M78 16Q69 16 62 27M81 58Q78 63 72 63" stroke="#fff5d6" stroke-width="2" stroke-linecap="round"/>
+<circle cx="84" cy="28" r="2" fill="#073f32" opacity=".5"/><circle cx="77" cy="52" r="2" fill="#073f32" opacity=".5"/>
+</g>
+<path d="M50 29Q45 15 41 20M50 29Q55 15 59 20" stroke="#e9cd84" stroke-width="1.3" stroke-linecap="round"/>
+<ellipse cx="50" cy="43" rx="3" ry="16" fill="#a37a2d" stroke="#ffe7a8"/>
+<circle cx="50" cy="28" r="3.5" fill="#f5dfa4"/>
+</svg></span>
           
           <div class="door-handle"></div>
         </div>
