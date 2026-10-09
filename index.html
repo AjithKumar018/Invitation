@@ -1542,11 +1542,9 @@
     }
     .language-status {position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;}
     html[lang="ta"] .phone-container,
-    html[lang="ta"] :is(.hero-title,.hero-subtitle,.quote-box,.hero-kicker,.hero-date,.person-name,.person-title,.section-heading,.section-tag,.message-text,.letter-heading,.letter-caption,.footer-thanks,.venue-title,.timer-lbl,.btn-directions,.journey-card h3,.invited-badge,.entrance-caption) {
+    html[lang="ta"] :is(.quote-box,.hero-kicker,.hero-date,.person-name,.person-title,.section-heading,.section-tag,.message-text,.letter-heading,.letter-caption,.footer-thanks,.venue-title,.timer-lbl,.btn-directions,.journey-card h3,.invited-badge,.entrance-caption) {
       font-family:'Noto Sans Tamil',sans-serif; letter-spacing:normal;
     }
-    html[lang="ta"] .hero-title {font-size:clamp(1.6rem,7vw,2rem);line-height:1.65;}
-    html[lang="ta"] .hero-subtitle {font-size:1.1rem;line-height:1.6;}
     html[lang="ta"] :is(.section-heading,.person-name,.venue-title,.letter-heading) {line-height:1.6;}
     html[lang="ta"] .section-tag {line-height:1.7;}
     html[lang="ta"] .invited-badge {white-space:normal;min-width:190px;}
@@ -1627,9 +1625,9 @@
         "Two hearts found their way to each other, and from this moment on, every road leads home."
       </div>
 
-      <h1 class="hero-title">Ajithkumar</h1>
-      <div class="hero-subtitle">Weds</div>
-      <h1 class="hero-title">Ramya</h1>
+      <h1 class="hero-title" lang="en" data-no-translate>Ajithkumar</h1>
+      <div class="hero-subtitle" lang="en" data-no-translate>Weds</div>
+      <h1 class="hero-title" lang="en" data-no-translate>Ramya</h1>
 <div class="hero-date">25 October 2026</div>
 
       <!-- Countdown -->
@@ -1977,7 +1975,7 @@
       const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
       let node;
       while((node=walker.nextNode())) {
-        if(node.parentElement.closest('script,style,#languageButton'))continue;
+        if(node.parentElement.closest('script,style,#languageButton,[data-no-translate]'))continue;
         const text=node.nodeValue.trim();
         if(dictionary[text])node.nodeValue=node.nodeValue.replace(text,dictionary[text]);
       }
