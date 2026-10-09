@@ -1304,6 +1304,72 @@
       position:relative; opacity:1; visibility:visible; transform:none; margin:0;
     }
 
+  
+    /* A new stationery design: gold-edged ivory paper and a simple Open seal. */
+    #personalLetter .letter-stage { padding-top:46px; perspective:1000px; }
+    #personalLetter .toggle-msg-btn.fresh-envelope {
+      display:block; position:relative; inset:auto; width:min(78%,240px); max-width:240px;
+      min-width:0; min-height:0; aspect-ratio:1.75; margin:0 auto; padding:0;
+      border:1px solid #c5a25a; border-radius:6px; background:#e7d7b7;
+      box-shadow:0 14px 24px #001b1655,inset 0 0 0 2px #fff7e1;
+      overflow:visible; perspective:800px; transform:none; opacity:1; visibility:visible;
+      transition:opacity .35s ease,transform .5s ease,visibility 0s;
+    }
+    #personalLetter .toggle-msg-btn.fresh-envelope:hover { box-shadow:0 16px 28px #001b1666; }
+    .fresh-envelope-lining { position:absolute; inset:5px; background:linear-gradient(160deg,#dbc69a,#f4e7cb); border-radius:3px; }
+    .fresh-envelope-front {
+      position:absolute; inset:0; z-index:3; border-radius:5px;
+      clip-path:polygon(0 0,50% 59%,100% 0,100% 100%,0 100%);
+      background:linear-gradient(30deg,#ebdab5 49.6%,transparent 50%) left/50% 100% no-repeat,
+                 linear-gradient(-30deg,#f4e8cc 49.6%,transparent 50%) right/50% 100% no-repeat,
+                 linear-gradient(145deg,#fff5df,#e4cf9f);
+    }
+    .fresh-envelope-front::after {
+      content:""; position:absolute; inset:0;
+      background:linear-gradient(30deg,transparent 49.4%,#b8944666 49.8%,transparent 50.2%) left/50% 100% no-repeat,
+                 linear-gradient(-30deg,transparent 49.4%,#b8944666 49.8%,transparent 50.2%) right/50% 100% no-repeat;
+    }
+    .fresh-envelope-flap {
+      position:absolute; inset:0 0 auto; height:60%; z-index:4;
+      transform-origin:50% 0; transform-style:preserve-3d;
+      transition:transform .75s cubic-bezier(.4,0,.2,1) .15s;
+    }
+    .fresh-envelope-flap > span {
+      position:absolute; inset:0; clip-path:polygon(0 0,100% 0,50% 100%);
+      backface-visibility:hidden; background:linear-gradient(155deg,#fff9e9,#e9d5a9);
+    }
+    .fresh-flap-outside::after {
+      content:""; position:absolute; inset:0;
+      clip-path:polygon(0 0,100% 0,50% 100%,0 0,1% 0,50% 98%,99% 0);
+      background:#bfa05b;
+    }
+    .fresh-envelope-flap .fresh-flap-inside { transform:rotateX(180deg); background:linear-gradient(180deg,#e8d8b4,#fff4d9); }
+    .fresh-open-seal {
+      position:absolute; left:50%; top:48%; transform:translateX(-50%); z-index:5;
+      display:grid; place-items:center; width:68px; height:38px; border-radius:50%;
+      border:2px double #f7e5b4; background:linear-gradient(135deg,#f6dfa1,#c6a14b);
+      color:#164b39; font:italic 600 1.05rem 'Playfair Display',serif; letter-spacing:0;
+      box-shadow:0 3px 6px #83602a44;
+      transition:opacity .2s ease,transform .3s ease;
+    }
+    #personalLetter.envelope-revealing .fresh-open-seal,
+    #personalLetter.letter-open .fresh-open-seal { opacity:0; transform:translateX(-50%) translateY(4px); }
+    #personalLetter.envelope-revealing .fresh-envelope-flap,
+    #personalLetter.letter-open .fresh-envelope-flap { transform:rotateX(172deg); }
+    #personalLetter.envelope-revealing .fresh-envelope { pointer-events:none; }
+    #personalLetter .message-content {
+      position:absolute; inset:0; opacity:0; visibility:hidden;
+      transform:translateY(36px) scale(.96); transform-origin:50% 0;
+      transition:opacity .45s ease,transform .65s cubic-bezier(.22,1,.36,1),visibility 0s;
+    }
+    #personalLetter.letter-open .letter-stage { padding-top:46px; }
+    #personalLetter.letter-open .toggle-msg-btn.fresh-envelope {
+      display:block; position:absolute; inset:46px 0 auto;
+      opacity:0; visibility:hidden; transform:translateY(20px); pointer-events:none;
+      transition:opacity .35s ease,transform .5s ease,visibility 0s linear .5s;
+    }
+    #personalLetter.letter-open .message-content { position:relative; opacity:1; visibility:visible; transform:none; }
+
   </style>
   <noscript><style>.door-wrapper { display: none; } .countdown-container, .toggle-msg-btn, .music-btn, .share-btn { display: none; } .message-content { max-height: none; opacity: 1; } .envelope-card .message-content { position: relative; visibility: visible; transform: none; } .letter-close { display: none; }</style></noscript>
 </head>
@@ -1404,7 +1470,12 @@
 <p class="letter-caption">A little note from our hearts to yours</p>
 <div class="petal-layer" id="petalLayer" aria-hidden="true"></div>
 <div class="letter-stage">
-      <button type="button" class="toggle-msg-btn" aria-label="Open personal invitation" aria-expanded="false" aria-controls="messageBox" onclick="toggleMessage()">Open</button>
+      <button type="button" class="toggle-msg-btn fresh-envelope" aria-label="Open personal invitation" aria-expanded="false" aria-controls="messageBox" onclick="toggleMessage()">
+        <span class="fresh-envelope-lining" aria-hidden="true"></span>
+        <span class="fresh-envelope-front" aria-hidden="true"></span>
+        <span class="fresh-envelope-flap" aria-hidden="true"><span class="fresh-flap-outside"></span><span class="fresh-flap-inside"></span></span>
+        <span class="fresh-open-seal" aria-hidden="true">Open</span>
+      </button>
 
       <div class="message-content" id="messageBox" aria-hidden="true" tabindex="-1">
         <div class="section-tag" style="margin-top: 10px;">A Moment Made Complete By You</div>
@@ -1743,39 +1814,55 @@
 
 
 
-    // Reveal the message directly from the Open button.
+
+    // New envelope interaction, followed by the centered personal letter.
     function toggleMessage() {
       const letter=document.getElementById('personalLetter');
       const message=document.getElementById('messageBox');
       const button=letter.querySelector('.toggle-msg-btn');
       const stage=letter.querySelector('.letter-stage');
       const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (letter.classList.contains('envelope-revealing')) return;
       if (letter._centerTimer) clearTimeout(letter._centerTimer);
       if (stage._heightAnimation) { stage._heightAnimation.cancel(); stage._heightAnimation=null; }
-      const startHeight=stage.getBoundingClientRect().height;
-      const opened=letter.classList.toggle('letter-open');
-      message.classList.toggle('open',opened);
-      message.setAttribute('aria-hidden',String(!opened));
-      button.setAttribute('aria-expanded',String(opened));
-      button.tabIndex=opened?-1:0;
-      const endHeight=(opened?message:button).getBoundingClientRect().height;
-      if (!reduced && stage.animate) {
-        stage._heightAnimation=stage.animate([{height:startHeight+'px'},{height:endHeight+'px'}],{duration:500,easing:'cubic-bezier(.22,1,.36,1)'});
-        stage._heightAnimation.onfinish=()=>{stage._heightAnimation=null;};
+      if (letter.classList.contains('letter-open')) {
+        letter.classList.remove('letter-open');
+        message.classList.remove('open');
+        message.setAttribute('aria-hidden','true');
+        button.setAttribute('aria-expanded','false');
+        button.tabIndex=0;
+        button.focus({preventScroll:true});
+        return;
       }
-      if (!opened) { button.focus({preventScroll:true}); return; }
-      message.focus({preventScroll:true});
-      const center=()=>{
-        if (!letter.classList.contains('letter-open')) return;
-        const viewport=window.visualViewport;
-        const height=viewport?viewport.height:innerHeight;
-        const top=viewport?viewport.offsetTop:0;
-        const rect=message.getBoundingClientRect();
-        const offset=rect.height<=height-32?(height-rect.height)/2:16;
-        window.scrollTo({top:Math.max(0,scrollY+rect.top-top-offset),behavior:reduced?'instant':'smooth'});
+      letter.classList.add('envelope-revealing');
+      button.setAttribute('aria-expanded','true');
+      button.tabIndex=-1;
+      const reveal=()=>{
+        const startHeight=stage.getBoundingClientRect().height;
+        letter.classList.add('letter-open');
+        message.classList.add('open');
+        message.setAttribute('aria-hidden','false');
+        const endHeight=message.getBoundingClientRect().height+parseFloat(getComputedStyle(stage).paddingTop||0);
+        if (!reduced && stage.animate) {
+          stage._heightAnimation=stage.animate([{height:startHeight+'px'},{height:endHeight+'px'}],{duration:650,easing:'cubic-bezier(.22,1,.36,1)'});
+          stage._heightAnimation.onfinish=()=>{stage._heightAnimation=null;};
+        }
+        message.focus({preventScroll:true});
+        const center=()=>{
+          letter.classList.remove('envelope-revealing');
+          if (!letter.classList.contains('letter-open')) return;
+          const viewport=window.visualViewport;
+          const height=viewport?viewport.height:innerHeight;
+          const top=viewport?viewport.offsetTop:0;
+          const rect=message.getBoundingClientRect();
+          const offset=rect.height<=height-32?(height-rect.height)/2:16;
+          window.scrollTo({top:Math.max(0,scrollY+rect.top-top-offset),behavior:reduced?'instant':'smooth'});
+        };
+        if (reduced) requestAnimationFrame(center);
+        else letter._centerTimer=setTimeout(center,680);
       };
-      if (reduced) requestAnimationFrame(center);
-      else letter._centerTimer=setTimeout(center,520);
+      if (reduced) reveal();
+      else setTimeout(reveal,850);
     }
 
     function shareInvitation() {
