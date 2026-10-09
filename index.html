@@ -1371,7 +1371,7 @@
     #personalLetter.letter-open .message-content { position:relative; opacity:1; visibility:visible; transform:none; }
 
   
-    /* The gold coating is rubbed away to expose the actual letter beneath. */
+    /* The patterned coating is rubbed away to expose the actual letter beneath. */
     #personalLetter .letter-stage.scratch-stage { padding:0; perspective:none; }
     #personalLetter .scratch-stage .message-content {
       position:relative; inset:auto; opacity:1; visibility:visible; transform:none;
@@ -1586,9 +1586,9 @@
         <div class="section-tag" style="font-size: 0.65rem;">WITH LOVE, AJITHKUMAR & RAMYA</div>
 <button type="button" class="letter-close" onclick="resetScratchBoard()">Cover message again</button>
       </div>
-      <canvas id="scratchCover" class="scratch-cover" role="button" tabindex="0" aria-label="Scratch this gold panel to reveal your personal invitation. Use a finger or mouse, or press Enter to reveal." aria-controls="messageBox" aria-expanded="false"></canvas>
+      <canvas id="scratchCover" class="scratch-cover" role="button" tabindex="0" aria-label="Scratch this ivory panel to reveal your personal invitation. Use a finger or mouse, or press Enter to reveal." aria-controls="messageBox" aria-expanded="false"></canvas>
 </div>
-<p class="scratch-instruction" id="scratchInstruction">Gently scratch the gold panel to uncover our note</p>
+<p class="scratch-instruction" id="scratchInstruction">Gently scratch the patterned panel to uncover our note</p>
     </div>
 
     <!-- FAMILY SECTION -->
@@ -1991,17 +1991,31 @@
       scratchCanvas.height=Math.round(rect.height*ratio);
       scratchContext.setTransform(ratio,0,0,ratio,0,0);
       scratchContext.globalCompositeOperation='source-over';
-      const gold=scratchContext.createLinearGradient(0,0,rect.width,rect.height);
-      gold.addColorStop(0,'#f7e7b4'); gold.addColorStop(.3,'#d4b666');
-      gold.addColorStop(.6,'#eddaa0'); gold.addColorStop(1,'#b68b36');
-      scratchContext.fillStyle=gold;
+      // Matte ivory with a quiet botanical emboss instead of metallic shading.
+      scratchContext.fillStyle='#f6f3e9';
       scratchContext.fillRect(0,0,rect.width,rect.height);
-      scratchContext.strokeStyle='#fff0c0aa'; scratchContext.lineWidth=1;
-      for(let y=-rect.width;y<rect.height;y+=9) {
-        scratchContext.beginPath();scratchContext.moveTo(0,y);scratchContext.lineTo(rect.width,y+rect.width);scratchContext.stroke();
+      function drawLeafTile(x,y,color) {
+        scratchContext.strokeStyle=color;scratchContext.lineWidth=.8;
+        scratchContext.beginPath();
+        scratchContext.moveTo(x-9,y+9);scratchContext.quadraticCurveTo(x,y,x+9,y-9);
+        scratchContext.moveTo(x-3,y+3);scratchContext.quadraticCurveTo(x-14,y-9,x-3,y-8);
+        scratchContext.quadraticCurveTo(x+2,y-4,x-3,y+3);
+        scratchContext.moveTo(x+3,y-3);scratchContext.quadraticCurveTo(x+15,y+5,x+7,y+7);
+        scratchContext.quadraticCurveTo(x+2,y+7,x+3,y-3);
+        scratchContext.stroke();
       }
-      scratchContext.strokeStyle='#87631d';scratchContext.strokeRect(10,10,rect.width-20,rect.height-20);
-      scratchContext.strokeStyle='#fff4ce';scratchContext.strokeRect(14,14,rect.width-28,rect.height-28);
+      for(let row=0,y=30;y<rect.height;y+=58,row++) {
+        for(let x=24+(row%2)*29;x<rect.width;x+=58) {
+          drawLeafTile(x+1,y+1,'#ffffffdd');
+          drawLeafTile(x,y,'#42675220');
+        }
+      }
+      // Keep the title area clear of the repeated leaf motif.
+      scratchContext.fillStyle='#f6f3e9';
+      scratchContext.fillRect(24,rect.height/2-78,rect.width-48,142);
+      scratchContext.strokeStyle='#b79c63';scratchContext.lineWidth=1;
+      scratchContext.strokeRect(11,11,rect.width-22,rect.height-22);
+      scratchContext.strokeStyle='#ffffff';scratchContext.strokeRect(14,14,rect.width-28,rect.height-28);
       scratchContext.textAlign='center';scratchContext.textBaseline='middle';
       scratchContext.fillStyle='#073f32';scratchContext.font='italic 28px "Playfair Display",serif';
       scratchContext.fillText('A note for you',rect.width/2,rect.height/2-30);
