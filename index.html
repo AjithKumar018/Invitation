@@ -898,6 +898,32 @@
       transition: opacity .6s ease .5s, transform .85s cubic-bezier(.22,1,.36,1) .5s, visibility 0s linear .5s;
     }
     #personalLetter.letter-open .message-content { transform: translateY(0) scale(1); }
+
+    /* Seal-only envelope, matching the approved preview. */
+    #personalLetter .toggle-msg-btn {
+      min-height: 230px; padding: 0;
+      border-radius: 5px; border: 1px solid #b99344;
+      background: linear-gradient(135deg,#fff9e9,#eddfc2);
+      box-shadow: 0 20px 35px #001b1680,inset 0 0 0 2px #fff7df;
+    }
+    .envelope-flap {
+      height: 58%;
+      background: linear-gradient(155deg,#fffbed,#e6d5af);
+      filter: drop-shadow(0 2px 0 #b7903e) drop-shadow(0 4px 3px #70532933);
+    }
+    .envelope-pocket {
+      border-radius: 5px;
+      background: linear-gradient(34deg,#efe2c5 49.4%,#c7a151 49.8%,transparent 50.3%) left/50% 100% no-repeat,
+                  linear-gradient(-34deg,#f5e9d0 49.4%,#c7a151 49.8%,transparent 50.3%) right/50% 100% no-repeat;
+    }
+    .wax-seal {
+      top: calc(58% - 32px); width: 74px; height: 74px;
+      border: 6px double #edcb75;
+      background: radial-gradient(circle at 30% 22%,#efd084,#bd8b2e 60%,#82591b);
+      box-shadow: 0 5px 9px #6b491d66,inset 0 0 0 3px #986722,inset 0 0 0 5px #d5af56;
+      color: #fff0bc; font: italic 500 1.15rem 'Playfair Display',serif;
+      text-shadow: 0 1px 1px #6b491d;
+    }
   </style>
   <noscript><style>.door-wrapper { display: none; } .countdown-container, .toggle-msg-btn, .music-btn, .share-btn { display: none; } .message-content { max-height: none; opacity: 1; } .envelope-card .message-content { position: relative; visibility: visible; transform: none; } .letter-close { display: none; }</style></noscript>
 </head>
@@ -995,7 +1021,7 @@
 <p class="letter-caption">A little note from our hearts to yours</p>
 <div class="petal-layer" id="petalLayer" aria-hidden="true"></div>
 <div class="letter-stage">
-      <button class="toggle-msg-btn" aria-expanded="false" aria-controls="messageBox" onclick="toggleMessage()">
+      <button class="toggle-msg-btn" aria-label="Open personal invitation" aria-expanded="false" aria-controls="messageBox" onclick="toggleMessage()">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
           <polyline points="22,6 12,13 2,6"></polyline>
@@ -1003,7 +1029,7 @@
         <span class="envelope-flap" aria-hidden="true"></span>
         <span class="envelope-pocket" aria-hidden="true"></span>
         <span class="wax-seal" aria-hidden="true">Open</span>
-        <span id="msgBtnText">Open</span><span class="letter-hint">Your personal invitation</span>
+
       </button>
 
       <div class="message-content" id="messageBox" aria-hidden="true" tabindex="-1">
