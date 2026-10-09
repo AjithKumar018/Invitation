@@ -24,6 +24,7 @@
   <meta name="twitter:description" content="Join us with your blessings. Wedding: 25 October 2026, Namakkal. Reception: 1 November 2026, 6:00 PM onwards, Food Village, Injambakkam, Chennai.">
   <meta name="twitter:image" content="https://ajithkumar018.github.io/Invitation/invitation-preview.jpg">
 
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400;500;600;700&display=swap" rel="stylesheet">
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1520,10 +1521,46 @@
     .family-section .bride-card .person-name {color:#883b4b;}
     .family-section .and-divider {position:relative;margin:13px auto;color:#aa8441;text-shadow:0 1px 0 #fff9ed;}
 
+
+    /* A hanging language tag stays within the invitation on wide screens. */
+    .language-button {
+      position:fixed; left:max(12px,calc(50% - 203px));
+      bottom:max(18px,calc(env(safe-area-inset-bottom) + 12px));
+      z-index:1200; min-width:94px; min-height:48px; padding:12px 18px;
+      background:linear-gradient(135deg,#fff0b8,#d5ad5e);
+      color:#073f32; border:1px solid #fff0ba; border-radius:8px 8px 18px 18px;
+      box-shadow:0 5px 18px #001b1655; font:700 16px/1.4 'Noto Sans Tamil',sans-serif;
+      cursor:pointer; touch-action:manipulation;
+    }
+    .language-button::before {
+      content:''; position:absolute; left:calc(50% - 1px); top:-24px;
+      width:2px; height:24px; background:#d5ad5e;
+    }
+    .language-button::after {
+      content:''; position:absolute; left:calc(50% - 4px); top:5px;
+      width:6px; height:6px; border:1px solid #9e772e; border-radius:50%; background:#073f32;
+    }
+    .language-status {position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;}
+    html[lang="ta"] .phone-container,
+    html[lang="ta"] :is(.hero-title,.hero-subtitle,.quote-box,.hero-kicker,.hero-date,.person-name,.person-title,.section-heading,.section-tag,.message-text,.letter-heading,.letter-caption,.footer-thanks,.venue-title,.timer-lbl,.btn-directions,.journey-card h3,.invited-badge,.entrance-caption) {
+      font-family:'Noto Sans Tamil',sans-serif; letter-spacing:normal;
+    }
+    html[lang="ta"] .hero-title {font-size:clamp(1.6rem,7vw,2rem);line-height:1.65;}
+    html[lang="ta"] .hero-subtitle {font-size:1.1rem;line-height:1.6;}
+    html[lang="ta"] :is(.section-heading,.person-name,.venue-title,.letter-heading) {line-height:1.6;}
+    html[lang="ta"] .section-tag {line-height:1.7;}
+    html[lang="ta"] .invited-badge {white-space:normal;min-width:190px;}
+    html[lang="ta"] .seal-monogram {font-family:'Great Vibes',cursive;}
+    html[lang="ta"] .footer-thanks {font-size:2.1rem;}
+    html[lang="ta"] .date-badge .month {font-size:.65rem;}
+    .footer-section {padding-bottom:max(100px,calc(env(safe-area-inset-bottom) + 90px));}
   </style>
   <noscript><style>.scratch-cover,.scratch-instruction{display:none;}.door-wrapper { display: none; } .countdown-container, .toggle-msg-btn, .music-btn, .share-btn { display: none; } .message-content { max-height: none; opacity: 1; } .envelope-card .message-content { position: relative; visibility: visible; transform: none; } .letter-close { display: none; }</style></noscript>
 </head>
 <body>
+  <button type="button" class="language-button" id="languageButton" aria-label="அழைப்பிதழைத் தமிழில் காண்க" aria-pressed="false"><span class="language-label" lang="ta">தமிழ்</span></button>
+  <span class="language-status" id="languageStatus" role="status" aria-live="polite"></span>
+
 
   <div class="phone-container">
 
@@ -1841,6 +1878,133 @@
   <div class="jasmine-shower" id="jasmineShower" aria-hidden="true"></div>
   <!-- Interactive JavaScript -->
   <script>
+    // Local translations keep all invitation details available without a translation service.
+    let invitationLanguage='en';
+    const tamilText={
+  "A beautiful beginning awaits": "ஓர் அழகிய தொடக்கம் காத்திருக்கிறது",
+  "You Are Invited": "அன்புடன் அழைக்கிறோம்",
+  "Tap to enter": "தொட்டு உள்ளே வாருங்கள்",
+  "Together with our families": "எங்கள் குடும்பத்தினருடன் இணைந்து",
+  "\"Two hearts found their way to each other, and from this moment on, every road leads home.\"": "“இரு இதயங்கள் ஒன்றையொன்று கண்டடைந்தன. இனி எங்கள் வாழ்வின் ஒவ்வொரு பாதையும் இணைந்த இல்லத்தை நோக்கிச் செல்கிறது.”",
+  "Ajithkumar": "அஜித்குமார்",
+  "Ramya": "ரம்யா",
+  "Weds": "மணக்கிறார்",
+  "25 October 2026": "25 அக்டோபர் 2026",
+  "Days": "நாட்கள்",
+  "Hours": "மணி",
+  "Mins": "நிமிடம்",
+  "Secs": "நொடி",
+  "With Grateful Hearts": "நன்றியுடன் அழைக்கிறோம்",
+  "A little note from our hearts to yours": "எங்கள் இதயங்களிலிருந்து உங்களுக்காக ஓர் அன்புச் செய்தி",
+  "A Moment Made Complete By You": "உங்களால் நிறைவுபெறும் இனிய தருணம்",
+  "\"Some moments become memories because of the people who share them. As we step into this beautiful new chapter, it would mean the world to have you beside us—blessing our beginning, sharing our joy, and making our celebration complete.\"": "“நம்முடன் பகிர்ந்துகொள்ளும் அன்பானவர்களால்தான் சில தருணங்கள் இனிய நினைவுகளாகின்றன. எங்கள் வாழ்வின் இந்த அழகிய புதிய அத்தியாயத்தில், நீங்கள் உடனிருந்து எங்கள் தொடக்கத்தை ஆசீர்வதித்து, மகிழ்ச்சியைப் பகிர்ந்து, விழாவை நிறைவாக்க அன்புடன் அழைக்கிறோம்.”",
+  "WITH LOVE, AJITHKUMAR & RAMYA": "அன்புடன், அஜித்குமார் & ரம்யா",
+  "Cover message again": "செய்தியை மீண்டும் மூடவும்",
+  "Gently scratch the jasmine panel to uncover our note": "எங்கள் அன்புச் செய்தியைக் காண மல்லிகைப் பலகையை மெதுவாகத் தேய்க்கவும்",
+  "With the Blessings of": "ஆசிகளுடன்",
+  "Our Families": "எங்கள் குடும்பங்கள்",
+  "With joyful hearts, we invite you to celebrate our wedding": "எங்கள் திருமண விழாவில் கலந்துகொள்ள மகிழ்ச்சியுடன் அழைக்கிறோம்",
+  "The Groom": "மணமகன்",
+  "The Bride": "மணமகள்",
+  "Two cities, one beautiful beginning": "இரு நகரங்கள், ஓர் அழகிய தொடக்கம்",
+  "Our Wedding Journey": "எங்கள் திருமணப் பயணம்",
+  "From sacred vows in Namakkal to an evening of celebration in Chennai.": "நாமக்கலில் திருமணத்திலிருந்து சென்னையில் இனிய வரவேற்பு விழா வரை.",
+  "October": "அக்டோபர்",
+  "November": "நவம்பர்",
+  "Wedding": "திருமணம்",
+  "Reception": "வரவேற்பு",
+  "Namakkal": "நாமக்கல்",
+  "Chennai": "சென்னை",
+  "4:30 AM – 6:00 AM": "அதிகாலை 4:30 – காலை 6:00",
+  "Arulmigu Sri Murugan Temple": "அருள்மிகு ஸ்ரீ முருகன் கோவில்",
+  "Explore the wedding": "திருமண விவரங்களைக் காண்க",
+  "Explore the reception": "வரவேற்பு விவரங்களைக் காண்க",
+  "6:00 PM onwards": "மாலை 6:00 மணி முதல்",
+  "Food Village, Injambakkam": "ஃபுட் வில்லேஜ், ஈஞ்சம்பாக்கம்",
+  "Your blessings travel with us.": "உங்கள் ஆசிகள் எங்களுடன் பயணிக்கின்றன.",
+  "Join Us In": "எங்களுடன் இணையுங்கள்",
+  "JOIN US IN": "எங்களுடன் இணையுங்கள்",
+  "OCT": "அக்.",
+  "NOV": "நவ.",
+  "Wedding Ceremony": "திருமண விழா",
+  "WEDDING VENUE": "திருமண இடம்",
+  "Arulmigu Sri Murugan Temple, Namakkal": "அருள்மிகு ஸ்ரீ முருகன் கோவில், நாமக்கல்",
+  "Namakkal, Tamil Nadu, India": "நாமக்கல், தமிழ்நாடு, இந்தியா",
+  "Get Directions": "வழியைக் காண்க",
+  "Add to calendar": "நாட்காட்டியில் சேர்க்கவும்",
+  "Google Calendar": "கூகுள் நாட்காட்டி",
+  "iPhone / Outlook (.ics)": "ஐபோன் / அவுட்லுக் (.ics)",
+  "The Reception": "திருமண வரவேற்பு",
+  "An evening of joy, dinner and dancing as we celebrate our new beginning.": "எங்கள் புதிய தொடக்கத்தைக் கொண்டாட மகிழ்ச்சி, விருந்து மற்றும் நடனம் நிறைந்த ஓர் இனிய மாலை.",
+  "Evening Celebration": "மாலை கொண்டாட்டம்",
+  "VENUE": "விழா இடம்",
+  "Food Village": "ஃபுட் வில்லேஜ்",
+  "Injambakkam, Chennai, Tamil Nadu": "ஈஞ்சம்பாக்கம், சென்னை, தமிழ்நாடு",
+  "WITH GRATEFUL HEARTS": "நன்றியுடன்",
+  "Thank You": "நன்றி",
+  "\"Your presence and blessings will make our celebration complete. We would be honored to share this beautiful beginning with you.\"": "“உங்கள் வருகையும் ஆசிகளும் எங்கள் விழாவை நிறைவாக்கும். இந்த அழகிய தொடக்கத்தை உங்களுடன் பகிர்வதில் பெருமகிழ்ச்சி அடைகிறோம்.”",
+  "With love, Ajithkumar & Ramya": "அன்புடன், அஜித்குமார் & ரம்யா",
+  "Send love": "அன்பை அனுப்புங்கள்",
+  "Love sent": "அன்பு அனுப்பப்பட்டது",
+  "Sending…": "அனுப்புகிறோம்…",
+  "hearts received": "அன்புகள் பெறப்பட்டன",
+  "Thank you for your love and blessings!": "உங்கள் அன்பிற்கும் ஆசிகளுக்கும் நன்றி!",
+  "The total is temporarily unavailable. You can still send love.": "மொத்த எண்ணிக்கை தற்போது கிடைக்கவில்லை. நீங்கள் அன்பை அனுப்பலாம்.",
+  "Sending your heart…": "உங்கள் அன்பை அனுப்புகிறோம்…",
+  "Could not send your heart. Please try again.": "அன்பை அனுப்ப முடியவில்லை. மீண்டும் முயற்சிக்கவும்.",
+  "Thank you for visiting": "வருகைக்கு நன்றி",
+  "Total invitation openings since the counter was added": "எண்ணிக்கை தொடங்கியதிலிருந்து அழைப்பிதழ் திறக்கப்பட்ட மொத்தமுறை",
+  "Invitation visitor count": "அழைப்பிதழ் பார்வையாளர் எண்ணிக்கை",
+  "Visitor count loads when the invitation opens": "அழைப்பிதழ் திறக்கும்போது பார்வையாளர் எண்ணிக்கை ஏற்றப்படும்",
+  "Loading visitor count…": "பார்வையாளர் எண்ணிக்கையை ஏற்றுகிறோம்…",
+  "Visitor count temporarily unavailable": "பார்வையாளர் எண்ணிக்கை தற்போது கிடைக்கவில்லை",
+  "Share on WhatsApp": "வாட்ஸ்அப்பில் பகிரவும்",
+  "Sharing will be available once this invitation is published online.": "இந்த அழைப்பிதழ் இணையத்தில் வெளியிடப்பட்ட பிறகு பகிரலாம்.",
+  "Publish the invitation online before sharing it with guests.": "விருந்தினர்களுடன் பகிர்வதற்கு முன் அழைப்பிதழை இணையத்தில் வெளியிடவும்.",
+  "A note for you": "உங்களுக்காக ஓர் அன்புச் செய்தி",
+  "Scratch to reveal": "தேய்த்துப் பாருங்கள்",
+  "Open wedding invitation": "திருமண அழைப்பிதழைத் திறக்கவும்",
+  "Play background music": "பின்னணி இசையை இயக்கவும்",
+  "Mute background music": "பின்னணி இசையை முடக்கவும்",
+  "Unmute background music": "பின்னணி இசையை மீண்டும் இயக்கவும்",
+  "Scratch this blush jasmine panel to reveal your personal invitation. Use a finger or mouse, or press Enter to reveal.": "உங்கள் தனிப்பட்ட அழைப்பைக் காண மல்லிகைப் பலகையை விரலால் அல்லது சுட்டியால் தேய்க்கவும். அல்லது என்டர் விசையை அழுத்தவும்.",
+  "1 November 2026": "1 நவம்பர் 2026"
+};
+    const englishText=Object.fromEntries(Object.entries(tamilText).map(([en,ta])=>[ta,en]));
+    function invitationText(text) { return invitationLanguage==='ta'?(tamilText[text]||text):text; }
+    function translateInvitationContent() {
+      const dictionary=invitationLanguage==='ta'?tamilText:englishText;
+      const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+      let node;
+      while((node=walker.nextNode())) {
+        if(node.parentElement.closest('script,style,#languageButton'))continue;
+        const text=node.nodeValue.trim();
+        if(dictionary[text])node.nodeValue=node.nodeValue.replace(text,dictionary[text]);
+      }
+      document.querySelectorAll('[aria-label],[title],[alt]').forEach(element=>{
+        if(element.id==='languageButton')return;
+        ['aria-label','title','alt'].forEach(attribute=>{
+          const value=element.getAttribute(attribute);
+          if(dictionary[value])element.setAttribute(attribute,dictionary[value]);
+        });
+      });
+    }
+    function setInvitationLanguage(language) {
+      invitationLanguage=language==='ta'?'ta':'en';
+      document.documentElement.lang=invitationLanguage;
+      translateInvitationContent();
+      const button=document.getElementById('languageButton');
+      button.querySelector('.language-label').textContent=invitationLanguage==='ta'?'English':'தமிழ்';
+      button.querySelector('.language-label').lang=invitationLanguage==='ta'?'en':'ta';
+      button.setAttribute('aria-label',invitationLanguage==='ta'?'Switch invitation to English':'அழைப்பிதழைத் தமிழில் காண்க');
+      button.setAttribute('aria-pressed',String(invitationLanguage==='ta'));
+      document.title=invitationLanguage==='ta'?'அஜித்குமார் ❤️ ரம்யா — திருமண அழைப்பிதழ்':'Ajithkumar ❤️ Ramya — Wedding Invitation';
+      try{localStorage.setItem('invitation-language',invitationLanguage);}catch{}
+      if(typeof scratchComplete!=='undefined'&&!scratchComplete)paintScratchCoating(true);
+      updateMusicButton();
+      document.getElementById('languageStatus').textContent=invitationLanguage==='ta'?'அழைப்பிதழ் தமிழில் காட்டப்படுகிறது.':'Invitation is shown in English.';
+    }
+
 
     // Deterministic sparse spacing keeps petals away from the central text.
     const jasmineShower = document.getElementById('jasmineShower');
@@ -2030,8 +2194,8 @@
     function updateLoveVoteButton() {
       loveVoteButton.disabled = loveVoted || loveVotePending;
       loveVoteButton.setAttribute('aria-pressed', String(loveVoted));
-      loveVoteLabel.textContent = loveVoted ? 'Love sent' : loveVotePending ? 'Sending…' : 'Send love';
-      if (loveVoted) loveVoteStatus.textContent = 'Thank you for your love and blessings!';
+      loveVoteLabel.textContent = loveVoted ? invitationText('Love sent') : loveVotePending ? invitationText('Sending…') : invitationText('Send love');
+      if (loveVoted) loveVoteStatus.textContent = invitationText('Thank you for your love and blessings!');
     }
     async function refreshLoveCount() {
       const request = ++loveCountRequest;
@@ -2049,7 +2213,7 @@
         else throw new Error('Count unavailable');
       } catch {
         if (request !== loveCountRequest) return;
-        loveVoteStatus.textContent = loveVoted ? 'Thank you for your love and blessings!' : 'The total is temporarily unavailable. You can still send love.';
+        loveVoteStatus.textContent = loveVoted ? invitationText('Thank you for your love and blessings!') : invitationText('The total is temporarily unavailable. You can still send love.');
       }
     }
     function celebrateLoveVote() {
@@ -2074,19 +2238,19 @@
       try { if (localStorage.getItem(loveVoteKey) === '1') {loveVoted=true;updateLoveVoteButton();return;} } catch {}
       loveVotePending = true;
       updateLoveVoteButton();
-      loveVoteStatus.textContent = 'Sending your heart…';
+      loveVoteStatus.textContent = invitationText('Sending your heart…');
       const vote = new Image();
       vote.onload = () => {
         loveVoted = true; loveVotePending = false;
         try { localStorage.setItem(loveVoteKey, '1'); } catch {}
         updateLoveVoteButton();
-        loveVoteStatus.textContent = 'Thank you for your love and blessings!';
+        loveVoteStatus.textContent = invitationText('Thank you for your love and blessings!');
         celebrateLoveVote();
         refreshLoveCount();
       };
       vote.onerror = () => {
         loveVotePending = false; updateLoveVoteButton();
-        loveVoteStatus.textContent = 'Could not send your heart. Please try again.';
+        loveVoteStatus.textContent = invitationText('Could not send your heart. Please try again.');
       };
       vote.src = 'https://hits.sh/' + loveVoteUrn + '.svg?label=Likes&v=' + Date.now();
     });
@@ -2108,9 +2272,9 @@
       }
       const badge=document.getElementById('visitorCountBadge');
       const status=document.getElementById('visitorCountStatus');
-      status.textContent='Loading visitor count…';
+      status.textContent=invitationText('Loading visitor count…');
       badge.onload=()=>{badge.hidden=false;status.textContent='';};
-      badge.onerror=()=>{badge.hidden=true;status.textContent='Visitor count temporarily unavailable';};
+      badge.onerror=()=>{badge.hidden=true;status.textContent=invitationText('Visitor count temporarily unavailable');};
       badge.src='https://hits.sh/ajithkumar018.github.io/Invitation/entrances.svg?label=Visitors&color=d4af37&labelColor=073f32&style=flat';
     }
 
@@ -2159,11 +2323,17 @@
     const blushScratchArtwork=new Image();
     blushScratchArtwork.decoding='async';
     let scratchPointer=null, scratchPrevious=null, scratchStarted=false, scratchComplete=false, scratchCheckTime=0;
-    function paintScratchCoating() {
+    function paintScratchCoating(preserveScratches=false) {
       if (!scratchContext) { revealScratchMessage(); return; }
       const rect=scratchCanvas.getBoundingClientRect();
       if (!rect.width || !rect.height) return;
       const ratio=Math.min(devicePixelRatio||1,2);
+      let scratchMask=null;
+      if(preserveScratches&&scratchStarted&&scratchCanvas.width&&scratchCanvas.height) {
+        scratchMask=document.createElement('canvas');
+        scratchMask.width=scratchCanvas.width;scratchMask.height=scratchCanvas.height;
+        scratchMask.getContext('2d').drawImage(scratchCanvas,0,0);
+      }
       scratchCanvas.width=Math.round(rect.width*ratio);
       scratchCanvas.height=Math.round(rect.height*ratio);
       scratchContext.setTransform(ratio,0,0,ratio,0,0);
@@ -2177,15 +2347,19 @@
       scratchContext.strokeStyle='#b99d68';scratchContext.lineWidth=1;
       scratchContext.strokeRect(9,9,rect.width-18,rect.height-18);
       scratchContext.textAlign='center';scratchContext.textBaseline='middle';
-      scratchContext.fillStyle='#073f32';scratchContext.font='italic 28px "Playfair Display",serif';
-      scratchContext.fillText('A note for you',rect.width/2,rect.height/2);
-      scratchContext.font='500 15px "Cinzel",serif';
-      scratchContext.fillText('Scratch to reveal',rect.width/2,rect.height/2+36);
+      scratchContext.fillStyle='#073f32';scratchContext.font=invitationLanguage==='ta'?'500 19px "Noto Sans Tamil",sans-serif':'italic 28px "Playfair Display",serif';
+      scratchContext.fillText(invitationText('A note for you'),rect.width/2,rect.height/2,rect.width-32);
+      scratchContext.font=invitationLanguage==='ta'?'500 14px "Noto Sans Tamil",sans-serif':'500 15px "Cinzel",serif';
+      scratchContext.fillText(invitationText('Scratch to reveal'),rect.width/2,rect.height/2+36,rect.width-32);
       scratchContext.strokeStyle='#8e7746';scratchContext.lineWidth=1;
       scratchContext.beginPath();scratchContext.moveTo(rect.width/2-12,rect.height/2+64);scratchContext.lineTo(rect.width/2+12,rect.height/2+64);scratchContext.stroke();
       scratchContext.font='13px "Playfair Display",serif';
       scratchContext.fillStyle='#073f32';
-
+      if(scratchMask) {
+        scratchContext.globalCompositeOperation='destination-in';
+        scratchContext.drawImage(scratchMask,0,0,rect.width,rect.height);
+        scratchContext.globalCompositeOperation='source-over';
+      }
     }
     // Center the note at the first stroke without a moving target under the finger.
     function centerScratchMessage(behavior='instant') {
@@ -2298,15 +2472,17 @@
     function shareInvitation() {
       const status = document.getElementById('shareStatus');
       if (location.protocol !== 'https:' && location.protocol !== 'http:') {
-        status.textContent = 'Sharing will be available once this invitation is published online.';
+        status.textContent = invitationText('Sharing will be available once this invitation is published online.');
         return;
       }
       if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
-        status.textContent = 'Publish the invitation online before sharing it with guests.';
+        status.textContent = invitationText('Publish the invitation online before sharing it with guests.');
         return;
       }
       const url = location.origin + location.pathname;
-      const text = '💍 With joyful hearts, we invite you to celebrate Ajithkumar & Ramya!\n\nWedding: 25 October 2026 · Namakkal\nReception: 1 November 2026 · 6:00 PM onwards\nFood Village, Injambakkam, Chennai\n\nOpen our invitation: ' + url + '\n\nYour presence and blessings will make our celebration complete. ❤️';
+      const text = invitationLanguage==='ta'
+        ? '💍 அஜித்குமார் & ரம்யாவின் திருமண விழாவில் கலந்துகொள்ள அன்புடன் அழைக்கிறோம்!\n\nதிருமணம்: 25 அக்டோபர் 2026 · நாமக்கல்\nவரவேற்பு: 1 நவம்பர் 2026 · மாலை 6:00 மணி முதல்\nஃபுட் வில்லேஜ், ஈஞ்சம்பாக்கம், சென்னை\n\nஅழைப்பிதழைக் காண: ' + url + '\n\nஉங்கள் வருகையும் ஆசிகளும் எங்கள் விழாவை நிறைவாக்கும். ❤️'
+        : '💍 With joyful hearts, we invite you to celebrate Ajithkumar & Ramya!\n\nWedding: 25 October 2026 · Namakkal\nReception: 1 November 2026 · 6:00 PM onwards\nFood Village, Injambakkam, Chennai\n\nOpen our invitation: ' + url + '\n\nYour presence and blessings will make our celebration complete. ❤️';
       window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank', 'noopener,noreferrer');
     }
 
@@ -2321,8 +2497,8 @@
       const button = document.getElementById('musicBtn');
       button.classList.toggle('playing', audible);
       button.setAttribute('aria-pressed', String(audible));
-      button.setAttribute('aria-label', audible ? 'Mute background music' : 'Unmute background music');
-      button.title = audible ? 'Mute background music' : 'Unmute background music';
+      button.setAttribute('aria-label', audible ? invitationText('Mute background music') : invitationText('Unmute background music'));
+      button.title = audible ? invitationText('Mute background music') : invitationText('Unmute background music');
     }
     async function startMusic() {
       try { backgroundMusic.muted = false; await backgroundMusic.play(); }
@@ -2344,6 +2520,17 @@
       }
     });
     updateMusicButton();
-  </script>
+  
+    document.getElementById('languageButton').addEventListener('click',()=>{
+      setInvitationLanguage(invitationLanguage==='ta'?'en':'ta');
+      document.querySelector('#languageButton .language-label').lang=invitationLanguage==='ta'?'en':'ta';
+    });
+    let savedInvitationLanguage='en';
+    try{savedInvitationLanguage=localStorage.getItem('invitation-language')||'en';}catch{}
+    if(savedInvitationLanguage==='ta')setInvitationLanguage('ta');
+    if(document.fonts)document.fonts.ready.then(()=>{
+      if(invitationLanguage==='ta'&&!scratchComplete)paintScratchCoating(true);
+    });
+</script>
 </body>
 </html>
