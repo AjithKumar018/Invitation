@@ -1557,7 +1557,15 @@
     .flying-door-butterfly .natural-wing {
       animation-duration:.48s; animation-delay:0s; animation-play-state:running;
     }
-  </style>
+  
+    #groomPhotoTrigger {cursor:pointer;}
+    #groomPhotoTrigger:focus-visible {outline:2px solid var(--gold,#d4af37);outline-offset:6px;border-radius:12px;}
+    .groom-photo-dialog {border:1px solid #d4af37;border-radius:18px;padding:0;background:#fff9ed;max-width:calc(100vw - 32px);max-height:calc(100dvh - 32px);overflow:auto;box-shadow:0 18px 80px #0008;}
+    .groom-photo-dialog::backdrop {background:rgba(0,20,15,.8);backdrop-filter:blur(5px);}
+    .groom-photo-dialog img {display:block;width:min(540px,calc(100vw - 34px));height:auto;max-height:calc(100dvh - 34px);object-fit:contain;}
+    .groom-photo-close {position:absolute;top:10px;right:10px;width:42px;height:42px;border:1px solid #d4af37;border-radius:50%;background:#073f32;color:#fff7df;font-size:28px;line-height:1;cursor:pointer;}
+    .groom-photo-close:focus-visible {outline:3px solid #fff;outline-offset:3px;}
+</style>
   <noscript><style>.scratch-cover,.scratch-instruction{display:none;}.door-wrapper { display: none; } .countdown-container, .toggle-msg-btn, .music-btn, .share-btn { display: none; } .message-content { max-height: none; opacity: 1; } .envelope-card .message-content { position: relative; visibility: visible; transform: none; } .letter-close { display: none; }</style></noscript>
 </head>
 <body>
@@ -1695,7 +1703,7 @@
         With joyful hearts, we invite you to celebrate our wedding
       </p>
 
-      <div class="person-card groom-card">
+      <div class="person-card groom-card" id="groomPhotoTrigger" role="button" tabindex="0" aria-label="View Ajithkumar’s photo" aria-haspopup="dialog" aria-controls="groomPhotoDialog">
         <div class="person-title">The Groom</div>
         <svg class="name-crown king-crown filigree-crown" viewBox="0 0 120 80" aria-hidden="true" focusable="false" fill="none">
 <defs><linearGradient id="kingGold" x1="20" y1="12" x2="92" y2="72" gradientUnits="userSpaceOnUse"><stop stop-color="#fff0b0"/><stop offset=".32" stop-color="#b98c2e"/><stop offset=".63" stop-color="#efd486"/><stop offset="1" stop-color="#947023"/></linearGradient><radialGradient id="kingEmerald" cx=".3" cy=".25" r=".8"><stop stop-color="#f09da8"/><stop offset=".45" stop-color="#a82645"/><stop offset="1" stop-color="#5d1029"/></radialGradient></defs>
@@ -1903,6 +1911,9 @@
   "With the Blessings of": "எங்கள் குடும்பத்தினரின்",
   "Our Families": "ஆசிகளுடன்",
   "With joyful hearts, we invite you to celebrate our wedding": "எங்கள் திருமண விழாவில் கலந்துகொள்ள மகிழ்ச்சியுடன் அழைக்கிறோம்",
+  "View Ajithkumar’s photo": "அஜித்குமாரின் புகைப்படத்தைக் காண்க",
+  "Ajithkumar’s photo": "அஜித்குமாரின் புகைப்படம்",
+  "Close photo": "புகைப்படத்தை மூடவும்",
   "The Groom": "மணமகன்",
   "The Bride": "மணமகள்",
   "Two cities, one beautiful beginning": "இரு நகரங்கள், ஓர் அழகிய தொடக்கம்",
@@ -2578,6 +2589,35 @@
     if(document.fonts)document.fonts.ready.then(()=>{
       if(invitationLanguage==='ta'&&!scratchComplete)paintScratchCoating(true);
     });
+</script>
+<dialog id="groomPhotoDialog" class="groom-photo-dialog" aria-label="Ajithkumar’s photo">
+  <button type="button" class="groom-photo-close" id="groomPhotoClose" aria-label="Close photo">×</button>
+  <img src="groom-photo.jpg" alt="Ajithkumar" width="1536" height="1536" loading="lazy">
+</dialog>
+<script>
+  const groomPhotoTrigger=document.getElementById('groomPhotoTrigger');
+  const groomPhotoDialog=document.getElementById('groomPhotoDialog');
+  let groomPhotoPreviousOverflow='';
+  function openGroomPhoto(){
+    if(groomPhotoDialog.open)return;
+    groomPhotoPreviousOverflow=document.body.style.overflow;
+    groomPhotoDialog.showModal();
+    document.body.style.overflow='hidden';
+  }
+  groomPhotoTrigger.addEventListener('click',openGroomPhoto);
+  groomPhotoTrigger.addEventListener('keydown',event=>{
+    if(event.key==='Enter'||event.key===' '){event.preventDefault();openGroomPhoto();}
+  });
+  document.getElementById('groomPhotoClose').addEventListener('click',()=>groomPhotoDialog.close());
+  groomPhotoDialog.addEventListener('click',event=>{
+    if(event.target!==groomPhotoDialog)return;
+    const rect=groomPhotoDialog.getBoundingClientRect();
+    if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)groomPhotoDialog.close();
+  });
+  groomPhotoDialog.addEventListener('close',()=>{
+    document.body.style.overflow=groomPhotoPreviousOverflow;
+    groomPhotoTrigger.focus({preventScroll:true});
+  });
 </script>
 </body>
 </html>
