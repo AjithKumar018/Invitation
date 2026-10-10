@@ -1865,7 +1865,7 @@
         <p class="love-vote-total"><span id="loveVoteCount">—</span> hearts received</p>
         <p class="love-vote-status" id="loveVoteStatus" role="status" aria-live="polite"></p>
       </div>
-      <div class="visitor-counter" id="visitorCounter" title="Total invitation openings since the counter was added">
+      <div class="visitor-counter" id="visitorCounter" title="Total invitation openings since the latest reset">
         <span class="visitor-counter-caption">Thank you for visiting</span>
         <img id="visitorCountBadge" alt="Invitation visitor count" height="24" referrerpolicy="no-referrer" hidden>
         <span class="visitor-count-status" id="visitorCountStatus" role="status" aria-live="polite">Visitor count loads when the invitation opens</span>
@@ -1952,7 +1952,7 @@
   "Sending your heart…": "உங்கள் அன்பை அனுப்புகிறோம்…",
   "Could not send your heart. Please try again.": "அன்பை அனுப்ப முடியவில்லை. மீண்டும் முயற்சிக்கவும்.",
   "Thank you for visiting": "வருகைக்கு நன்றி",
-  "Total invitation openings since the counter was added": "எண்ணிக்கை தொடங்கியதிலிருந்து அழைப்பிதழ் திறக்கப்பட்ட மொத்தமுறை",
+  "Total invitation openings since the latest reset": "கடைசியாக எண்ணிக்கை மீட்டமைக்கப்பட்டதிலிருந்து அழைப்பிதழ் திறக்கப்பட்ட மொத்தமுறை",
   "Invitation visitor count": "அழைப்பிதழ் பார்வையாளர் எண்ணிக்கை",
   "Visitor count loads when the invitation opens": "அழைப்பிதழ் திறக்கும்போது பார்வையாளர் எண்ணிக்கை ஏற்றப்படும்",
   "Loading visitor count…": "பார்வையாளர் எண்ணிக்கையை ஏற்றுகிறோம்…",
@@ -2275,7 +2275,7 @@
       status.textContent=invitationText('Loading visitor count…');
       badge.onload=()=>{badge.hidden=false;status.textContent='';};
       badge.onerror=()=>{badge.hidden=true;status.textContent=invitationText('Visitor count temporarily unavailable');};
-      badge.src='https://hits.sh/ajithkumar018.github.io/Invitation/entrances.svg?label=Visitors&color=d4af37&labelColor=073f32&style=flat';
+      badge.src='https://hits.sh/ajithkumar018.github.io/Invitation/entrances-reset-20261010-0313.svg?label=Visitors&color=d4af37&labelColor=073f32&style=flat';
     }
 
 
