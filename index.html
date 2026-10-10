@@ -2000,7 +2000,6 @@
       button.setAttribute('aria-label',invitationLanguage==='ta'?'Switch invitation to English':'அழைப்பிதழைத் தமிழில் காண்க');
       button.setAttribute('aria-pressed',String(invitationLanguage==='ta'));
       document.title=invitationLanguage==='ta'?'அஜித்குமார் ❤️ ரம்யா — திருமண அழைப்பிதழ்':'Ajithkumar ❤️ Ramya — Wedding Invitation';
-      try{localStorage.setItem('invitation-language',invitationLanguage);}catch{}
       if(typeof scratchComplete!=='undefined'&&!scratchComplete)paintScratchCoating(true);
       updateMusicButton();
       document.getElementById('languageStatus').textContent=invitationLanguage==='ta'?'அழைப்பிதழ் தமிழில் காட்டப்படுகிறது.':'Invitation is shown in English.';
@@ -2574,9 +2573,8 @@
       setInvitationLanguage(invitationLanguage==='ta'?'en':'ta');
       document.querySelector('#languageButton .language-label').lang=invitationLanguage==='ta'?'en':'ta';
     });
-    let savedInvitationLanguage='en';
-    try{savedInvitationLanguage=localStorage.getItem('invitation-language')||'en';}catch{}
-    if(savedInvitationLanguage==='ta')setInvitationLanguage('ta');
+    // Start every visit in English; Tamil remains available through the toggle.
+    setInvitationLanguage('en');
     if(document.fonts)document.fonts.ready.then(()=>{
       if(invitationLanguage==='ta'&&!scratchComplete)paintScratchCoating(true);
     });
