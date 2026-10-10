@@ -1558,7 +1558,7 @@
       animation-duration:.48s; animation-delay:0s; animation-play-state:running;
     }
   
-    #groomPhotoTrigger {cursor:pointer;}
+    #groomPhotoTrigger[role="button"] {cursor:pointer;}
     #groomPhotoTrigger:focus-visible {outline:2px solid var(--gold,#d4af37);outline-offset:6px;border-radius:12px;}
     .groom-photo-dialog {border:1px solid #d4af37;border-radius:18px;padding:0;background:#fff9ed;max-width:calc(100vw - 32px);max-height:calc(100dvh - 32px);overflow:auto;box-shadow:0 18px 80px #0008;}
     .groom-photo-dialog::backdrop {background:rgba(0,20,15,.8);backdrop-filter:blur(5px);}
@@ -1703,7 +1703,7 @@
         With joyful hearts, we invite you to celebrate our wedding
       </p>
 
-      <div class="person-card groom-card" id="groomPhotoTrigger" role="button" tabindex="0" aria-label="View Ajithkumar’s photo" aria-haspopup="dialog" aria-controls="groomPhotoDialog">
+      <div class="person-card groom-card" id="groomPhotoTrigger">
         <div class="person-title">The Groom</div>
         <svg class="name-crown king-crown filigree-crown" viewBox="0 0 120 80" aria-hidden="true" focusable="false" fill="none">
 <defs><linearGradient id="kingGold" x1="20" y1="12" x2="92" y2="72" gradientUnits="userSpaceOnUse"><stop stop-color="#fff0b0"/><stop offset=".32" stop-color="#b98c2e"/><stop offset=".63" stop-color="#efd486"/><stop offset="1" stop-color="#947023"/></linearGradient><radialGradient id="kingEmerald" cx=".3" cy=".25" r=".8"><stop stop-color="#f09da8"/><stop offset=".45" stop-color="#a82645"/><stop offset="1" stop-color="#5d1029"/></radialGradient></defs>
@@ -2595,19 +2595,28 @@
   <img src="groom-photo.jpg" alt="Ajithkumar" width="1536" height="1536" loading="lazy">
 </dialog>
 <script>
+  // Keep the photo popup ready for later; the groom card is currently inactive.
+  const groomPhotoEnabled=false;
   const groomPhotoTrigger=document.getElementById('groomPhotoTrigger');
   const groomPhotoDialog=document.getElementById('groomPhotoDialog');
   let groomPhotoPreviousOverflow='';
   function openGroomPhoto(){
-    if(groomPhotoDialog.open)return;
+    if(!groomPhotoEnabled||groomPhotoDialog.open)return;
     groomPhotoPreviousOverflow=document.body.style.overflow;
     groomPhotoDialog.showModal();
     document.body.style.overflow='hidden';
   }
-  groomPhotoTrigger.addEventListener('click',openGroomPhoto);
-  groomPhotoTrigger.addEventListener('keydown',event=>{
-    if(event.key==='Enter'||event.key===' '){event.preventDefault();openGroomPhoto();}
-  });
+  if(groomPhotoEnabled){
+    groomPhotoTrigger.setAttribute('role','button');
+    groomPhotoTrigger.setAttribute('tabindex','0');
+    groomPhotoTrigger.setAttribute('aria-label','View Ajithkumar’s photo');
+    groomPhotoTrigger.setAttribute('aria-haspopup','dialog');
+    groomPhotoTrigger.setAttribute('aria-controls','groomPhotoDialog');
+    groomPhotoTrigger.addEventListener('click',openGroomPhoto);
+    groomPhotoTrigger.addEventListener('keydown',event=>{
+      if(event.key==='Enter'||event.key===' '){event.preventDefault();openGroomPhoto();}
+    });
+  }
   document.getElementById('groomPhotoClose').addEventListener('click',()=>groomPhotoDialog.close());
   groomPhotoDialog.addEventListener('click',event=>{
     if(event.target!==groomPhotoDialog)return;
