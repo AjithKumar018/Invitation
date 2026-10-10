@@ -2420,14 +2420,36 @@
         scratchContext.globalCompositeOperation='source-over';
       }
     }
-    // Center the note at the first stroke without a moving target under the finger.
-    function centerScratchMessage(behavior='instant') {
+    // Ease the note into the viewport without drawing while the canvas moves.
+    let scratchCenterFrame=0, scratchCentering=false;
+    function stopScratchCentering(){
+      if(scratchCenterFrame)cancelAnimationFrame(scratchCenterFrame);
+      scratchCenterFrame=0;scratchCentering=false;scratchPrevious=null;
+    }
+    function centerScratchMessage(behavior='smooth') {
+      stopScratchCentering();
       const viewport=window.visualViewport;
       const height=viewport?viewport.height:innerHeight;
       const top=viewport?viewport.offsetTop:0;
       const rect=scratchMessage.getBoundingClientRect();
       const offset=rect.height<=height-32?(height-rect.height)/2:16;
-      window.scrollTo({top:Math.max(0,scrollY+rect.top-top-offset),behavior});
+      const start=window.scrollY;
+      const maxScroll=Math.max(0,document.documentElement.scrollHeight-innerHeight);
+      const target=Math.min(maxScroll,Math.max(0,start+rect.top-top-offset));
+      if(behavior==='instant'||matchMedia('(prefers-reduced-motion: reduce)').matches||Math.abs(target-start)<2){
+        window.scrollTo({top:target,behavior:'instant'});return;
+      }
+      scratchCentering=true;
+      const started=performance.now(),duration=560;
+      const step=now=>{
+        const progress=Math.min(1,(now-started)/duration);
+        const eased=progress<.5?4*progress*progress*progress:1-Math.pow(-2*progress+2,3)/2;
+        window.scrollTo({top:start+(target-start)*eased,behavior:'instant'});
+        scratchPrevious=null;
+        if(progress<1)scratchCenterFrame=requestAnimationFrame(step);
+        else{scratchCenterFrame=0;scratchCentering=false;}
+      };
+      scratchCenterFrame=requestAnimationFrame(step);
     }
     function revealScratchMessage() {
       if(scratchComplete) return;
@@ -2448,6 +2470,7 @@
       else scratchLetter._centerTimer=setTimeout(center,520);
     }
     function resetScratchBoard() {
+      stopScratchCentering();
       if(scratchLetter._centerTimer)clearTimeout(scratchLetter._centerTimer);
       scratchComplete=false;scratchStarted=false;scratchPointer=null;scratchPrevious=null;scratchCheckTime=0;
       scratchLetter.classList.remove('scratch-revealed');
@@ -2473,7 +2496,7 @@
       if(erased/total>=.38)revealScratchMessage();
     }
     function scratchAt(event) {
-      if(scratchComplete||!scratchContext)return;
+      if(scratchComplete||scratchCentering||!scratchContext)return;
       const rect=scratchCanvas.getBoundingClientRect();
       const point={x:event.clientX-rect.left,y:event.clientY-rect.top};
       scratchContext.globalCompositeOperation='destination-out';
@@ -2486,8 +2509,9 @@
     scratchCanvas.addEventListener('pointerdown',event=>{
       if(scratchComplete||scratchPointer!==null||(event.pointerType==='mouse'&&event.button!==0))return;
       event.preventDefault();scratchPointer=event.pointerId;scratchCanvas.setPointerCapture(event.pointerId);
-      if(!scratchStarted)centerScratchMessage();
+      const shouldCenter=!scratchStarted;
       scratchPrevious=null;scratchAt(event);
+      if(shouldCenter)centerScratchMessage();
     });
     scratchCanvas.addEventListener('pointermove',event=>{
       if(event.pointerId!==scratchPointer)return;
