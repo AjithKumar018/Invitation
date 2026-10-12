@@ -2012,6 +2012,11 @@
       button.setAttribute('aria-pressed',String(invitationLanguage==='ta'));
       document.title=invitationLanguage==='ta'?'அஜித்குமார் ❤️ ரம்யா — திருமண அழைப்பிதழ்':'Ajithkumar ❤️ Ramya — Wedding Invitation';
       if(typeof scratchComplete!=='undefined'&&!scratchComplete)paintScratchCoating(true);
+      if(invitationLanguage==='ta'&&document.fonts&&document.fonts.load){
+        document.fonts.load('500 19px "Noto Sans Tamil"',tamilText['A note for you']).then(()=>{
+          if(invitationLanguage==='ta'&&!scratchComplete)paintScratchCoating(true);
+        }).catch(()=>{});
+      }
       updateMusicButton();
       document.getElementById('languageStatus').textContent=invitationLanguage==='ta'?'அழைப்பிதழ் தமிழில் காட்டப்படுகிறது.':'Invitation is shown in English.';
     }
@@ -2382,6 +2387,29 @@
     const blushScratchArtwork=new Image();
     blushScratchArtwork.decoding='async';
     let scratchPointer=null, scratchPrevious=null, scratchStarted=false, scratchComplete=false, scratchCheckTime=0;
+    // Position shaped Tamil text explicitly instead of canvas maxWidth alignment.
+    function drawScratchLabel(text,y,width,size,family,style='500') {
+      scratchContext.save();
+      scratchContext.direction='ltr';
+      scratchContext.textAlign='left';scratchContext.textBaseline='middle';
+      if('letterSpacing' in scratchContext)scratchContext.letterSpacing='0px';
+      if('wordSpacing' in scratchContext)scratchContext.wordSpacing='0px';
+      const available=Math.max(1,width-40);
+      scratchContext.font=style+' '+size+'px '+family;
+      let metrics=scratchContext.measureText(text);
+      if(metrics.width>available){
+        size*=available/metrics.width;
+        scratchContext.font=style+' '+size+'px '+family;
+        metrics=scratchContext.measureText(text);
+      }
+      const left=Number.isFinite(metrics.actualBoundingBoxLeft)?metrics.actualBoundingBoxLeft:0;
+      const right=Number.isFinite(metrics.actualBoundingBoxRight)?metrics.actualBoundingBoxRight:metrics.width;
+      const inkWidth=left+right;
+      const x=(width-(inkWidth>0?inkWidth:metrics.width))/2+left;
+      // No maxWidth argument: fit the font first, then draw the complete text.
+      scratchContext.fillText(text,x,y);
+      scratchContext.restore();
+    }
     function paintScratchCoating(preserveScratches=false) {
       if (!scratchContext) { revealScratchMessage(); return; }
       const rect=scratchCanvas.getBoundingClientRect();
@@ -2405,11 +2433,10 @@
       }
       scratchContext.strokeStyle='#b99d68';scratchContext.lineWidth=1;
       scratchContext.strokeRect(9,9,rect.width-18,rect.height-18);
-      scratchContext.textAlign='center';scratchContext.textBaseline='middle';
-      scratchContext.fillStyle='#073f32';scratchContext.font=invitationLanguage==='ta'?'500 19px "Noto Sans Tamil",sans-serif':'italic 28px "Playfair Display",serif';
-      scratchContext.fillText(invitationText('A note for you'),rect.width/2,rect.height/2,rect.width-32);
-      scratchContext.font='500 15px "Cinzel",serif';
-      scratchContext.fillText('Scratch to reveal',rect.width/2,rect.height/2+36,rect.width-32);
+      scratchContext.fillStyle='#073f32';
+      const tamil=invitationLanguage==='ta';
+      drawScratchLabel(invitationText('A note for you'),rect.height/2,rect.width,tamil?19:28,tamil?'"Noto Sans Tamil",sans-serif':'"Playfair Display",serif',tamil?'500':'italic');
+      drawScratchLabel('Scratch to reveal',rect.height/2+36,rect.width,15,'"Cinzel",serif');
       scratchContext.strokeStyle='#8e7746';scratchContext.lineWidth=1;
       scratchContext.beginPath();scratchContext.moveTo(rect.width/2-12,rect.height/2+64);scratchContext.lineTo(rect.width/2+12,rect.height/2+64);scratchContext.stroke();
       scratchContext.font='13px "Playfair Display",serif';
