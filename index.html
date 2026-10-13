@@ -1067,7 +1067,7 @@
     .jasmine-petal {
       position: absolute; left: var(--x); top: -24px; width: var(--size); height: calc(var(--size) * 1.65);
       border-radius: 75% 25% 70% 30%;
-      background: radial-gradient(ellipse at 30% 25%,#fffef7 10%,#f8f3dd 65%,#d8d0b5);
+      background: radial-gradient(ellipse at 30% 25%,var(--petal-highlight,#fffef7) 10%,var(--petal-color,#f8f3dd) 65%,var(--petal-shadow,#d8d0b5));
       box-shadow: inset 1px 0 1px #ffffffcc,0 1px 3px #183a2220;
       animation: jasmineFall var(--duration) linear infinite; animation-delay: var(--delay);
       animation-play-state: paused;
@@ -2064,9 +2064,18 @@
 
     // Deterministic sparse spacing keeps petals away from the central text.
     const jasmineShower = document.getElementById('jasmineShower');
+    const jasminePetalPalette=[
+      ['#fffef7','#f8f3dd','#d8d0b5'],
+      ['#fff1f5','#efb8cc','#cb839f'],
+      ['#f7f1ff','#d8c3ef','#aa8fc4'],
+      ['#fff6cf','#eed38b','#c5a153']
+    ];
     for (let i = 0; i < 12; i++) {
       const petal = document.createElement('span');
       petal.className = 'jasmine-petal';
+      petal.setAttribute('aria-hidden','true');
+      const colors=jasminePetalPalette[(Math.floor(i/2)+i%2)%jasminePetalPalette.length];
+      ['--petal-highlight','--petal-color','--petal-shadow'].forEach((key,index)=>petal.style.setProperty(key,colors[index]));
       petal.style.setProperty('--x', (i % 2 ? 89 + (i % 5) * 2 : 2 + (i % 5) * 2) + '%');
       petal.style.setProperty('--size', (6 + i % 4) + 'px');
       petal.style.setProperty('--duration', (13 + i % 5) + 's');
