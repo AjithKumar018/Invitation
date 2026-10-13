@@ -1581,6 +1581,9 @@
     .love-name-actions button:disabled{opacity:.65;cursor:wait;}
     html[lang="ta"] .love-name-dialog{font-family:'Noto Sans Tamil',sans-serif;}
     html[lang="ta"] .love-name-dialog h2{font-family:'Noto Sans Tamil',sans-serif;line-height:1.6;font-size:1.3rem;}
+    .love-vote-hint{font:400 .78rem/1.5 'Plus Jakarta Sans',sans-serif;color:#78512d;}
+    html[lang="ta"] .love-vote-hint{font-family:'Noto Sans Tamil',sans-serif;}
+    .love-vote-hint[hidden]{display:none;}
 </style>
   <noscript><style>.scratch-cover,.scratch-instruction{display:none;}.door-wrapper { display: none; } .countdown-container, .toggle-msg-btn, .music-btn, .share-btn { display: none; } .message-content { max-height: none; opacity: 1; } .envelope-card .message-content { position: relative; visibility: visible; transform: none; } .letter-close { display: none; }</style></noscript>
 </head>
@@ -1884,6 +1887,7 @@
       <div class="love-vote" id="loveVote">
         <button type="button" class="love-vote-button" id="loveVoteButton" aria-pressed="false">
           <span class="love-seal-face"><svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="loveWaxGold" x1="0" y1="0" x2=".8" y2="1"><stop offset="0" stop-color="#fff0ba"/><stop offset=".42" stop-color="#e0b454"/><stop offset=".75" stop-color="#b7822b"/><stop offset="1" stop-color="#f3d48b"/></linearGradient></defs><path d="M12 21S3 15.4 3 8.7A5.1 5.1 0 0 1 12 5.4a5.1 5.1 0 0 1 9 3.3C21 15.4 12 21 12 21Z"/></svg></span>
+          <span class="love-vote-hint" id="loveVoteHint">Click the heart to</span>
           <span id="loveVoteLabel">Send love</span>
         </button>
         <p class="love-vote-total"><span id="loveVoteCount">—</span> hearts received</p>
@@ -1919,6 +1923,7 @@
     // Local translations keep all invitation details available without a translation service.
     let invitationLanguage='en';
     const tamilText={
+  "Click the heart to": "இதயத்தைத் தொட்டு",
   "Send your love": "உங்கள் அன்பைப் பகிருங்கள்",
   "Your name": "உங்கள் பெயர்",
   "Your name will be visible only to Ajithkumar and Ramya.": "உங்கள் பெயரை அஜித்குமார் மற்றும் ரம்யா மட்டுமே காண முடியும்.",
@@ -2278,6 +2283,7 @@
     try { loveVoted = localStorage.getItem(loveVoteKey) === '1'; } catch {}
     function updateLoveVoteButton() {
       loveVoteButton.disabled = loveVoted || loveVotePending;
+      document.getElementById('loveVoteHint').hidden=loveVoted||loveVotePending;
       loveVoteButton.setAttribute('aria-pressed', String(loveVoted));
       loveVoteLabel.textContent = loveVoted ? invitationText('Love sent') : loveVotePending ? invitationText('Sending…') : invitationText('Send love');
       if (loveVoted) loveVoteStatus.textContent = invitationText('Thank you for your love and blessings!');
