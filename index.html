@@ -1565,6 +1565,19 @@
     .groom-photo-dialog img {display:block;width:min(540px,calc(100vw - 34px));height:auto;max-height:calc(100dvh - 34px);object-fit:contain;}
     .groom-photo-close {position:absolute;top:10px;right:10px;width:42px;height:42px;border:1px solid #d4af37;border-radius:50%;background:#073f32;color:#fff7df;font-size:28px;line-height:1;cursor:pointer;}
     .groom-photo-close:focus-visible {outline:3px solid #fff;outline-offset:3px;}
+
+    .love-name-dialog{width:min(390px,calc(100vw - 32px));border:1px solid #c8a969;border-radius:18px;background:#fff9ef;color:#173c30;padding:26px;box-shadow:0 20px 70px #0006;}
+    .love-name-dialog::backdrop{background:#00271ee0;backdrop-filter:blur(4px);}
+    .love-name-dialog h2{font:400 1.65rem 'Playfair Display',serif;margin-bottom:18px;}
+    .love-name-dialog label{display:block;margin-bottom:8px;font-size:.9rem;}
+    .love-name-dialog input{display:block;width:100%;min-height:46px;padding:12px;border:1px solid #b9a171;border-radius:8px;background:#fff;color:#173c30;font:16px 'Plus Jakarta Sans',sans-serif;}
+    .love-name-dialog .love-privacy{font-size:.8rem;line-height:1.7;margin:12px 0;color:#6c624e;}
+    .love-name-actions{display:flex;gap:10px;margin-top:18px;}
+    .love-name-actions button{flex:1;min-height:46px;border:1px solid #b99c5d;border-radius:24px;padding:10px;background:#073f32;color:#fff3d3;font-size:.85rem;cursor:pointer;}
+    .love-name-actions button[type="button"]{background:transparent;color:#173c30;}
+    .love-name-actions button:disabled{opacity:.65;cursor:wait;}
+    html[lang="ta"] .love-name-dialog{font-family:'Noto Sans Tamil',sans-serif;}
+    html[lang="ta"] .love-name-dialog h2{font-family:'Noto Sans Tamil',sans-serif;line-height:1.6;font-size:1.3rem;}
 </style>
   <noscript><style>.scratch-cover,.scratch-instruction{display:none;}.door-wrapper { display: none; } .countdown-container, .toggle-msg-btn, .music-btn, .share-btn { display: none; } .message-content { max-height: none; opacity: 1; } .envelope-card .message-content { position: relative; visibility: visible; transform: none; } .letter-close { display: none; }</style></noscript>
 </head>
@@ -1885,11 +1898,30 @@
   </div>
 
   <div class="jasmine-shower" id="jasmineShower" aria-hidden="true"></div>
+  <dialog id="loveNameDialog" class="love-name-dialog" aria-labelledby="loveNameTitle">
+    <form id="loveNameForm">
+      <h2 id="loveNameTitle">Send your love</h2>
+      <label for="loveGuestName">Your name</label>
+      <input id="loveGuestName" name="guestName" type="text" autocomplete="name" maxlength="60" required>
+      <p class="love-privacy">Your name will be visible only to Ajithkumar and Ramya.</p>
+      <p id="loveNameStatus" role="status" aria-live="polite"></p>
+      <div class="love-name-actions">
+        <button id="loveNameCancel" type="button">Cancel</button>
+        <button id="loveNameSubmit" type="submit">Send love</button>
+      </div>
+    </form>
+  </dialog>
   <!-- Interactive JavaScript -->
   <script>
     // Local translations keep all invitation details available without a translation service.
     let invitationLanguage='en';
     const tamilText={
+  "Send your love": "உங்கள் அன்பைப் பகிருங்கள்",
+  "Your name": "உங்கள் பெயர்",
+  "Your name will be visible only to Ajithkumar and Ramya.": "உங்கள் பெயரை அஜித்குமார் மற்றும் ரம்யா மட்டுமே காண முடியும்.",
+  "Cancel": "ரத்து செய்",
+  "Please enter a name of up to 60 characters.": "60 எழுத்துகளுக்குள் உங்கள் பெயரை உள்ளிடவும்.",
+  "Please try again later.": "சிறிது நேரம் கழித்து மீண்டும் முயற்சிக்கவும்.",
   "A beautiful beginning awaits": "ஓர் அழகிய தொடக்கம் காத்திருக்கிறது",
   "You Are Invited": "அன்புடன் அழைக்கிறோம்",
   "Tap to enter": "தொட்டு உள்ளே வாருங்கள்",
@@ -2204,7 +2236,25 @@
     const loveVoteLabel = document.getElementById('loveVoteLabel');
     const loveVoteCount = document.getElementById('loveVoteCount');
     const loveVoteStatus = document.getElementById('loveVoteStatus');
-    const loveVoteUrn = 'ajithkumar018.github.io/Invitation/likes';
+    const loveApiOrigin = 'https://ajith-ramya-love-submit.jajith1826.chatgpt.site';
+    const loveNameDialog = document.getElementById('loveNameDialog');
+    const loveNameForm = document.getElementById('loveNameForm');
+    const loveGuestName = document.getElementById('loveGuestName');
+    const loveNameStatus = document.getElementById('loveNameStatus');
+    const loveNameSubmit = document.getElementById('loveNameSubmit');
+    const loveNameCancel = document.getElementById('loveNameCancel');
+    let loveVisitorId='', lovePreviousOverflow='';
+    function loveBrowserId(){
+      if(loveVisitorId)return loveVisitorId;
+      try{loveVisitorId=localStorage.getItem('invitation-love-browser-v1')||'';}catch{}
+      if(!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(loveVisitorId)){
+        const bytes=crypto.getRandomValues(new Uint8Array(16));bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;
+        const hex=[...bytes].map(n=>n.toString(16).padStart(2,'0')).join('');
+        loveVisitorId=hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20);
+        try{localStorage.setItem('invitation-love-browser-v1',loveVisitorId);}catch{}
+      }
+      return loveVisitorId;
+    }
     let loveVoted = false, loveVotePending = false, loveCountRequest = 0;
     try { loveVoted = localStorage.getItem(loveVoteKey) === '1'; } catch {}
     function updateLoveVoteButton() {
@@ -2214,22 +2264,16 @@
       if (loveVoted) loveVoteStatus.textContent = invitationText('Thank you for your love and blessings!');
     }
     async function refreshLoveCount() {
-      const request = ++loveCountRequest;
-      const apiUrl = 'https://hits.sh/api/urns/' + loveVoteUrn + '?v=' + Date.now();
-      const badgeUrl = 'https://img.shields.io/badge/dynamic/json?url=' + encodeURIComponent(apiUrl) + '&query=%24.total&label=Likes';
+      const request=++loveCountRequest;
       try {
-        const response = await fetch(badgeUrl, {cache:'no-store', signal:AbortSignal.timeout(15000)});
-        if (!response.ok) throw new Error('Count unavailable');
-        const svg = new DOMParser().parseFromString(await response.text(), 'image/svg+xml');
-        const label = svg.documentElement.getAttribute('aria-label') || '';
-        const match = label.match(/^Likes: (\d+)$/);
-        if (request !== loveCountRequest) return;
-        if (match) loveVoteCount.textContent = Number(match[1]).toLocaleString();
-        else if (/resource not found/i.test(label) && !loveVoted) loveVoteCount.textContent = '0';
-        else throw new Error('Count unavailable');
+        const response=await fetch(loveApiOrigin+'/api/total',{cache:'no-store',credentials:'omit',signal:AbortSignal.timeout(15000)});
+        if(!response.ok)throw Error('Count unavailable');
+        const value=await response.json();
+        if(!Number.isSafeInteger(value.total)||value.total<0)throw Error('Invalid total');
+        if(request===loveCountRequest)loveVoteCount.textContent=value.total.toLocaleString();
       } catch {
-        if (request !== loveCountRequest) return;
-        loveVoteStatus.textContent = loveVoted ? invitationText('Thank you for your love and blessings!') : invitationText('The total is temporarily unavailable. You can still send love.');
+        if(request!==loveCountRequest)return;
+        loveVoteStatus.textContent=loveVoted?invitationText('Thank you for your love and blessings!'):invitationText('The total is temporarily unavailable. You can still send love.');
       }
     }
     function celebrateLoveVote() {
@@ -2249,26 +2293,49 @@
         setTimeout(() => heart.remove(), 1400);
       }
     }
-    loveVoteButton.addEventListener('click', () => {
-      if (loveVoted || loveVotePending) return;
-      try { if (localStorage.getItem(loveVoteKey) === '1') {loveVoted=true;updateLoveVoteButton();return;} } catch {}
-      loveVotePending = true;
-      updateLoveVoteButton();
-      loveVoteStatus.textContent = invitationText('Sending your heart…');
-      const vote = new Image();
-      vote.onload = () => {
-        loveVoted = true; loveVotePending = false;
-        try { localStorage.setItem(loveVoteKey, '1'); } catch {}
-        updateLoveVoteButton();
-        loveVoteStatus.textContent = invitationText('Thank you for your love and blessings!');
-        celebrateLoveVote();
-        refreshLoveCount();
-      };
-      vote.onerror = () => {
-        loveVotePending = false; updateLoveVoteButton();
-        loveVoteStatus.textContent = invitationText('Could not send your heart. Please try again.');
-      };
-      vote.src = 'https://hits.sh/' + loveVoteUrn + '.svg?label=Likes&v=' + Date.now();
+    loveVoteButton.addEventListener('click',()=>{
+      if(loveVoted||loveVotePending)return;
+      try{if(localStorage.getItem(loveVoteKey)==='1'){loveVoted=true;updateLoveVoteButton();return;}}catch{}
+      loveNameStatus.textContent='';
+      lovePreviousOverflow=document.body.style.overflow;
+      loveNameDialog.showModal();document.body.style.overflow='hidden';
+      loveGuestName.focus();
+    });
+    loveNameCancel.addEventListener('click',()=>{if(!loveVotePending)loveNameDialog.close();});
+    loveNameDialog.addEventListener('cancel',event=>{if(loveVotePending)event.preventDefault();});
+    loveNameDialog.addEventListener('close',()=>{
+      document.body.style.overflow=lovePreviousOverflow;
+      if(!loveVoted)loveVoteButton.focus({preventScroll:true});
+    });
+    loveNameForm.addEventListener('submit',async event=>{
+      event.preventDefault();if(loveVotePending||loveVoted)return;
+      const name=loveGuestName.value.normalize('NFC').trim().replace(/\\s+/gu,' ');
+      if(!name||[...name].length>60||/[\\p{Cc}\\p{Cf}<>]/u.test(name)){
+        loveNameStatus.textContent=invitationText('Please enter a name of up to 60 characters.');loveGuestName.focus();return;
+      }
+      loveVotePending=true;updateLoveVoteButton();
+      loveNameSubmit.disabled=true;loveNameCancel.disabled=true;loveGuestName.disabled=true;
+      loveNameStatus.textContent=invitationText('Sending your heart…');
+      try{
+        const response=await fetch(loveApiOrigin+'/api/love',{
+          method:'POST',credentials:'omit',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({name,visitorId:loveBrowserId()}),signal:AbortSignal.timeout(20000)
+        });
+        if(response.status===429)throw Error('rate');
+        if(!response.ok)throw Error('save');
+        const result=await response.json();
+        if(result.ok!==true||!Number.isSafeInteger(result.total)||result.total<0)throw Error('save');
+        loveVoted=true;++loveCountRequest;
+        loveVoteCount.textContent=result.total.toLocaleString();
+        try{localStorage.setItem(loveVoteKey,'1');}catch{}
+        loveVoteStatus.textContent=invitationText('Thank you for your love and blessings!');
+        loveNameDialog.close();celebrateLoveVote();
+      }catch(error){
+        loveNameStatus.textContent=invitationText(error.message==='rate'?'Please try again later.':'Could not send your heart. Please try again.');
+      }finally{
+        loveVotePending=false;updateLoveVoteButton();
+        loveNameSubmit.disabled=false;loveNameCancel.disabled=false;loveGuestName.disabled=false;
+      }
     });
     window.addEventListener('storage', event => {
       if (event.key === loveVoteKey && event.newValue === '1') {
