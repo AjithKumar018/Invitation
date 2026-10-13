@@ -1584,6 +1584,7 @@
     .love-vote-hint{font:400 .78rem/1.5 'Plus Jakarta Sans',sans-serif;color:#78512d;}
     html[lang="ta"] .love-vote-hint{font-family:'Noto Sans Tamil',sans-serif;}
     .love-vote-hint[hidden]{display:none;}
+    .journey-heartbeat{overflow:hidden;}
 </style>
   <noscript><style>.scratch-cover,.scratch-instruction{display:none;}.door-wrapper { display: none; } .countdown-container, .toggle-msg-btn, .music-btn, .share-btn { display: none; } .message-content { max-height: none; opacity: 1; } .envelope-card .message-content { position: relative; visibility: visible; transform: none; } .letter-close { display: none; }</style></noscript>
 </head>
@@ -1775,7 +1776,10 @@
       <p class="journey-intro">From sacred vows in Namakkal to an evening of celebration in Chennai.</p>
       <div class="journey-track" style="position:relative">
       <svg class="journey-heartbeat" viewBox="0 0 40 300" preserveAspectRatio="none" aria-hidden="true">
-        <path id="heartbeatWave" d="M20 0V110L23 120L20 128L25 135L4 141L34 148L20 157Q12 170 20 183V300"/>
+        <g id="heartbeatTrack">
+          <path id="heartbeatWave" d="M20 0V110L23 120L20 128L25 135L4 141L34 148L20 157Q12 170 20 183V300"/>
+          <animateTransform id="heartbeatTravel" attributeName="transform" type="translate" from="0 0" to="0 150" dur="4s" repeatCount="indefinite" begin="indefinite"/>
+        </g>
       </svg>
       <ol class="journey-timeline">
         <li class="journey-stop">
@@ -2187,48 +2191,58 @@
       receptionReplayFrame = requestAnimationFrame(awaitReception);
     });
 
-    // Move the ECG waveform itself; the gold stroke stays evenly coloured.
-    const heartbeatPath = document.getElementById('heartbeatWave');
-    const heartbeatSection = document.querySelector('.journey-section');
-    const heartbeatMotion = matchMedia('(prefers-reduced-motion: reduce)');
-    let heartbeatVisible = false, heartbeatFrame;
-    // Two repeating beats, always separated by half the 300-unit track.
-    function makeHeartbeatTrace(center) {
-      const gap=150;
+    // Move one fixed, repeating ECG trace instead of rebuilding its peaks every frame.
+    const heartbeatPath=document.getElementById('heartbeatWave');
+    const heartbeatTrack=document.getElementById('heartbeatTrack');
+    const heartbeatSvg=heartbeatTrack.ownerSVGElement;
+    const heartbeatTravel=document.getElementById('heartbeatTravel');
+    const heartbeatSection=document.querySelector('.journey-section');
+    const heartbeatMotion=matchMedia('(prefers-reduced-motion: reduce)');
+    let heartbeatVisible=false,heartbeatStarted=false;
+    let heartbeatFrame=0,heartbeatLastTime=null,heartbeatOffset=0;
+    const heartbeatNative=typeof heartbeatTravel.beginElement==='function'&&typeof heartbeatSvg.pauseAnimations==='function';
+    function makeHeartbeatTrace(){
+      const gap=150,center=75;
       const bump=(y,offset,width,amplitude)=>{
         const distance=((y-center-offset+gap/2)%gap+gap)%gap-gap/2;
         return amplitude*Math.exp(-Math.pow(distance/width,2));
       };
       let trace='';
-      for(let y=0;y<=300;y+=2) {
+      // Extra repetitions above and below the viewport keep the loop seamless.
+      for(let y=-150;y<=450;y+=.5){
         const x=20+bump(y,-30,6,3)+bump(y,-9,3,5)+bump(y,0,3,-17)+bump(y,8,4,12)+bump(y,32,10,-5);
-        trace+=(y?'L':'M')+x.toFixed(2)+' '+y;
+        trace+=(y===-150?'M':'L')+x.toFixed(3)+' '+y;
       }
       return trace;
     }
-    heartbeatPath.setAttribute('d',makeHeartbeatTrace(75));
-    function animateHeartbeat(now) {
-      if (!heartbeatVisible || document.hidden || heartbeatMotion.matches) {
-        heartbeatFrame = null;
-        return;
+    heartbeatPath.setAttribute('d',makeHeartbeatTrace());
+    function animateHeartbeat(now){
+      if(!heartbeatVisible||document.hidden||heartbeatMotion.matches){heartbeatFrame=0;heartbeatLastTime=null;return;}
+      if(heartbeatLastTime!==null)heartbeatOffset=(heartbeatOffset+Math.min(now-heartbeatLastTime,80)*.0375)%150;
+      heartbeatLastTime=now;
+      heartbeatTrack.setAttribute('transform','translate(0 '+heartbeatOffset.toFixed(3)+')');
+      heartbeatFrame=requestAnimationFrame(animateHeartbeat);
+    }
+    function syncHeartbeat(){
+      const running=heartbeatVisible&&!document.hidden&&!heartbeatMotion.matches;
+      if(heartbeatNative){
+        if(!running){heartbeatSvg.pauseAnimations();return;}
+        if(!heartbeatStarted){heartbeatTravel.beginElement();heartbeatStarted=true;}
+        heartbeatSvg.unpauseAnimations();
+      }else if(running&&!heartbeatFrame){
+        heartbeatLastTime=null;heartbeatFrame=requestAnimationFrame(animateHeartbeat);
+      }else if(!running&&heartbeatFrame){
+        cancelAnimationFrame(heartbeatFrame);heartbeatFrame=0;heartbeatLastTime=null;
       }
-      const center = (now % 8000) / 8000 * 300;
-      heartbeatPath.setAttribute('d', makeHeartbeatTrace(center));
-      heartbeatFrame = requestAnimationFrame(animateHeartbeat);
     }
-    function resumeHeartbeat() {
-      if (heartbeatVisible && !document.hidden && !heartbeatMotion.matches && !heartbeatFrame)
-        heartbeatFrame = requestAnimationFrame(animateHeartbeat);
-    }
-    if ('IntersectionObserver' in window) {
-      new IntersectionObserver(entries => {
-        heartbeatVisible = entries[0].isIntersecting;
-        resumeHeartbeat();
+    if('IntersectionObserver' in window){
+      new IntersectionObserver(entries=>{
+        heartbeatVisible=entries[0].isIntersecting;syncHeartbeat();
       }).observe(heartbeatSection);
-    } else { heartbeatVisible=true; resumeHeartbeat(); }
-    document.addEventListener('visibilitychange',resumeHeartbeat);
-    heartbeatMotion.addEventListener('change',resumeHeartbeat);
-
+    }else{heartbeatVisible=true;}
+    document.addEventListener('visibilitychange',syncHeartbeat);
+    heartbeatMotion.addEventListener('change',syncHeartbeat);
+    syncHeartbeat();
 
     // Run decorative star trails only while the reception is on screen.
     const receptionSky=document.querySelector('.reception-sky');
