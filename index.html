@@ -1566,7 +1566,10 @@
     .groom-photo-close {position:absolute;top:10px;right:10px;width:42px;height:42px;border:1px solid #d4af37;border-radius:50%;background:#073f32;color:#fff7df;font-size:28px;line-height:1;cursor:pointer;}
     .groom-photo-close:focus-visible {outline:3px solid #fff;outline-offset:3px;}
 
-    .love-name-dialog{width:min(390px,calc(100vw - 32px));border:1px solid #c8a969;border-radius:18px;background:#fff9ef;color:#173c30;padding:26px;box-shadow:0 20px 70px #0006;}
+    html{scroll-behavior:smooth;scrollbar-gutter:stable;}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto;}}
+    html.love-modal-open{overflow:hidden;}
+    .love-name-dialog{position:fixed;inset:auto;left:var(--love-dialog-x,50%);top:var(--love-dialog-y,50%);margin:0;transform:translate(-50%,-50%);max-height:var(--love-dialog-max-height,calc(100dvh - 32px));overflow-y:auto;width:var(--love-dialog-width,min(390px,calc(100vw - 32px)));border:1px solid #c8a969;border-radius:18px;background:#fff9ef;color:#173c30;padding:26px;box-shadow:0 20px 70px #0006;}
     .love-name-dialog::backdrop{background:#00271ee0;backdrop-filter:blur(4px);}
     .love-name-dialog h2{font:400 1.65rem 'Playfair Display',serif;margin-bottom:18px;}
     .love-name-dialog label{display:block;margin-bottom:8px;font-size:.9rem;}
@@ -1900,7 +1903,7 @@
   <div class="jasmine-shower" id="jasmineShower" aria-hidden="true"></div>
   <dialog id="loveNameDialog" class="love-name-dialog" aria-labelledby="loveNameTitle">
     <form id="loveNameForm">
-      <h2 id="loveNameTitle">Send your love</h2>
+      <h2 id="loveNameTitle" tabindex="-1" autofocus>Send your love</h2>
       <label for="loveGuestName">Your name</label>
       <input id="loveGuestName" name="guestName" type="text" autocomplete="name" maxlength="60" required>
       <p class="love-privacy">Your name will be visible only to Ajithkumar and Ramya.</p>
@@ -2243,7 +2246,23 @@
     const loveNameStatus = document.getElementById('loveNameStatus');
     const loveNameSubmit = document.getElementById('loveNameSubmit');
     const loveNameCancel = document.getElementById('loveNameCancel');
-    let loveVisitorId='', lovePreviousOverflow='';
+    let loveVisitorId='', lovePageScroll=0;
+    function positionLoveDialog(){
+      const viewport=window.visualViewport;
+      const width=viewport?viewport.width:innerWidth;
+      const height=viewport?viewport.height:innerHeight;
+      const left=viewport?viewport.offsetLeft:0;
+      const top=viewport?viewport.offsetTop:0;
+      loveNameDialog.style.setProperty('--love-dialog-x',(left+width/2)+'px');
+      loveNameDialog.style.setProperty('--love-dialog-y',(top+height/2)+'px');
+      loveNameDialog.style.setProperty('--love-dialog-width',Math.max(1,Math.min(390,width-32))+'px');
+      loveNameDialog.style.setProperty('--love-dialog-max-height',Math.max(1,height-32)+'px');
+    }
+    window.addEventListener('resize',()=>{if(loveNameDialog.open)positionLoveDialog();});
+    if(window.visualViewport){
+      window.visualViewport.addEventListener('resize',()=>{if(loveNameDialog.open)positionLoveDialog();});
+      window.visualViewport.addEventListener('scroll',()=>{if(loveNameDialog.open)positionLoveDialog();});
+    }
     function loveBrowserId(){
       if(loveVisitorId)return loveVisitorId;
       try{loveVisitorId=localStorage.getItem('invitation-love-browser-v1')||'';}catch{}
@@ -2297,14 +2316,17 @@
       if(loveVoted||loveVotePending)return;
       try{if(localStorage.getItem(loveVoteKey)==='1'){loveVoted=true;updateLoveVoteButton();return;}}catch{}
       loveNameStatus.textContent='';
-      lovePreviousOverflow=document.body.style.overflow;
-      loveNameDialog.showModal();document.body.style.overflow='hidden';
-      loveGuestName.focus();
+      lovePageScroll=window.scrollY;
+      positionLoveDialog();
+      document.documentElement.classList.add('love-modal-open');
+      loveNameDialog.showModal();
+      document.getElementById('loveNameTitle').focus({preventScroll:true});
     });
     loveNameCancel.addEventListener('click',()=>{if(!loveVotePending)loveNameDialog.close();});
     loveNameDialog.addEventListener('cancel',event=>{if(loveVotePending)event.preventDefault();});
     loveNameDialog.addEventListener('close',()=>{
-      document.body.style.overflow=lovePreviousOverflow;
+      document.documentElement.classList.remove('love-modal-open');
+      if(window.scrollY!==lovePageScroll)window.scrollTo({top:lovePageScroll,behavior:'instant'});
       if(!loveVoted)loveVoteButton.focus({preventScroll:true});
     });
     loveNameForm.addEventListener('submit',async event=>{
