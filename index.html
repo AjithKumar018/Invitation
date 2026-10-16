@@ -1585,6 +1585,18 @@
     html[lang="ta"] .love-vote-hint{font-family:'Noto Sans Tamil',sans-serif;}
     .love-vote-hint[hidden]{display:none;}
     .journey-heartbeat{overflow:hidden;}
+    /* Soft attention glow on the unsent label only; keep the wax seal unchanged. */
+    #loveVoteButton:not(:disabled) #loveVoteLabel{
+      color:#794900;
+      animation:sendLoveSoftGlow 1.6s ease-in-out infinite;
+    }
+    @keyframes sendLoveSoftGlow{
+      0%,100%{text-shadow:0 0 1px #d3a32b00;}
+      50%{text-shadow:0 0 8px #daa83eaa,0 0 20px #e7bc5877;}
+    }
+    @media(prefers-reduced-motion:reduce){
+      #loveVoteButton:not(:disabled) #loveVoteLabel{animation:none;}
+    }
 </style>
   <noscript><style>.scratch-cover,.scratch-instruction{display:none;}.door-wrapper { display: none; } .countdown-container, .toggle-msg-btn, .music-btn, .share-btn { display: none; } .message-content { max-height: none; opacity: 1; } .envelope-card .message-content { position: relative; visibility: visible; transform: none; } .letter-close { display: none; }</style></noscript>
 </head>
