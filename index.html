@@ -2262,7 +2262,7 @@
     // One shared counter request per entrance, independent of later interactions.
 
     // Reading the shared total is separate from recording a guest's vote.
-    const loveVoteKey = 'invitation-love-vote-v1';
+    const loveVoteKey = 'invitation-love-named-v2';
     const loveVoteButton = document.getElementById('loveVoteButton');
     const loveVoteLabel = document.getElementById('loveVoteLabel');
     const loveVoteCount = document.getElementById('loveVoteCount');
@@ -2303,7 +2303,14 @@
       return loveVisitorId;
     }
     let loveVoted = false, loveVotePending = false, loveCountRequest = 0;
-    try { loveVoted = localStorage.getItem(loveVoteKey) === '1'; } catch {}
+    // Earlier anonymous hearts may send again with a name. Preserve completed named votes.
+    try {
+      const previousBrowserId=localStorage.getItem('invitation-love-browser-v1')||'';
+      const previousNamedVote=localStorage.getItem('invitation-love-vote-v1')==='1'
+        && /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(previousBrowserId);
+      loveVoted=localStorage.getItem(loveVoteKey)==='1'||previousNamedVote;
+      if(loveVoted)localStorage.setItem(loveVoteKey,'1');
+    } catch {}
     function updateLoveVoteButton() {
       loveVoteButton.disabled = loveVoted || loveVotePending;
       document.getElementById('loveVoteHint').hidden=loveVoted||loveVotePending;
@@ -2378,7 +2385,7 @@
         if(result.ok!==true||!Number.isSafeInteger(result.total)||result.total<0)throw Error('save');
         loveVoted=true;++loveCountRequest;
         loveVoteCount.textContent=result.total.toLocaleString();
-        try{localStorage.setItem(loveVoteKey,'1');}catch{}
+        try{localStorage.setItem(loveVoteKey,'1');localStorage.setItem('invitation-love-vote-v1','1');}catch{}
         loveVoteStatus.textContent=invitationText('Thank you for your love and blessings!');
         loveNameDialog.close();celebrateLoveVote();
       }catch(error){
